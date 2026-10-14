@@ -1,0 +1,4 @@
+# Repozitoriyda qator oxiri doim LF (Vercel/Linux bilan bir xil).
+* text=auto eol=lf
+*.png binary
+*.jpg binary

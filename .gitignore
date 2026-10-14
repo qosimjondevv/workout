@@ -1,0 +1,25 @@
+# Bog'liqliklar va build
+node_modules
+dist
+
+# Maxfiy sozlamalar: HAR QANDAY .env fayli (.env, .env.local, .env.production ...)
+# GitHub'ga tushmaydi. Faqat namunasi (.env.example) kuzatiladi.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI papkasi (loyiha ID'lari)
+.vercel
+
+# Firebase CLI keshi
+.firebase
+firebase-debug.log
+firestore-debug.log
+
+# Muharrir va tizim fayllari
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,113 @@
+rules_version = '2';
+
+// Firebase konsolida: Firestore Database -> Rules -> shu matnni joylashtiring -> Publish
+//
+// Ikki qatlamli himoya:
+//   1. EGALIK  - har kim faqat o'z users/{uid} shoxchasiga tegadi
+//   2. SHAKL   - hujjat majburiy maydonlarga va hajm cheklovlariga mos kelishi shart
+//
+// Ikkinchi qatlam muhim: birinchisining o'zi buzilgan yoki ulkan hujjat
+// yozilishidan himoya qilmaydi.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isISODate(value) {
+      return value is string && value.size() == 10;
+    }
+
+    function isShortText(value, maxLen) {
+      return value is string && value.size() <= maxLen;
+    }
+
+    // Mashg'ulot davomiyligi (soniya): yo'q yoki 1..18000 (5 soat).
+    // Ilova ham 5 soatdan uzun qiymatni saqlamaydi (MAX_WORKOUT_SECONDS).
+    function isOptionalDuration(value) {
+      return value == null || (value is number && value > 0 && value <= 18000);
+    }
+
+    // --- Profil: users/{uid} hujjatining o'zi ---
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId)
+                   && request.resource.data.schemaVersion is number
+                   && isShortText(request.resource.data.get('displayName', ''), 60);
+
+      // --- Mashg'ulotlar ---
+      match /workouts/{workoutId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isISODate(request.resource.data.date)
+          && request.resource.data.exercises is list
+          && request.resource.data.exercises.size() <= 60
+          && isShortText(request.resource.data.get('target', ''), 100)
+          && isShortText(request.resource.data.get('notes', ''), 1000)
+          && isOptionalDuration(request.resource.data.get('durationSec', null));
+      }
+
+      // --- Mashqlar katalogi ---
+      match /exercises/{exerciseId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 80
+          && request.resource.data.unit in ['reps', 'seconds'];
+      }
+
+      // --- Tana o'lchamlari ---
+      match /measurements/{measurementId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isISODate(request.resource.data.date)
+          && request.resource.data.values is map
+          && request.resource.data.values.size() <= 20;
+      }
+
+      // --- Tayyor kunlik mashqlar / template'lar (Push Day, Pull Day ...) ---
+      match /templates/{templateId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 60
+          && request.resource.data.exercises is list
+          && request.resource.data.exercises.size() <= 60
+          // Hafta kunlari (0 = DUSH ... 6 = YAK) — ixtiyoriy
+          && request.resource.data.get('days', []) is list
+          && request.resource.data.get('days', []).size() <= 7;
+      }
+
+      // --- Yutuqlar ---
+      match /achievements/{achievementId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.key is string;
+      }
+
+      // --- Progress suratlar metama'lumoti ---
+      // Rasmning o'zi Firebase Storage'da (storage.rules fayliga qarang),
+      // bu yerda faqat sana, rakurs va havola saqlanadi.
+      match /photos/{photoId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && isISODate(request.resource.data.date)
+          && request.resource.data.kind in ['front', 'side', 'back']
+          && request.resource.data.storagePath is string
+          && isShortText(request.resource.data.get('note', ''), 300);
+      }
+
+      // --- ESKI v2 hujjati ---
+      // Migratsiya uni o'qiydi, lekin YOZISH butunlay yopiq: bu zaxira nusxa
+      // va uning ustiga tasodifan yozib yuborilmasligi kerak.
+      match /appData/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+  }
+}
