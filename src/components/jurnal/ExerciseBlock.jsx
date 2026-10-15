@@ -29,7 +29,6 @@ export default function ExerciseBlock({
   superset,
   canLinkNext,
   recordFlags,
-  restDefaultSeconds,
   onRemoveExercise,
   onUpdateExercise,
   onUpdateSet,
@@ -38,7 +37,6 @@ export default function ExerciseBlock({
   onToggleDone,
   onUsePrevious,
   onApplySuggestion,
-  onStartRest,
   onLinkNext,
   onUnlink,
 }) {
@@ -70,10 +68,12 @@ export default function ExerciseBlock({
     };
   }
 
-  const goal =
-    exercise.goalSets || exercise.goalReps
-      ? `${exercise.goalSets ?? "?"} × ${exercise.goalReps || "?"}`
-      : null;
+  const goal = [
+    exercise.goalSets > 1 ? `${exercise.goalSets} set` : null,
+    exercise.goalReps || null,
+  ]
+    .filter(Boolean)
+    .join(" × ");
 
   return (
     <div
@@ -211,15 +211,7 @@ export default function ExerciseBlock({
         />
       )}
 
-      <RestPresetSheet
-        open={restOpen}
-        defaultSeconds={restDefaultSeconds}
-        onPick={(seconds) => {
-          setRestOpen(false);
-          onStartRest(seconds);
-        }}
-        onClose={() => setRestOpen(false)}
-      />
+      {restOpen && <RestPresetSheet onClose={() => setRestOpen(false)} />}
     </div>
   );
 }

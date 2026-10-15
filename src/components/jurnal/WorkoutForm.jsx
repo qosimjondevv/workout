@@ -20,9 +20,7 @@ export default function WorkoutForm({
   recordFlags,
   catalog,
   recent,
-  restDefaultSeconds,
   onToggleDone,
-  onStartRest,
   onAddExercise,
   onCreateExercise,
 }) {
@@ -149,7 +147,6 @@ export default function WorkoutForm({
             superset={supersets[exIdx]}
             canLinkNext={exIdx < form.exercises.length - 1}
             recordFlags={recordFlags[exIdx]}
-            restDefaultSeconds={restDefaultSeconds}
             onRemoveExercise={() => wf.removeExerciseFromForm(exIdx)}
             onUpdateExercise={(field, value) => wf.updateExercise(exIdx, field, value)}
             onUpdateSet={(setIdx, field, value) => wf.updateSet(exIdx, setIdx, field, value)}
@@ -158,7 +155,6 @@ export default function WorkoutForm({
             onToggleDone={(setIdx) => onToggleDone(exIdx, setIdx)}
             onUsePrevious={() => wf.usePreviousSets(exIdx, insight?.previous?.exercise?.sets)}
             onApplySuggestion={() => wf.applySuggestion(exIdx, insight?.suggestion)}
-            onStartRest={onStartRest}
             onLinkNext={() => wf.linkSuperset(exIdx)}
             onUnlink={() => wf.unlinkFromSuperset(exIdx)}
           />

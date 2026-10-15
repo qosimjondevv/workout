@@ -169,9 +169,7 @@ export default function JurnalPage() {
         recordFlags={recordFlags}
         catalog={catalog}
         recent={recent}
-        restDefaultSeconds={rest.defaultSeconds}
         onToggleDone={handleToggleDone}
-        onStartRest={rest.start}
         onAddExercise={handleAddExercise}
         onCreateExercise={handleCreateExercise}
       />

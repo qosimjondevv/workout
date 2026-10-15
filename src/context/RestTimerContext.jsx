@@ -1,16 +1,24 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useRestTimer } from "../hooks/useRestTimer.js";
 import { useProfile } from "./ProfileContext.jsx";
+import { normalizeRestSeconds } from "../constants/restPresets.js";
 
 const RestTimerStateContext = createContext(null);
 const RestTimerActionsContext = createContext(null);
 
 export function RestTimerProvider({ children }) {
-  const { profile } = useProfile();
-  const { state, actions } = useRestTimer(Number(profile.restDefaultSeconds) || 90);
+  const { profile, update } = useProfile();
+  const { state, actions } = useRestTimer(normalizeRestSeconds(profile.restDefaultSeconds));
+
+  const saveDefault = useCallback(
+    (seconds) => update({ restDefaultSeconds: normalizeRestSeconds(seconds) }),
+    [update],
+  );
+
+  const value = useMemo(() => ({ ...actions, saveDefault }), [actions, saveDefault]);
 
   return (
-    <RestTimerActionsContext.Provider value={actions}>
+    <RestTimerActionsContext.Provider value={value}>
       <RestTimerStateContext.Provider value={state}>{children}</RestTimerStateContext.Provider>
     </RestTimerActionsContext.Provider>
   );

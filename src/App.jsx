@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { DataProviders, RootProviders } from "./context/AppProviders.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
@@ -12,6 +12,7 @@ import BottomNav from "./layouts/BottomNav.jsx";
 import SaveStatus from "./layouts/SaveStatus.jsx";
 import RestTimerBar from "./layouts/RestTimerBar.jsx";
 import { BottomDockLayout } from "./layouts/BottomDock.jsx";
+import RestPresetSheet from "./components/jurnal/RestPresetSheet.jsx";
 import AchievementModal from "./components/achievements/AchievementModal.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 
@@ -35,17 +36,22 @@ function PageFallback() {
 function RestTimerDock() {
   const { active, remaining, running } = useRestTimerState();
   const { pause, resume, extend, skip } = useRestTimerActions();
+  const [editing, setEditing] = useState(false);
 
   return (
-    <RestTimerBar
-      active={active}
-      remaining={remaining}
-      running={running}
-      onPause={pause}
-      onResume={resume}
-      onExtend={extend}
-      onSkip={skip}
-    />
+    <>
+      <RestTimerBar
+        active={active}
+        remaining={remaining}
+        running={running}
+        onPause={pause}
+        onResume={resume}
+        onExtend={extend}
+        onSkip={skip}
+        onEdit={() => setEditing(true)}
+      />
+      {editing && <RestPresetSheet onClose={() => setEditing(false)} />}
+    </>
   );
 }
 

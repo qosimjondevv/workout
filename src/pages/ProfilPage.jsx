@@ -26,6 +26,7 @@ import {
 import { downloadText } from "../utils/download.js";
 import { todayISO } from "../utils/date.js";
 import { DEFAULT_MUSCLE_GROUP } from "../constants/muscleGroups.js";
+import { normalizeRestSeconds } from "../constants/restPresets.js";
 import { Card, CardTitle } from "../ui/card.jsx";
 import { Input } from "../ui/input.jsx";
 import { Button } from "../ui/button.jsx";
@@ -52,7 +53,7 @@ function profileToForm(profile) {
     height: toStr(profile.height),
     goalWeight: toStr(profile.goalWeight),
     goalType: profile.goalType ?? "maintain",
-    restDefaultSeconds: toStr(profile.restDefaultSeconds ?? 90),
+    restDefaultSeconds: toStr(normalizeRestSeconds(profile.restDefaultSeconds)),
     progressionStep: toStr(profile.progressionStep ?? 2.5),
   };
 }
@@ -94,7 +95,7 @@ export default function ProfilPage() {
       height: toNum(form.height),
       goalWeight: toNum(form.goalWeight),
       goalType: form.goalType,
-      restDefaultSeconds: toNum(form.restDefaultSeconds) ?? 90,
+      restDefaultSeconds: normalizeRestSeconds(form.restDefaultSeconds),
       progressionStep: toNum(form.progressionStep) ?? 2.5,
     });
     setSaved(true);

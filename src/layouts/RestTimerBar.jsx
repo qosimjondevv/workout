@@ -9,6 +9,7 @@ export default function RestTimerBar({
   onResume,
   onExtend,
   onSkip,
+  onEdit,
 }) {
   if (!active) return null;
 
@@ -20,14 +21,20 @@ export default function RestTimerBar({
     <div className="flex items-center gap-2 bg-brand-surface2 border border-brand-accent/50 rounded-md px-3 py-2">
       <Timer size={15} className="text-brand-accent shrink-0" />
 
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] text-brand-muted leading-none">
+      <button
+        type="button"
+        onClick={onEdit}
+        aria-label="Dam olish vaqtini o'zgartirish"
+        title="Vaqtni o'zgartirish"
+        className="flex-1 min-w-0 text-left bg-transparent border-none p-0 cursor-pointer"
+      >
+        <span className="block text-[10px] text-brand-muted leading-none">
           {done ? "Dam tugadi" : "Dam olish"}
-        </div>
-        <div className="font-display text-[18px] font-bold text-brand-accent tabular-nums leading-tight">
+        </span>
+        <span className="block font-display text-[18px] font-bold text-brand-accent tabular-nums leading-tight">
           {mm}:{ss}
-        </div>
-      </div>
+        </span>
+      </button>
 
       <button
         onClick={() => onExtend(30)}

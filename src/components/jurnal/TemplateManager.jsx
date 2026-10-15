@@ -22,7 +22,7 @@ import { exerciseKey, findExerciseMeta, searchExercises } from "../../utils/cata
 import { MAX_GOAL_SETS, normalizeGoalSets, normalizeUnit } from "../../utils/workout.js";
 import NewExerciseSheet from "./NewExerciseSheet.jsx";
 
-const DEFAULT_SETS = 3;
+const DEFAULT_SETS = 1;
 
 function toItem(e) {
   return {
