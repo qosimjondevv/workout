@@ -357,7 +357,7 @@ function TemplateEditor({
         <Step
           number={3}
           title="Har bir mashq uchun reja"
-          hint="Mashg'ulot boshlanganda har mashqqa shuncha bo'sh set tayyorlanadi. Tartibni ↑↓ bilan o'zgartiring."
+          hint="Reja mashq ustida eslatma bo'lib turadi; mashg'ulot har mashqda 1 set bilan boshlanadi. Tartibni ↑↓ bilan o'zgartiring."
         >
           {draft.items.map((item, idx) => (
             <ItemRow

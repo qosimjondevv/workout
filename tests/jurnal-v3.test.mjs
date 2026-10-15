@@ -85,7 +85,8 @@ assert.equal(t.exercises[1].sets, null, "chegaradan tashqari -> null");
 assert.equal(t.exercises[1].reps.length, 15, "uzun matn qisqartiriladi");
 
 const ex = makeExercise("Jim", "reps", undefined, "chest", { sets: 3, reps: "8-10" });
-assert.equal(ex.sets.length, 3);
+assert.equal(ex.sets.length, 1, "dastur 1 ta bo'sh set bilan boshlanadi");
+assert.equal(ex.goalSets, 3, "rejadagi set soni eslatma bo'lib qoladi");
 assert.equal(ex.goalReps, "8-10");
 assert.ok(ex.sets.every((s) => s.done === false && s.weight === ""));
 assert.equal(makeExercise("Plank", "seconds", 45).sets[0].seconds, "45", "taymerdan kelgan set");

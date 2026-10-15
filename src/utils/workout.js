@@ -32,8 +32,6 @@ export function normalizeGoalSets(value) {
 
 export function makeExercise(name, unit, seconds, muscleGroup, goal) {
   const u = normalizeUnit(unit);
-  const goalSets = normalizeGoalSets(goal?.sets);
-  const count = seconds != null ? 1 : (goalSets ?? 1);
   return {
     id: uid(),
     name: String(name ?? "").trim(),
@@ -41,9 +39,9 @@ export function makeExercise(name, unit, seconds, muscleGroup, goal) {
     muscleGroup: normalizeMuscleGroup(muscleGroup),
     note: "",
     supersetId: null,
-    goalSets,
+    goalSets: normalizeGoalSets(goal?.sets),
     goalReps: String(goal?.reps ?? "").trim(),
-    sets: Array.from({ length: count }, () => blankSet(u, seconds)),
+    sets: [blankSet(u, seconds)],
   };
 }
 
