@@ -1,6 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "./button.jsx";
+
+const openLayers = [];
+
+export function useModalLayer(open, onClose) {
+  const closeRef = useRef(onClose);
+
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const layer = {};
+    openLayers.push(layer);
+    function onKey(e) {
+      if (e.key === "Escape" && openLayers[openLayers.length - 1] === layer) closeRef.current?.();
+    }
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      openLayers.splice(openLayers.indexOf(layer), 1);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+}
 
 export function ConfirmDialog({
   open,
@@ -11,19 +38,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
-  useEffect(() => {
-    if (!open) return;
-    function onKey(e) {
-      if (e.key === "Escape") onCancel?.();
-    }
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [open, onCancel]);
+  useModalLayer(open, onCancel);
 
   if (!open) return null;
 
@@ -61,19 +76,7 @@ export function ConfirmDialog({
 }
 
 export function Modal({ open, title, onClose, children, footer }) {
-  useEffect(() => {
-    if (!open) return undefined;
-    function onKey(e) {
-      if (e.key === "Escape") onClose?.();
-    }
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [open, onClose]);
+  useModalLayer(open, onClose);
 
   if (!open) return null;
 

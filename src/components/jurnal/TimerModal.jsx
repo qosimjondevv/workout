@@ -1,19 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Play, Pause, X } from "lucide-react";
 import { Button } from "../../ui/button.jsx";
+import { useModalLayer } from "../../ui/dialog.jsx";
 import { TIMER_PRESETS } from "../../constants/timerPresets.js";
 import { useCountdownTimer } from "../../hooks/useCountdownTimer.js";
 
 export default function TimerModal({ onCancel, onComplete }) {
   const timer = useCountdownTimer(onComplete);
 
-  useEffect(() => {
-    function onKey(e) {
-      if (e.key === "Escape") onCancel?.();
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onCancel]);
+  useModalLayer(true, onCancel);
 
   const mm = String(Math.floor(timer.remaining / 60)).padStart(2, "0");
   const ss = String(timer.remaining % 60).padStart(2, "0");

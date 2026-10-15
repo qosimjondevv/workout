@@ -112,14 +112,14 @@ export default function JurnalPage() {
     wf.addExerciseToForm(meta.name, meta.unit, undefined, meta.muscleGroup);
   }
 
-  function handleCreateExercise(data) {
+  function addToCatalog(data) {
     const existing = findExerciseMeta(data.name, catalog);
-    if (existing) {
-      handleAddExercise(existing);
-      return;
-    }
-    saveExercise(makeExerciseDoc(data));
-    handleAddExercise(data);
+    if (!existing) saveExercise(makeExerciseDoc(data));
+    return existing ?? data;
+  }
+
+  function handleCreateExercise(data) {
+    handleAddExercise(addToCatalog(data));
   }
 
   function handleStartTemplate(template) {
@@ -189,6 +189,7 @@ export default function JurnalPage() {
         templates={templates}
         catalog={catalog}
         currentExercises={form.exercises}
+        onCreateExercise={addToCatalog}
         onSave={handleSaveTemplate}
         onDelete={removeTemplate}
       />

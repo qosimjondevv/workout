@@ -20,8 +20,8 @@ import { cn } from "../../utils/cn.js";
 import { muscleGroupLabel } from "../../constants/muscleGroups.js";
 import { exerciseKey, findExerciseMeta, searchExercises } from "../../utils/catalog.js";
 import { MAX_GOAL_SETS, normalizeGoalSets, normalizeUnit } from "../../utils/workout.js";
+import NewExerciseSheet from "./NewExerciseSheet.jsx";
 
-const CATALOG_SEARCH_FROM = 12;
 const DEFAULT_SETS = 3;
 
 function toItem(e) {
@@ -144,16 +144,27 @@ function ItemRow({ item, index, count, onChange, onMove, onRemove }) {
   );
 }
 
-function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }) {
+function TemplateEditor({
+  initial,
+  catalog,
+  currentExercises,
+  onCreateExercise,
+  onSave,
+  onCancel,
+}) {
   const [draft, setDraft] = useState(initial);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
 
+  const [createName, setCreateName] = useState(null);
+
   const selectedKeys = new Set(draft.items.map((i) => i.key));
-  const visibleCatalog =
-    catalog.length > CATALOG_SEARCH_FROM && query.trim()
-      ? searchExercises(catalog, query, catalog.length)
-      : catalog;
+  const trimmed = query.trim();
+  const visibleCatalog = trimmed ? searchExercises(catalog, trimmed, catalog.length) : catalog;
+  const canCreate =
+    trimmed &&
+    !selectedKeys.has(exerciseKey(trimmed)) &&
+    !catalog.some((c) => exerciseKey(c.name) === exerciseKey(trimmed));
 
   function patch(update) {
     setDraft((d) => ({ ...d, ...update }));
@@ -168,6 +179,17 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
         ? d.items.filter((i) => i.key !== key)
         : [...d.items, toItem(entry)],
     }));
+    setError("");
+  }
+
+  function addCreated(data) {
+    onCreateExercise(data);
+    const key = exerciseKey(data.name);
+    setDraft((d) =>
+      d.items.some((i) => i.key === key) ? d : { ...d, items: [...d.items, toItem(data)] },
+    );
+    setCreateName(null);
+    setQuery("");
     setError("");
   }
 
@@ -266,25 +288,44 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
       <Step
         number={2}
         title={`Mashqlarni tanlang${draft.items.length ? ` · ${draft.items.length} ta` : ""}`}
-        hint="Bosib qo'shing, qayta bossangiz olib tashlanadi."
+        hint="Ro'yxatdan bosib qo'shing yoki yangi mashq nomini yozing."
       >
-        <Button variant="secondary" size="sm" onClick={fillFromCurrent} className="mb-2">
-          <Wand2 size={13} /> Jurnaldagi mashqlarni olish
-        </Button>
+        <div className="flex flex-wrap gap-2 mb-2">
+          <Button variant="secondary" size="sm" onClick={() => setCreateName(trimmed)}>
+            <Plus size={13} /> Yangi mashq
+          </Button>
+          <Button variant="secondary" size="sm" onClick={fillFromCurrent}>
+            <Wand2 size={13} /> Jurnaldagi mashqlarni olish
+          </Button>
+        </div>
 
-        {catalog.length > CATALOG_SEARCH_FROM && (
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Qidirish..."
-            className="h-8 text-xs mb-2"
-          />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && canCreate && setCreateName(trimmed)}
+          placeholder="Qidirish yoki yangi mashq nomi..."
+          className="h-9 text-[13px] mb-2"
+        />
+
+        {canCreate && (
+          <button
+            type="button"
+            onClick={() => setCreateName(trimmed)}
+            className="w-full flex items-center gap-2 px-3 py-2 mb-2 text-left rounded-md border border-dashed border-brand-accent/50 bg-brand-accent/5 cursor-pointer hover:bg-brand-accent/10"
+          >
+            <Plus size={14} className="text-brand-accent shrink-0" />
+            <span className="text-[13px] text-brand-text truncate">
+              «{trimmed}» — <span className="text-brand-accent">yangi mashq qo'shish</span>
+            </span>
+          </button>
         )}
 
         {catalog.length === 0 ? (
           <div className="text-[12px] text-brand-muted py-2">
-            Katalog bo'sh — mashqlar Jurnal'da qo'shilganda shu yerda chiqadi.
+            Katalog hali bo'sh — «Yangi mashq» tugmasi bilan birinchisini qo'shing.
           </div>
+        ) : visibleCatalog.length === 0 ? (
+          <div className="text-[12px] text-brand-muted py-1">Katalogda topilmadi.</div>
         ) : (
           <div className="flex flex-wrap gap-1.5">
             {visibleCatalog.map((c) => {
@@ -334,6 +375,14 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
 
       {error && <div className="text-brand-accent2 text-xs mb-2">{error}</div>}
 
+      {createName !== null && (
+        <NewExerciseSheet
+          initialName={createName}
+          onClose={() => setCreateName(null)}
+          onCreate={addCreated}
+        />
+      )}
+
       <Button onClick={save} className="w-full font-display uppercase tracking-wide text-sm">
         <Save size={15} /> {draft.id ? "O'zgarishlarni saqlash" : "Saqlash"}
       </Button>
@@ -347,6 +396,7 @@ export default function TemplateManager({
   templates,
   catalog,
   currentExercises,
+  onCreateExercise,
   onSave,
   onDelete,
 }) {
@@ -373,6 +423,7 @@ export default function TemplateManager({
           initial={editing}
           catalog={catalog}
           currentExercises={currentExercises}
+          onCreateExercise={onCreateExercise}
           onCancel={() => setEditing(null)}
           onSave={(data) => {
             onSave(data);
