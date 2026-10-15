@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { todayISO } from "../utils/date.js";
-import { useMeasurements } from "../context/collections.jsx";
+import { useMeasurements, useWorkouts } from "../context/collections.jsx";
+import { latestBodyWeight } from "../utils/metrics.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
+import { validateMeasurement } from "../utils/catalog.js";
 
 function emptyValues() {
   const v = {};
@@ -12,7 +14,12 @@ function emptyValues() {
 }
 
 export function useMeasurementForm() {
-  const { save } = useMeasurements();
+  const { items: measurements, save } = useMeasurements();
+  const { items: workouts } = useWorkouts();
+  const lastWeight = useMemo(
+    () => latestBodyWeight(workouts, measurements),
+    [workouts, measurements],
+  );
   const [date, setDate] = useState(todayISO);
   const [values, setValues] = useState(emptyValues);
   const [error, setError] = useState("");
@@ -22,9 +29,9 @@ export function useMeasurementForm() {
   }
 
   function submit() {
-    const hasAny = Object.values(values).some((v) => String(v).trim() !== "");
-    if (!hasAny) {
-      setError("Kamida bitta o'lchovni kiriting");
+    const problem = validateMeasurement(values);
+    if (problem) {
+      setError(problem);
       return false;
     }
     setError("");
@@ -33,5 +40,5 @@ export function useMeasurementForm() {
     return true;
   }
 
-  return { date, setDate, values, setValue, error, submit };
+  return { date, setDate, values, setValue, error, submit, lastWeight };
 }

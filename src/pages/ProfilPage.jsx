@@ -25,6 +25,7 @@ import {
 } from "../utils/export.js";
 import { downloadText } from "../utils/download.js";
 import { todayISO } from "../utils/date.js";
+import { latestBodyWeight } from "../utils/metrics.js";
 import { DEFAULT_MUSCLE_GROUP } from "../constants/muscleGroups.js";
 import { normalizeRestSeconds } from "../constants/restPresets.js";
 import { Card, CardTitle } from "../ui/card.jsx";
@@ -143,9 +144,7 @@ export default function ProfilPage() {
     );
   }
 
-  const lastWeight = [...workouts]
-    .filter((w) => w.bodyWeight != null)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))[0]?.bodyWeight;
+  const lastWeight = latestBodyWeight(workouts, measurements);
 
   return (
     <div>

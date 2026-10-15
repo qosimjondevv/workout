@@ -1,10 +1,16 @@
 import { useMemo, useState } from "react";
-import { useWorkouts } from "../context/collections.jsx";
+import { useMeasurements, useWorkouts } from "../context/collections.jsx";
 import { diffDays, fmt, todayISO } from "../utils/date.js";
-import { computeStreaks, exerciseStats, workoutVolume } from "../utils/metrics.js";
+import {
+  bodyWeightSeries,
+  computeStreaks,
+  exerciseStats,
+  workoutVolume,
+} from "../utils/metrics.js";
 
 export function useAnalytics() {
   const { items: workouts, loading } = useWorkouts();
+  const { items: measurements } = useMeasurements();
   const [requestedExercise, setSelectedExercise] = useState("");
 
   const allExerciseNames = useMemo(() => {
@@ -42,11 +48,11 @@ export function useAnalytics() {
 
   const bodyWeightData = useMemo(
     () =>
-      [...workouts]
-        .filter((w) => w.bodyWeight != null && Number.isFinite(Number(w.bodyWeight)))
-        .sort((a, b) => (a.date > b.date ? 1 : -1))
-        .map((w) => ({ date: fmt(w.date), weight: Number(w.bodyWeight) })),
-    [workouts],
+      bodyWeightSeries(workouts, measurements).map((p) => ({
+        date: fmt(p.date),
+        weight: p.weight,
+      })),
+    [workouts, measurements],
   );
 
   const stats = useMemo(() => {

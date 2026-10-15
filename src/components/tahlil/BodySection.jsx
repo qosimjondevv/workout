@@ -10,6 +10,7 @@ export default function BodySection({ form, measurements, photos, onPhotoUploade
       <MeasurementForm
         date={form.date}
         values={form.values}
+        lastWeight={form.lastWeight}
         onDateChange={form.setDate}
         onValueChange={form.setValue}
         error={form.error}

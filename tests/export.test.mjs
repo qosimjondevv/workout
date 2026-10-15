@@ -69,10 +69,12 @@ assert.equal(rows[3][12], "", "izoh faqat birinchi setda");
 assert.equal(rows[4][10], 60, "soniya ustuni");
 assert.equal(rows[4][11], null, "soniyalik mashqda hajm yo'q");
 
-const mRows = measurementsCsvRows([{ date: "2026-10-01", values: { bel: 80 } }]);
-assert.equal(mRows[0][1], "Bel (sm)");
-assert.equal(mRows[1][1], 80);
-assert.equal(mRows[1][2], null);
+const mRows = measurementsCsvRows([{ date: "2026-10-01", values: { vazn: 78.5, bel: 80 } }]);
+assert.equal(mRows[0][1], "Tana vazni (kg)", "vazn kg bilan");
+assert.equal(mRows[0][2], "Bel (sm)", "aylana sm bilan");
+assert.equal(mRows[1][1], 78.5);
+assert.equal(mRows[1][2], 80);
+assert.equal(mRows[1][3], null);
 
 const ts = { toDate: () => new Date("2026-10-14T10:00:00Z") };
 const backup = buildBackup(

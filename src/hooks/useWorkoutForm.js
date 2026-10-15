@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { todayISO } from "../utils/date.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { useWorkouts, useExercises } from "../context/collections.jsx";
+import { useExercises, useMeasurements, useWorkouts } from "../context/collections.jsx";
+import { latestBodyWeight } from "../utils/metrics.js";
 import { exerciseKey, findExerciseMeta, makeExerciseDoc } from "../utils/catalog.js";
 import {
   blankSet,
@@ -50,6 +51,7 @@ export function useWorkoutForm() {
   const uid = user?.uid ?? null;
   const { items: workouts, save: saveWorkout } = useWorkouts();
   const { items: catalog, save: saveExercise } = useExercises();
+  const { items: measurements } = useMeasurements();
 
   const [initial] = useState(() => initialState(uid));
   const [form, setForm] = useState(initial.form);
@@ -83,11 +85,9 @@ export function useWorkoutForm() {
   }, [writeDraft]);
 
   const lastBodyWeight = useMemo(() => {
-    const latest = [...workouts]
-      .filter((w) => w.bodyWeight != null && Number(w.bodyWeight) > 0)
-      .sort((a, b) => (a.date < b.date ? 1 : -1))[0];
-    return latest ? String(latest.bodyWeight) : "";
-  }, [workouts]);
+    const weight = latestBodyWeight(workouts, measurements);
+    return weight === null ? "" : String(weight);
+  }, [workouts, measurements]);
 
   const bodyWeightAuto = !form.id && !form.bodyWeightTouched && lastBodyWeight !== "";
   const bodyWeight = bodyWeightAuto ? lastBodyWeight : form.bodyWeight;

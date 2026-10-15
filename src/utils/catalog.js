@@ -113,3 +113,13 @@ export function toStoredMeasurement(entry) {
   });
   return { id: entry.id || uid(), date: entry.date, values };
 }
+
+export function validateMeasurement(values) {
+  const filled = MEASUREMENT_FIELDS.filter((f) => toNum(values?.[f.key]) !== null);
+  if (!filled.length) return "Kamida bitta o'lchovni kiriting";
+  const bad = filled.find((f) => {
+    const n = toNum(values[f.key]);
+    return n < f.min || n > f.max;
+  });
+  return bad ? `${bad.label} ${bad.min}–${bad.max} ${bad.unit} oralig'ida bo'lsin` : "";
+}

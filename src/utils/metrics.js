@@ -1,6 +1,7 @@
 import { diffDays, isoWeekKey, monthKey, shortDate, todayISO } from "./date.js";
 import { isFilledSet, normalizeUnit } from "./workout.js";
 import { round, toNum } from "./num.js";
+import { BODY_WEIGHT_KEY } from "../constants/measurementFields.js";
 
 export function setVolume(set) {
   const w = Number(set?.weight);
@@ -220,4 +221,22 @@ export function formSummary(form) {
     doneSets,
     volume: Math.round(volume),
   };
+}
+
+export function bodyWeightSeries(workouts, measurements) {
+  const byDate = new Map();
+  const put = (date, value) => {
+    const n = toNum(value);
+    if (date && n !== null && n > 0) byDate.set(date, n);
+  };
+  (workouts ?? []).forEach((w) => put(w.date, w.bodyWeight));
+  (measurements ?? []).forEach((m) => put(m.date, m.values?.[BODY_WEIGHT_KEY]));
+  return Array.from(byDate, ([date, weight]) => ({ date, weight })).sort((a, b) =>
+    a.date < b.date ? -1 : a.date > b.date ? 1 : 0,
+  );
+}
+
+export function latestBodyWeight(workouts, measurements) {
+  const series = bodyWeightSeries(workouts, measurements);
+  return series.length ? series[series.length - 1].weight : null;
 }

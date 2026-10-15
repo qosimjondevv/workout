@@ -27,7 +27,10 @@ function MeasurementRow({ entry, onDelete }) {
         {filled.length === 0 && <span className="text-xs text-brand-muted">O'lcham yo'q</span>}
         {filled.map((f) => (
           <span key={f.key} className="text-xs text-brand-muted">
-            {f.label}: <span className="text-brand-text">{values[f.key]} sm</span>
+            {f.label}:{" "}
+            <span className="text-brand-text">
+              {values[f.key]} {f.unit}
+            </span>
           </span>
         ))}
       </div>

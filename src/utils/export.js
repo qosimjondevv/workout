@@ -105,7 +105,7 @@ export function workoutsCsvRows(workouts) {
 }
 
 export function measurementsCsvRows(measurements) {
-  const rows = [["Sana", ...MEASUREMENT_FIELDS.map((f) => `${f.label} (sm)`)]];
+  const rows = [["Sana", ...MEASUREMENT_FIELDS.map((f) => `${f.label} (${f.unit})`)]];
   byDate(measurements).forEach((m) => {
     rows.push([m.date ?? "", ...MEASUREMENT_FIELDS.map((f) => numOrNull(m.values?.[f.key]))]);
   });

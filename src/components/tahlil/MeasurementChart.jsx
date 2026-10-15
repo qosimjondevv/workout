@@ -15,6 +15,7 @@ import TrendSummary from "./TrendSummary.jsx";
 import { computeTrend } from "../../utils/trend.js";
 import { AXIS_TICK, CHART_COLORS, PERIODS, TOOLTIP_PROPS } from "../../constants/chartTheme.js";
 import { SegmentedControl } from "../../ui/segmented.jsx";
+import { measurementField } from "../../constants/measurementFields.js";
 
 export default function MeasurementChart({
   fields,
@@ -24,6 +25,7 @@ export default function MeasurementChart({
   onPeriodChange,
   data,
 }) {
+  const field = measurementField(selectedField);
   const trend = computeTrend(data, "value");
   const lineColor = trend?.direction === "down" ? CHART_COLORS.accent2 : CHART_COLORS.accent;
 
@@ -51,13 +53,13 @@ export default function MeasurementChart({
 
       {data.length > 0 ? (
         <>
-          <TrendSummary trend={trend} unit="sm" />
+          <TrendSummary trend={trend} unit={field.unit} />
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={data}>
               <CartesianGrid stroke={CHART_COLORS.line} strokeDasharray="3 3" />
               <XAxis dataKey="period" tick={AXIS_TICK} />
               <YAxis tick={AXIS_TICK} domain={["auto", "auto"]} />
-              <Tooltip {...TOOLTIP_PROPS} formatter={(v) => [`${v} sm`, "O'lcham"]} />
+              <Tooltip {...TOOLTIP_PROPS} formatter={(v) => [`${v} ${field.unit}`, field.label]} />
               <Line
                 type="monotone"
                 dataKey="value"
