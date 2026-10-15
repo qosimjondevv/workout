@@ -10,6 +10,9 @@ import ExerciseBlock from "./ExerciseBlock.jsx";
 import ExercisePicker from "./ExercisePicker.jsx";
 import WorkoutClock from "./WorkoutClock.jsx";
 
+const FIELD_LABEL =
+  "flex items-center justify-between h-4 mb-1 text-[11px] leading-none text-brand-muted";
+
 export default function WorkoutForm({
   wf,
   insights,
@@ -77,21 +80,22 @@ export default function WorkoutForm({
 
       <div className="flex gap-2 mb-2.5">
         <div className="flex-1 min-w-0">
-          <label className="text-[11px] text-brand-muted">Sana</label>
-          <DateField value={form.date} onChange={wf.onDateChange} className="mt-1" />
+          <span className={FIELD_LABEL}>Sana</span>
+          <DateField value={form.date} onChange={wf.onDateChange} />
         </div>
         <div className="w-[110px]">
-          <label className="text-[11px] text-brand-muted flex justify-between">
+          <label htmlFor="body-weight" className={FIELD_LABEL}>
             Vazn (kg)
-            {wf.bodyWeightAuto && <span className="text-[10px]">oxirgi</span>}
+            {wf.bodyWeightAuto && <span className="text-[10px] opacity-80">oxirgi</span>}
           </label>
           <Input
+            id="body-weight"
             type="number"
             inputMode="decimal"
             placeholder="0.0"
             value={wf.bodyWeight}
             onChange={(e) => wf.setBodyWeight(e.target.value)}
-            className={cn("mt-1", wf.bodyWeightAuto && "text-brand-muted")}
+            className={cn(wf.bodyWeightAuto && "text-brand-muted")}
           />
         </div>
       </div>
