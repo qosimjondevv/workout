@@ -4,17 +4,6 @@ import { useSync } from "../../context/SyncContext.jsx";
 
 const EMPTY = [];
 
-// Har kolleksiya bir xil ishlaydi: real vaqt obunasi + saqlash + o'chirish.
-// Shuning uchun mantiq bir marta yoziladi, domen konteksti faqat servis
-// funksiyalarini beradi.
-//
-// MUHIM 1: yozuvlar natijasini KUTMAYMIZ. Firestore mahalliy keshni darhol
-// yangilaydi va onSnapshot shu zahoti ishlaydi, ya'ni ekran bir zumda
-// yangilanadi. Server bilan sinxronizatsiya fonda ketadi.
-//
-// MUHIM 2: holat uid bilan BIRGA saqlanadi. Shu sabab effect ichida
-// setState chaqirish shart emas (kaskadli render bo'lmaydi) va foydalanuvchi
-// almashganda oldingi akkauntning ro'yxati bir lahzaga ko'rinib qolmaydi.
 export function useCollectionStore({
   name,
   subscribe,

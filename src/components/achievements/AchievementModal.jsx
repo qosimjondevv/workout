@@ -5,8 +5,6 @@ import AchievementIcon from "./AchievementIcon.jsx";
 import { TIER_STYLES } from "../../constants/achievements.js";
 import { cn } from "../../utils/cn.js";
 
-// Yangi yutuq ochilganda chiqadi. Bir vaqtda bir nechta ochilsa, qolgani
-// "yana N ta" bo'lib ko'rsatiladi va tugmani bosgan sari keyingisi keladi.
 export default function AchievementModal({ pending, onClose }) {
   if (!pending) return null;
 
@@ -28,14 +26,10 @@ export default function AchievementModal({ pending, onClose }) {
         <div className="font-display text-[18px] uppercase tracking-wide text-brand-text">
           {achievement.label}
         </div>
-        <div className="text-[13px] text-brand-muted mt-1">
-          {achievement.description}
-        </div>
+        <div className="text-[13px] text-brand-muted mt-1">{achievement.description}</div>
 
         {remaining > 0 && (
-          <div className="text-[11px] text-brand-muted mt-3">
-            Yana {remaining} ta yutuq ochildi
-          </div>
+          <div className="text-[11px] text-brand-muted mt-3">Yana {remaining} ta yutuq ochildi</div>
         )}
 
         <Button

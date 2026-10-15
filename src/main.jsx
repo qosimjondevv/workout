@@ -4,11 +4,10 @@ import App from "./App.jsx";
 import { initPwa } from "./utils/pwa.js";
 import "./styles.css";
 
-// React'dan OLDIN: "o'rnatish" hodisasi sahifa yuklanishi bilan kelishi mumkin.
 initPwa();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

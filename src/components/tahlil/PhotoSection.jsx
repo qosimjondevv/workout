@@ -10,7 +10,10 @@ import { PHOTO_KINDS } from "../../constants/photoKinds.js";
 import { diffDays, fmt } from "../../utils/date.js";
 import PhotoUploadSheet from "./PhotoUploadSheet.jsx";
 
-const FILTERS = [{ value: "all", label: "Hammasi" }, ...PHOTO_KINDS.map((k) => ({ value: k.key, label: k.label }))];
+const FILTERS = [
+  { value: "all", label: "Hammasi" },
+  ...PHOTO_KINDS.map((k) => ({ value: k.key, label: k.label })),
+];
 const kindLabel = (key) => PHOTO_KINDS.find((k) => k.key === key)?.label ?? "";
 
 function Thumb({ photo, onOpen }) {
@@ -21,7 +24,13 @@ function Thumb({ photo, onOpen }) {
       className="relative aspect-[3/4] rounded-md overflow-hidden bg-brand-surface2 border-none p-0 cursor-pointer"
       aria-label={`${fmt(photo.date)}, ${kindLabel(photo.kind)}`}
     >
-      <img src={photo.url} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+      <img
+        src={photo.url}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover"
+      />
       <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent text-[10px] text-white px-1.5 pt-3 pb-1 text-left">
         {fmt(photo.date)}
       </span>
@@ -29,8 +38,6 @@ function Thumb({ photo, onOpen }) {
   );
 }
 
-// "Oldin / Keyin": bir xil rakursdagi ikki surat yonma-yon. Standart holatda
-// eng eskisi va eng yangisi, xohlagan juftlikni tanlash mumkin.
 function PhotoCompare({ photos }) {
   const byDateAsc = [...photos].reverse();
   const [beforeId, setBeforeId] = useState(byDateAsc[0].id);
@@ -85,7 +92,11 @@ function PhotoViewer({ photo, onClose, onDelete }) {
   const [confirm, setConfirm] = useState(false);
   return (
     <Modal open title={`${fmt(photo.date)} · ${kindLabel(photo.kind)}`} onClose={onClose}>
-      <img src={photo.url} alt="" className="w-full max-h-[60vh] object-contain rounded-md bg-brand-bg" />
+      <img
+        src={photo.url}
+        alt=""
+        className="w-full max-h-[60vh] object-contain rounded-md bg-brand-bg"
+      />
       {photo.note && <div className="text-[12px] text-brand-muted mt-2">{photo.note}</div>}
       <Button variant="destructive" size="sm" onClick={() => setConfirm(true)} className="mt-3">
         <Trash2 size={13} /> O'chirish
@@ -107,13 +118,12 @@ function PhotoViewer({ photo, onClose, onDelete }) {
 
 export default function PhotoSection({ photos, onUploaded }) {
   const inputRef = useRef(null);
-  // { file, url } — tanlangan, hali yuklanmagan surat
   const [pending, setPending] = useState(null);
   const [viewing, setViewing] = useState(null);
 
   function pickFile(e) {
     const file = e.target.files?.[0];
-    e.target.value = ""; // o'sha faylni qayta tanlash ham ishlashi uchun
+    e.target.value = "";
     if (!file) return;
     photos.clearUploadError();
     setPending({ file, url: URL.createObjectURL(file) });
@@ -143,21 +153,15 @@ export default function PhotoSection({ photos, onUploaded }) {
         <Button size="sm" variant="secondary" onClick={() => inputRef.current?.click()}>
           <ImagePlus size={14} /> Qo'shish
         </Button>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          onChange={pickFile}
-          className="hidden"
-        />
+        <input ref={inputRef} type="file" accept="image/*" onChange={pickFile} className="hidden" />
       </CardHeader>
 
       {photos.loading ? (
         <SkeletonList count={1} />
       ) : photos.all.length === 0 ? (
         <div className="text-[12px] text-brand-muted text-center py-4 leading-relaxed">
-          Har 2-4 haftada bir xil joyda, bir xil yorug'likda suratga tushing —
-          o'zgarish raqamlardan ko'ra yaqqolroq ko'rinadi.
+          Har 2-4 haftada bir xil joyda, bir xil yorug'likda suratga tushing — o'zgarish raqamlardan
+          ko'ra yaqqolroq ko'rinadi.
         </div>
       ) : (
         <>
@@ -180,7 +184,6 @@ export default function PhotoSection({ photos, onUploaded }) {
             </div>
           )}
           {comparable ? (
-            // Rakurs almashganda taqqoslash holati yangidan boshlanadi.
             <PhotoCompare key={photos.kind} photos={photos.visible} />
           ) : (
             photos.kind === "all" &&

@@ -3,16 +3,20 @@ import { Download, FileJson, FileSpreadsheet } from "lucide-react";
 import { Card, CardTitle } from "../../ui/card.jsx";
 import { Button } from "../../ui/button.jsx";
 
-// Ma'lumotni yuklab olish. Uchala tugma ham faqat QURILMADAGI (keshdagi)
-// ma'lumotdan fayl yasaydi — internet shart emas.
-export default function DataExportCard({ counts, onExportJson, onExportWorkoutsCsv, onExportMeasurementsCsv }) {
+export default function DataExportCard({
+  counts,
+  onExportJson,
+  onExportWorkoutsCsv,
+  onExportMeasurementsCsv,
+}) {
   return (
     <Card className="mb-4">
       <CardTitle className="flex items-center gap-1.5 mb-1 normal-case text-sm">
         <Download size={15} /> Ma'lumotlarni yuklab olish
       </CardTitle>
       <div className="text-[11px] text-brand-muted mb-3">
-        {counts.workouts} mashg'ulot · {counts.measurements} o'lchov · {counts.templates} kunlik mashq
+        {counts.workouts} mashg'ulot · {counts.measurements} o'lchov · {counts.templates} kunlik
+        mashq
       </div>
 
       <div className="flex flex-col gap-2">

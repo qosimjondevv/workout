@@ -1,20 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useCountdownTimer } from "./useCountdownTimer.js";
-import {
-  beep,
-  requestNotificationPermission,
-  showNotification,
-  vibrate,
-} from "../utils/notify.js";
+import { beep, requestNotificationPermission, showNotification, vibrate } from "../utils/notify.js";
 
-// Setlar orasidagi dam olish taymeri.
-//
-// Tugaganda uchta signal beriladi: tovush, tebranish va brauzer bildirishnomasi.
-// Telefon cho'ntakda bo'lsa tebranish, ekran o'chgan bo'lsa bildirishnoma
-// ishlaydi — biri ishlamasa boshqasi yetib boradi.
-//
-// Natija IKKI qism: `state` har soniyada o'zgaradi, `actions` esa barqaror.
-// Ular alohida kontekstlarga tushadi (RestTimerContext.jsx ga qarang).
 export function useRestTimer(defaultSeconds = 90) {
   const timer = useCountdownTimer(() => {
     beep();
@@ -25,7 +12,6 @@ export function useRestTimer(defaultSeconds = 90) {
 
   const start = useCallback(
     (seconds) => {
-      // Ruxsat foydalanuvchi harakatidan keyin so'raladi — brauzer talabi.
       requestNotificationPermission();
       startTimer(seconds ?? defaultSeconds);
     },

@@ -1,9 +1,3 @@
-// Yutuqlar ro'yxati MA'LUMOT sifatida yozilgan: har biri bitta o'lchov va
-// bitta chegara. Shu sabab tekshirish mantig'i bitta funksiyaga sig'adi va
-// yangi yutuq qo'shish uchun kod emas, faqat shu ro'yxat o'zgaradi.
-//
-// metric: "workouts" | "streak" | "pr" | "volume"
-// tier:   ko'rinish uchun (bronza / kumush / oltin)
 export const ACHIEVEMENTS = [
   {
     key: "first-workout",

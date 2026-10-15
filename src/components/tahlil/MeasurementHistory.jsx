@@ -7,19 +7,13 @@ import { fmt } from "../../utils/date.js";
 
 function MeasurementRow({ entry, onDelete }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
-  // Hujjatda `values` bo'lmasa (buzilgan yoki qo'lda tahrirlangan yozuv)
-  // butun ro'yxat qulab tushmasligi kerak.
   const values = entry.values ?? {};
-  const filled = MEASUREMENT_FIELDS.filter(
-    (f) => values[f.key] !== "" && values[f.key] != null,
-  );
+  const filled = MEASUREMENT_FIELDS.filter((f) => values[f.key] !== "" && values[f.key] != null);
 
   return (
     <div className="bg-brand-surface2 rounded-md p-3 mb-2">
       <div className="flex justify-between items-center mb-1">
-        <span className="text-[13px] font-semibold text-brand-text">
-          {fmt(entry.date)}
-        </span>
+        <span className="text-[13px] font-semibold text-brand-text">{fmt(entry.date)}</span>
         <button
           onClick={() => setConfirmOpen(true)}
           title="O'chirish"
@@ -30,13 +24,10 @@ function MeasurementRow({ entry, onDelete }) {
         </button>
       </div>
       <div className="flex flex-wrap gap-x-3 gap-y-1">
-        {filled.length === 0 && (
-          <span className="text-xs text-brand-muted">O'lcham yo'q</span>
-        )}
+        {filled.length === 0 && <span className="text-xs text-brand-muted">O'lcham yo'q</span>}
         {filled.map((f) => (
           <span key={f.key} className="text-xs text-brand-muted">
-            {f.label}:{" "}
-            <span className="text-brand-text">{values[f.key]} sm</span>
+            {f.label}: <span className="text-brand-text">{values[f.key]} sm</span>
           </span>
         ))}
       </div>
@@ -66,9 +57,7 @@ export default function MeasurementHistory({ items, onDelete }) {
           Hali o'lcham kiritilmagan.
         </div>
       ) : (
-        items.map((entry) => (
-          <MeasurementRow key={entry.id} entry={entry} onDelete={onDelete} />
-        ))
+        items.map((entry) => <MeasurementRow key={entry.id} entry={entry} onDelete={onDelete} />)
       )}
     </Card>
   );

@@ -2,14 +2,11 @@ import { useMemo, useState } from "react";
 import { useWorkouts } from "../context/collections.jsx";
 import { addMonths, monthMatrix, monthLabel, todayISO } from "../utils/date.js";
 
-// Mashg'ulot kalendari: oy bo'ylab yurish, mashq bo'lgan kunlarni belgilash
-// va kun tanlanganda o'sha kundagi yozuvni ochish.
 export function useWorkoutCalendar() {
   const { items: workouts, loading } = useWorkouts();
   const [anchor, setAnchor] = useState(() => todayISO());
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // Bir kunda bir nechta yozuv bo'lishi mumkin, shuning uchun qiymat massiv.
   const byDate = useMemo(() => {
     const map = new Map();
     workouts.forEach((w) => {

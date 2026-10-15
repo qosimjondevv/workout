@@ -1,7 +1,3 @@
-// localStorage o'ramlari. Xususiy (inkognito) rejimda, to'lib qolganda yoki
-// brauzer saytga xotira bermaganda localStorage XATO tashlaydi — ilova bundan
-// yiqilmasligi kerak, shunchaki qoralama saqlanmay qoladi.
-
 export function readStorage(key) {
   try {
     return window.localStorage.getItem(key);
@@ -22,7 +18,5 @@ export function writeStorage(key, value) {
 export function removeStorage(key) {
   try {
     window.localStorage.removeItem(key);
-  } catch {
-    // e'tiborsiz
-  }
+  } catch {}
 }

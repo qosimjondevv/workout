@@ -1,10 +1,3 @@
-// PWA: service worker va "ilovani o'rnatish".
-//
-// `beforeinstallprompt` sahifa yuklanishi bilan, foydalanuvchi Profil'ga
-// kirishidan ANCHA OLDIN kelishi mumkin. Shuning uchun u modul darajasida
-// (main.jsx dan chaqiriladigan initPwa) ushlab olinadi va kerak bo'lganda
-// React'ga useSyncExternalStore orqali beriladi.
-
 let deferredPrompt = null;
 let installedNow = false;
 const listeners = new Set();
@@ -20,8 +13,6 @@ function isStandalone() {
   );
 }
 
-// iPhone/iPad'da o'rnatish tizim oynasi yo'q — "Ulashish -> Bosh ekranga"
-// yo'riqnomasini ko'rsatish kerak. iPadOS o'zini Mac deb tanishtiradi.
 function isIos() {
   const ua = window.navigator.userAgent;
   return (
@@ -30,8 +21,6 @@ function isIos() {
   );
 }
 
-// "installed" | "available" | "ios" | "unavailable" — satr, ya'ni
-// useSyncExternalStore uchun barqaror qiymat.
 export function getInstallState() {
   if (installedNow || isStandalone()) return "installed";
   if (deferredPrompt) return "available";
@@ -64,7 +53,7 @@ export function initPwa() {
   if (typeof window === "undefined") return;
 
   window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault(); // brauzerning o'z banneri o'rniga Profil'dagi tugma
+    e.preventDefault();
     deferredPrompt = e;
     emit();
   });
@@ -75,8 +64,6 @@ export function initPwa() {
     emit();
   });
 
-  // Development'da service worker Vite'ning HMR'i bilan to'qnashadi va eski
-  // fayllarni keshdan berib, chalkashtiradi — faqat production build'da.
   if (import.meta.env.PROD && "serviceWorker" in navigator) {
     if (document.readyState === "complete") registerServiceWorker();
     else window.addEventListener("load", registerServiceWorker, { once: true });

@@ -28,15 +28,7 @@ import {
 } from "../../utils/catalog.js";
 import { WEEKDAY_SHORT } from "../../utils/date.js";
 
-// Tayyor kunlik mashqlar oynasi: ro'yxat <-> tahrirlash.
-//
-// Har kunlik mashq hafta kunlariga (DUSH ... YAK) biriktiriladi — Jurnal
-// sahifasida haftalik jadval shundan tuziladi.
-// Har mashq uchun REJA saqlanadi: nechta set va maqsad (masalan 4 × 8-10).
-// Dastur boshlanganda formada shuncha bo'sh set tayyor turadi, maqsad esa
-// input'da ko'rinadi. Mashqlar tartibini o'zgartirish mumkin.
-
-const CATALOG_SEARCH_FROM = 12; // shundan ko'p bo'lsa qidiruv maydoni chiqadi
+const CATALOG_SEARCH_FROM = 12;
 
 function toItem(e) {
   return {
@@ -101,7 +93,9 @@ function ItemRow({ item, index, count, onChange, onMove, onRemove }) {
         >
           <Minus size={11} />
         </button>
-        <span className="text-[12px] text-brand-text tabular-nums w-9 text-center">{item.sets} set</span>
+        <span className="text-[12px] text-brand-text tabular-nums w-9 text-center">
+          {item.sets} set
+        </span>
         <button
           type="button"
           onClick={() => onChange({ sets: Math.min(TEMPLATE_MAX_SETS, item.sets + 1) })}
@@ -186,8 +180,6 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
     });
   }
 
-  // Joriy formadagi mashqlarni QO'SHADI (bor bo'lganlari takrorlanmaydi).
-  // Set soni — formadagi setlar soni: bugungi mashg'ulot shablonga aylanadi.
   function fillFromCurrent() {
     const list = (currentExercises ?? []).filter((e) => String(e.name ?? "").trim());
     if (!list.length) {
@@ -370,7 +362,6 @@ export default function TemplateManager({
   onSave,
   onDelete,
 }) {
-  // null = ro'yxat ko'rinishi; obyekt = tahrirlash (id null bo'lsa yangi)
   const [editing, setEditing] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
 
@@ -395,7 +386,6 @@ export default function TemplateManager({
     >
       {editing ? (
         <TemplateEditor
-          // Har tahrirlash yangi holat bilan boshlanadi.
           key={editing.id ?? "new"}
           initial={editing}
           catalog={catalog}
@@ -420,10 +410,14 @@ export default function TemplateManager({
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[13px] font-semibold text-brand-text truncate">{t.name}</span>
+                  <span className="text-[13px] font-semibold text-brand-text truncate">
+                    {t.name}
+                  </span>
                   {normalizeTemplateDays(t.days).length > 0 && (
                     <span className="text-[9px] font-bold tracking-wide text-brand-accent shrink-0">
-                      {normalizeTemplateDays(t.days).map((d) => WEEKDAY_SHORT[d]).join(" · ")}
+                      {normalizeTemplateDays(t.days)
+                        .map((d) => WEEKDAY_SHORT[d])
+                        .join(" · ")}
                     </span>
                   )}
                 </div>

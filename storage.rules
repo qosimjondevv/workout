@@ -1,28 +1,18 @@
 rules_version = '2';
 
-// Firebase konsolida: Storage -> Rules -> shu matnni joylashtiring -> Publish
-//
-// Progress suratlar uchun. Firestore qoidalari bilan bir xil tamoyil:
-// har kim faqat o'z papkasiga tegadi.
 service firebase.storage {
   match /b/{bucket}/o {
     match /users/{userId}/photos/{photoId} {
       allow read: if request.auth != null && request.auth.uid == userId;
 
-      // Yuklash: faqat rasm va 8 MB gacha (ilova rasmni oldindan ~0.5 MB
-      // gacha kichraytiradi, bu chegara — himoya).
       allow create, update: if request.auth != null
                    && request.auth.uid == userId
                    && request.resource.size < 8 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
 
-      // O'chirish ALOHIDA: o'chirishda request.resource yo'q (null), shuning
-      // uchun hajm/tur tekshiruvi "write" ichida bo'lsa o'chirish doim rad
-      // etilardi.
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Boshqa hamma narsa yopiq.
     match /{allPaths=**} {
       allow read, write: if false;
     }

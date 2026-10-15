@@ -1,11 +1,7 @@
 import { useMemo, useState } from "react";
 import { useWorkouts } from "../context/collections.jsx";
 import { diffDays, fmt, todayISO } from "../utils/date.js";
-import {
-  computeStreaks,
-  exerciseStats,
-  workoutVolume,
-} from "../utils/metrics.js";
+import { computeStreaks, exerciseStats, workoutVolume } from "../utils/metrics.js";
 
 export function useAnalytics() {
   const { items: workouts, loading } = useWorkouts();
@@ -17,9 +13,6 @@ export function useAnalytics() {
     return Array.from(set).sort();
   }, [workouts]);
 
-  // Tanlangan mashq o'chirilgan yozuv bilan birga yo'qolsa, avtomatik
-  // ro'yxatdagi birinchisiga tushadi. Bu HOSILAVIY qiymat: useEffect bilan
-  // holatni keyinchalik "tuzatish" ortiqcha render bosqichini keltirardi.
   const selectedExercise =
     requestedExercise && allExerciseNames.includes(requestedExercise)
       ? requestedExercise
@@ -36,14 +29,10 @@ export function useAnalytics() {
   const exerciseChartData = useMemo(() => {
     if (!selectedExercise) return [];
     return [...workouts]
-      .filter((w) =>
-        (w.exercises ?? []).some((e) => e.name === selectedExercise),
-      )
+      .filter((w) => (w.exercises ?? []).some((e) => e.name === selectedExercise))
       .sort((a, b) => (a.date > b.date ? 1 : -1))
       .map((w) => {
-        const s = exerciseStats(
-          w.exercises.find((e) => e.name === selectedExercise),
-        );
+        const s = exerciseStats(w.exercises.find((e) => e.name === selectedExercise));
         return {
           date: fmt(w.date),
           value: s.unit === "seconds" ? s.bestTime : s.bestWeight,
@@ -63,7 +52,6 @@ export function useAnalytics() {
   const stats = useMemo(() => {
     const today = todayISO();
 
-    // "So'nggi 7 kun" = bugun + oldingi 6 kun. Kelajakdagi sanalar sanalmaydi.
     const last7 = workouts.filter((w) => {
       const d = diffDays(today, w.date);
       return d >= 0 && d < 7;
@@ -78,8 +66,7 @@ export function useAnalytics() {
         if (e.unit === "seconds") return;
         (e.sets ?? []).forEach((s) => {
           const wt = Number(s.weight);
-          if (Number.isFinite(wt) && wt > pr.weight)
-            pr = { name: e.name, weight: wt };
+          if (Number.isFinite(wt) && wt > pr.weight) pr = { name: e.name, weight: wt };
         });
       });
     });

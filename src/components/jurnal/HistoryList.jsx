@@ -14,18 +14,14 @@ export default function HistoryList({
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <div className="font-display text-[15px] uppercase text-brand-text">
-          Tarix
-        </div>
+        <div className="font-display text-[15px] uppercase text-brand-text">Tarix</div>
         <HistoryFilterBar value={historyFilter} onChange={onFilterChange} />
       </div>
 
       {loading && <SkeletonList count={3} />}
 
       {!loading && items.length === 0 && (
-        <div className="text-brand-muted text-[13px] text-center py-5">
-          Hali yozuv yo'q.
-        </div>
+        <div className="text-brand-muted text-[13px] text-center py-5">Hali yozuv yo'q.</div>
       )}
 
       {!loading &&

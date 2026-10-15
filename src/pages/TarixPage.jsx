@@ -6,8 +6,6 @@ import { useWorkoutHistory } from "../hooks/useWorkoutHistory.js";
 import HistoryList from "../components/jurnal/HistoryList.jsx";
 import { ConfirmDialog } from "../ui/dialog.jsx";
 
-// Mashg'ulotlar tarixi: ko'rish, tahrirlash va o'chirish uchun YAGONA joy.
-// (Ilgari Jurnal va Jadval sahifalarida bir xil ro'yxat takrorlanardi.)
 export default function TarixPage() {
   const navigate = useNavigate();
   const wf = useWorkoutFormContext();
@@ -21,8 +19,6 @@ export default function TarixPage() {
     window.scrollTo({ top: 0 });
   }
 
-  // Formada saqlanmagan BOSHQA mashg'ulot bo'lsa, uni jimgina almashtirib
-  // yubormaymiz — avval so'raymiz.
   function handleEdit(workout) {
     if (wf.isDirty && wf.form.id !== workout.id) {
       setPendingEdit(workout);
@@ -31,8 +27,6 @@ export default function TarixPage() {
     openInForm(workout);
   }
 
-  // Tahrirlanayotgan yozuv o'chirilsa forma ham tozalanadi: aks holda
-  // keyingi "Saqlash" o'chirilgan yozuvni qayta tiklab qo'yardi.
   function handleDelete(id) {
     if (wf.form.id === id) wf.resetForm();
     remove(id);

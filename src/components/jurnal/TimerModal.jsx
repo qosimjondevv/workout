@@ -51,17 +51,13 @@ export default function TimerModal({ onCancel, onComplete }) {
           </>
         ) : (
           <>
-            <div className="text-xs text-brand-muted mt-1 mb-1">
-              Mashq davom etmoqda
-            </div>
+            <div className="text-xs text-brand-muted mt-1 mb-1">Mashq davom etmoqda</div>
             <div className="font-display text-5xl font-bold text-brand-accent tabular-nums mb-6">
               {mm}:{ss}
             </div>
             <div className="flex gap-2 justify-center">
               {timer.remaining === 0 ? (
-                <div className="text-brand-accent text-sm font-semibold">
-                  Saqlanmoqda...
-                </div>
+                <div className="text-brand-accent text-sm font-semibold">Saqlanmoqda...</div>
               ) : timer.running ? (
                 <Button variant="secondary" onClick={timer.pause}>
                   <Pause size={16} /> Pauza

@@ -1,24 +1,10 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  emptyProfile,
-  saveProfile,
-  subscribeProfile,
-} from "../services/profileService.js";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { emptyProfile, saveProfile, subscribeProfile } from "../services/profileService.js";
 import { useAuth } from "./AuthContext.jsx";
 import { useSync } from "./SyncContext.jsx";
 
 const ProfileContext = createContext(null);
 
-// Profil kolleksiya emas, users/{uid} hujjatining o'zi — shuning uchun
-// umumiy fabrikadan foydalanmaydi. Holat uid bilan birga saqlanadi, ya'ni
-// effect ichida setState chaqirilmaydi (useCollectionStore bilan bir xil usul).
 export function ProfileProvider({ children }) {
   const { user } = useAuth();
   const { run } = useSync();
@@ -57,14 +43,11 @@ export function ProfileProvider({ children }) {
     [matches, state.profile, uid, update],
   );
 
-  return (
-    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
-  );
+  return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }
 
 export function useProfile() {
   const ctx = useContext(ProfileContext);
-  if (!ctx)
-    throw new Error("useProfile() faqat <ProfileProvider> ichida ishlaydi");
+  if (!ctx) throw new Error("useProfile() faqat <ProfileProvider> ichida ishlaydi");
   return ctx;
 }

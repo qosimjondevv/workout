@@ -4,8 +4,6 @@ import { Card } from "../../ui/card.jsx";
 import { cn } from "../../utils/cn.js";
 import { WEEKDAY_LABELS } from "../../utils/date.js";
 
-// Mashg'ulot kalendari: mashq bo'lgan kunlar salatiy nuqta bilan belgilanadi,
-// bugungi kun halqa bilan ajratiladi. Kun bosilsa o'sha kundagi yozuv ochiladi.
 export default function WorkoutCalendar({
   label,
   weeks,
@@ -72,9 +70,7 @@ export default function WorkoutCalendar({
                   <span className={cn(!count && "text-brand-muted")}>
                     {Number(day.iso.slice(8, 10))}
                   </span>
-                  {count > 0 && (
-                    <span className="w-1 h-1 rounded-full bg-brand-accent" />
-                  )}
+                  {count > 0 && <span className="w-1 h-1 rounded-full bg-brand-accent" />}
                 </button>
               );
             })}

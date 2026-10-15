@@ -15,10 +15,6 @@ import {
   uploadProgressPhoto,
 } from "../services/photoService.js";
 
-// Kolleksiya kontekstlari bitta joyda. Konfiguratsiya obyektlari modul
-// darajasida yaratiladi, ya'ni ularning identifikatori barqaror va
-// useEffect'ni cheksiz qayta ishga tushirmaydi.
-
 const workouts = createCollectionContext({
   name: COLLECTIONS.workouts,
   subscribe: subscribeWorkouts,
@@ -54,8 +50,6 @@ const achievements = createCollectionContext({
   remove: () => Promise.resolve(),
 });
 
-// Progress suratlari: save = faylni Storage'ga yuklash + metama'lumotni
-// Firestore'ga yozish. payload: { file, date, kind, note }
 const photos = createCollectionContext({
   name: COLLECTIONS.photos,
   subscribe: subscribePhotos,

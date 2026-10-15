@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Link2,
-  Link2Off,
-  MessageSquare,
-  MoreVertical,
-  Plus,
-  Timer,
-  Trash2,
-} from "lucide-react";
+import { Link2, Link2Off, MessageSquare, MoreVertical, Plus, Timer, Trash2 } from "lucide-react";
 import SetRow from "./SetRow.jsx";
 import TimerModal from "./TimerModal.jsx";
 import ExerciseInsight from "./ExerciseInsight.jsx";
@@ -58,7 +50,6 @@ export default function ExerciseBlock({
   const unit = exercise.unit || "reps";
   const prevSets = insight?.previous?.exercise?.sets ?? [];
 
-  // Tashqariga bosish listener'i faqat menyu ochiq turganda osilib turadi.
   useEffect(() => {
     if (!menuOpen) return undefined;
     function onOutside(e) {
@@ -139,11 +130,12 @@ export default function ExerciseBlock({
                 <MenuItem icon={Plus} onClick={closeMenuThen(() => onAddSet())}>
                   Set qo'shish
                 </MenuItem>
-                <MenuItem icon={MessageSquare} onClick={closeMenuThen(() => setNoteOpen((o) => !o))}>
+                <MenuItem
+                  icon={MessageSquare}
+                  onClick={closeMenuThen(() => setNoteOpen((o) => !o))}
+                >
                   {noteOpen ? "Izohni yashirish" : "Izoh qo'shish"}
                 </MenuItem>
-                {/* Guruhga faqat OXIRGI a'zodan keyingisini qo'shish mumkin —
-                    aks holda guruh o'rtasidan "yorilib" ketardi. */}
                 {canLinkNext && (!superset || superset.isLast) && (
                   <MenuItem icon={Link2} onClick={closeMenuThen(onLinkNext)}>
                     {superset ? "Keyingisini ham qo'shish" : "Keyingisi bilan superset"}

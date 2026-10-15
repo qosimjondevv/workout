@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   loginWithPhone,
   logout as logoutService,
@@ -32,10 +26,6 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(() => {
     async function attempt(action, rawPhone, password) {
-      // Profil hujjatiga yozish uchun raqamni eslab qolamiz: Firebase'da
-      // faqat soxta pochta saqlanadi. Raqam so'rovdan OLDIN qo'yiladi:
-      // onAuthStateChanged `await` dan oldin ishlashi mumkin va migratsiya
-      // profilni bo'sh telefon bilan yozib qo'yardi (keyin qayta urinmaydi).
       setPhone(toFullPhone(rawPhone));
       try {
         await action(rawPhone, password);
@@ -52,7 +42,6 @@ export function AuthProvider({ children }) {
       authLoading,
       register: (p, pw) => attempt(registerWithPhone, p, pw),
       login: (p, pw) => attempt(loginWithPhone, p, pw),
-      // Keyingi akkaunt oldingisining raqamini "meros" qilib olmasligi uchun.
       logout: async () => {
         await logoutService();
         setPhone("");

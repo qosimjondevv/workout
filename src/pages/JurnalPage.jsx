@@ -1,9 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import {
-  useExercises,
-  useTemplates,
-  useWorkouts,
-} from "../context/collections.jsx";
+import { useExercises, useTemplates, useWorkouts } from "../context/collections.jsx";
 import { useWorkoutFormContext } from "../context/WorkoutFormContext.jsx";
 import { useRestTimerActions } from "../context/RestTimerContext.jsx";
 import { useExerciseInsights } from "../hooks/useExerciseInsights.js";
@@ -45,16 +41,12 @@ export default function JurnalPage() {
     save: saveTemplate,
     remove: removeTemplate,
   } = useTemplates();
-  // Faqat AMALLAR: sanoq ketayotganda bu sahifa qayta render bo'lmaydi.
   const rest = useRestTimerActions();
   const toast = useToast();
 
   const [templatesOpen, setTemplatesOpen] = useState(false);
-  // Shu sessiyada qaysi mashq uchun qaysi natija bilan rekord e'lon qilingan:
-  // bir xil rekord har ✓ da qayta-qayta chiqmasligi uchun.
   const announcedRef = useRef(new Map());
 
-  // Formadagi har mashq uchun: oldingi natija, PR va keyingi qadam taklifi.
   const insights = useExerciseInsights(
     form.exercises.map((e) => e.name),
     form.id,
@@ -65,9 +57,7 @@ export default function JurnalPage() {
 
   const recordFlags = useMemo(
     () =>
-      form.exercises.map((e) =>
-        e.sets.map((s) => isRecordSet(e.unit, s, insights[e.name]?.stats)),
-      ),
+      form.exercises.map((e) => e.sets.map((s) => isRecordSet(e.unit, s, insights[e.name]?.stats))),
     [form.exercises, insights],
   );
 
@@ -80,18 +70,11 @@ export default function JurnalPage() {
 
   const lastWorkout = useMemo(
     () =>
-      [...workouts]
-        .filter((w) => w.id !== form.id)
-        .sort((a, b) => (a.date < b.date ? 1 : -1))[0] ?? null,
+      [...workouts].filter((w) => w.id !== form.id).sort((a, b) => (a.date < b.date ? 1 : -1))[0] ??
+      null,
     [workouts, form.id],
   );
 
-  // --- ✓ bosilganda ---------------------------------------------------------
-  // 1) set bajarildi deb belgilanadi (bo'sh bo'lsa oldingi natija bilan);
-  // 2) dam olish taymeri o'zi boshlanadi — supersetda faqat guruhning OXIRGI
-  //    mashqidan keyin (juftlik orasida dam olinmaydi);
-  // 3) set tarixdagi rekorddan oshsa — xabar va tebranish.
-  // Eski yozuvni tahrirlashda taymer ham, rekord xabari ham ishlamaydi.
   function handleToggleDone(exIdx, setIdx) {
     const ex = form.exercises[exIdx];
     const set = ex?.sets[setIdx];
@@ -125,13 +108,10 @@ export default function JurnalPage() {
     });
   }
 
-  // --- Mashq qo'shish -------------------------------------------------------
   function handleAddExercise(meta) {
     wf.addExerciseToForm(meta.name, meta.unit, undefined, meta.muscleGroup);
   }
 
-  // Yangi mashq DARHOL katalogga ham yoziladi: foydalanuvchi tanlagan birlik
-  // va mushak guruhi keyingi safar ham saqlanib qolsin.
   function handleCreateExercise(data) {
     const existing = findExerciseMeta(data.name, catalog);
     if (existing) {
@@ -142,9 +122,6 @@ export default function JurnalPage() {
     handleAddExercise(data);
   }
 
-  // --- Dasturlar ------------------------------------------------------------
-  // Start Workout: template'dagi mashqlar (rejadagi set soni bilan) formaga
-  // yuklanadi. Natijalar saqlanmaydi — ularni foydalanuvchi zalda kiritadi.
   function handleStartTemplate(template) {
     wf.addExercises(template.exercises ?? []);
     if (template.target && !form.target.trim()) wf.setTarget(template.target);
@@ -155,8 +132,6 @@ export default function JurnalPage() {
     saveTemplate(makeTemplate(data));
   }
 
-  // Namuna kunlik mashqlarni foydalanuvchining o'z ro'yxatiga nusxalaydi.
-  // Ularning mashqlari katalogga ham qo'shiladi (bor bo'lganlari tegilmaydi).
   function handleAdoptPresets() {
     const known = new Set(catalog.map((e) => exerciseKey(e.name)));
     TEMPLATE_PRESETS.forEach((preset) => {
@@ -170,7 +145,6 @@ export default function JurnalPage() {
     });
   }
 
-  // --- Saqlash --------------------------------------------------------------
   function handleSave() {
     const wasEditing = wf.isEditing;
     if (!wf.submit()) return;

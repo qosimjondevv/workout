@@ -1,21 +1,3 @@
-/* Temir Jurnal — service worker.
- *
- * Maqsad: ilova internetsiz ham OCHILSIN. Ma'lumotning o'zi Firestore'ning
- * offline keshida (IndexedDB) — bu fayl faqat ilova "qobig'i"ni (HTML, JS,
- * CSS, ikonkalar, shriftlar) saqlaydi.
- *
- * Strategiyalar:
- *   sahifa (navigate)  -> avval tarmoq (3 s kutiladi), bo'lmasa keshdagi qobiq.
- *                         Shunda yangi versiya chiqqanda darhol keladi.
- *   /assets/*          -> avval kesh. Vite fayl nomiga hash qo'shadi, ya'ni
- *                         nom o'zgarmas ekan, mazmun ham o'zgarmaydi.
- *   shriftlar          -> avval kesh (Google Fonts).
- *   progress suratlari -> avval kesh (Firebase Storage). Har surat havolasi
- *                         noyob va o'zgarmaydi — internetsiz ham ko'rinadi.
- *   qolgan same-origin -> keshdan darhol, fonda yangilab qo'yiladi.
- *   Firebase / boshqa  -> umuman TEGILMAYDI (o'z offline mexanizmi bor).
- */
-
 const VERSION = "v1";
 const SHELL_CACHE = `tj-shell-${VERSION}`;
 const ASSET_CACHE = `tj-assets-${VERSION}`;
@@ -33,11 +15,9 @@ const PRECACHE = [
 ];
 
 const NAV_TIMEOUT_MS = 3000;
-const MAX_ASSETS = 80; // eski build fayllari cheksiz to'planib qolmasin
+const MAX_ASSETS = 80;
 const MAX_PHOTOS = 60;
 
-// Oldindan keshlash muvaffaqiyatsiz bo'lsa ham SW o'rnatiladi: qobiq birinchi
-// sahifa ochilishida (handleNavigate) baribir keshga tushadi.
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -52,14 +32,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => !KNOWN.includes(k)).map((k) => caches.delete(k))))
+      .then((keys) =>
+        Promise.all(keys.filter((k) => !KNOWN.includes(k)).map((k) => caches.delete(k))),
+      )
       .then(() => self.clients.claim()),
   );
 });
 
-// Kesh — YORDAMCHI, majburiy emas. Xotira to'lgan, maxfiy rejim yoki
-// brauzerning ichki xatosi bo'lsa ham so'rov oddiy tarmoq orqali bajarilishi
-// kerak. Shuning uchun har bir kesh amali xatoni o'zi yutadi.
 async function cacheMatch(name, request) {
   try {
     return await (await caches.open(name)).match(request);
@@ -80,25 +59,19 @@ async function trimCache(name, max) {
     const cache = await caches.open(name);
     const keys = await cache.keys();
     await Promise.all(keys.slice(0, Math.max(0, keys.length - max)).map((k) => cache.delete(k)));
-  } catch {
-    // keyingi safar tozalanadi
-  }
+  } catch {}
 }
 
 function timeout(ms) {
   return new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms));
 }
 
-// Tarmoq 3 soniyada javob bermasa (zalda signal yomon) keshdagi qobiq
-// beriladi. Kesh bo'sh bo'lsa (birinchi tashrif) — tarmoqni oxirigacha kutamiz,
-// aks holda sekin internetda sahifa umuman ochilmay qolardi.
 async function handleNavigate(request) {
   const network = fetch(request).then((response) => {
-    // SPA: har qanday marshrut (/jurnal, /tarix ...) bir xil index.html.
     if (response.ok) cachePut(SHELL_CACHE, SHELL_URL, response.clone());
     return response;
   });
-  network.catch(() => {}); // keshdan javob berilsa, kech kelgan xato "ushlanmagan" bo'lmasin
+  network.catch(() => {});
 
   try {
     return await Promise.race([network, timeout(NAV_TIMEOUT_MS)]);
@@ -117,7 +90,6 @@ async function cacheFirst(request, cacheName, max) {
   const hit = await cacheMatch(cacheName, request);
   if (hit) return hit;
   const response = await fetch(request);
-  // opaque — shrift va Storage javoblari (no-cors); ular ham keshlanadi.
   if (response.ok || response.type === "opaque") {
     cachePut(cacheName, request, response.clone()).then(() => max && trimCache(cacheName, max));
   }
@@ -150,7 +122,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Faqat o'z domenimiz. Firebase (/__/auth va h.k.) — tegilmaydi.
   if (url.origin !== self.location.origin || url.pathname.startsWith("/__/")) return;
 
   if (request.mode === "navigate") {
@@ -162,8 +133,6 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-// Dam olish taymeri bildirishnomasi bosilsa — ochiq oynaga o'tadi yoki
-// ilovani ochadi.
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(

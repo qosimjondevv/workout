@@ -2,12 +2,6 @@ import { diffDays, isoWeekKey, monthKey, shortDate, todayISO } from "./date.js";
 import { isFilledSet, normalizeUnit } from "./workout.js";
 import { round, toNum } from "./num.js";
 
-// SOF funksiyalar: React ham, Firebase ham yo'q. Hamma hisob-kitob shu yerda,
-// shuning uchun ularni alohida sinash oson.
-
-// --- Volume ----------------------------------------------------------------
-// Spetsifikatsiya 5-band: Volume = Weight × Reps
-
 export function setVolume(set) {
   const w = Number(set?.weight);
   const r = Number(set?.reps);
@@ -21,14 +15,9 @@ function exerciseVolume(exercise) {
 }
 
 export function workoutVolume(workout) {
-  return (workout?.exercises ?? []).reduce(
-    (sum, e) => sum + exerciseVolume(e),
-    0,
-  );
+  return (workout?.exercises ?? []).reduce((sum, e) => sum + exerciseVolume(e), 0);
 }
 
-// --- Estimated 1RM ---------------------------------------------------------
-// Epley formulasi: 1RM = w × (1 + r/30). Bitta takrorda 1RM = vaznning o'zi.
 export function estimated1RM(weight, reps) {
   const w = Number(weight);
   const r = Number(reps);
@@ -45,13 +34,10 @@ function exerciseBest1RM(exercise) {
   );
 }
 
-// --- Bitta mashqning "eng yaxshi"lari --------------------------------------
-
 export function exerciseStats(exercise) {
   const unit = normalizeUnit(exercise?.unit);
   const sets = exercise?.sets ?? [];
-  const nums = (key) =>
-    sets.map((s) => Number(s[key])).filter((n) => Number.isFinite(n));
+  const nums = (key) => sets.map((s) => Number(s[key])).filter((n) => Number.isFinite(n));
 
   const weights = nums("weight");
   const reps = nums("reps");
@@ -67,7 +53,6 @@ export function exerciseStats(exercise) {
   };
 }
 
-// Bir mashq bo'yicha butun tarixdagi rekordlar.
 export function exerciseHistoryStats(workouts, exerciseName) {
   const entries = [];
   workouts.forEach((w) => {
@@ -78,8 +63,7 @@ export function exerciseHistoryStats(workouts, exerciseName) {
   });
   entries.sort((a, b) => (a.date > b.date ? 1 : -1));
 
-  const max = (key) =>
-    entries.length ? Math.max(...entries.map((e) => e[key])) : 0;
+  const max = (key) => (entries.length ? Math.max(...entries.map((e) => e[key])) : 0);
 
   return {
     entries,
@@ -92,9 +76,6 @@ export function exerciseHistoryStats(workouts, exerciseName) {
   };
 }
 
-// Oldingi mashg'ulotdagi o'sha mashqning set'lari ("Last Workout" bloki va
-// "Use Previous" tugmasi uchun). excludeWorkoutId — tahrirlanayotgan yozuvning
-// o'zini hisobga olmaslik uchun.
 export function findPreviousExercise(workouts, exerciseName, beforeDate, excludeWorkoutId) {
   const candidates = workouts
     .filter((w) => w.id !== excludeWorkoutId)
@@ -108,8 +89,6 @@ export function findPreviousExercise(workouts, exerciseName, beforeDate, exclude
   return { date: workout.date, exercise };
 }
 
-// --- Progressive overload --------------------------------------------------
-// Oldingi natijaga qarab keyingi qadamni TAKLIF qiladi. Majburiy emas.
 export function suggestProgression(previousExercise, step = 2.5) {
   if (!previousExercise) return null;
   if (normalizeUnit(previousExercise.unit) === "seconds") {
@@ -120,8 +99,7 @@ export function suggestProgression(previousExercise, step = 2.5) {
   const sets = previousExercise.sets ?? [];
   if (!sets.length) return null;
   const top = sets.reduce(
-    (best, s) =>
-      Number(s.weight) > Number(best?.weight ?? -1) ? s : best,
+    (best, s) => (Number(s.weight) > Number(best?.weight ?? -1) ? s : best),
     null,
   );
   const w = Number(top?.weight);
@@ -130,9 +108,6 @@ export function suggestProgression(previousExercise, step = 2.5) {
   return { unit: "reps", weight: round(w + step, 1), reps: r };
 }
 
-// --- Streak ----------------------------------------------------------------
-// Ketma-ket KUNLAR bo'yicha. Bugun mashq qilinmagan bo'lsa ham kechagi kun
-// hisobga olinadi — aks holda ertalab streak nolga tushib ketardi.
 export function computeStreaks(dates) {
   const unique = Array.from(new Set((dates ?? []).filter(Boolean))).sort();
   if (!unique.length) return { current: 0, longest: 0 };
@@ -157,7 +132,6 @@ export function computeStreaks(dates) {
   return { current, longest };
 }
 
-// --- Mushak guruhi taqsimoti ------------------------------------------------
 export function muscleGroupDistribution(workouts) {
   const counts = new Map();
   workouts.forEach((w) =>
@@ -171,11 +145,6 @@ export function muscleGroupDistribution(workouts) {
     .sort((a, b) => b.value - a.value);
 }
 
-// --- Dashboard uchun ---
-
-// Nechta marta REKORD YANGILANGAN. Mashqni birinchi marta bajarish rekord
-// hisoblanmaydi — u boshlang'ich nuqta; faqat undan keyingi yaxshilanishlar
-// sanaladi.
 export function countPersonalRecords(workouts) {
   const best = new Map();
   let count = 0;
@@ -203,8 +172,6 @@ export function countPersonalRecords(workouts) {
   return count;
 }
 
-// Haftalik yoki oylik volume. Har davr o'sha davrdagi ENG ERTA mashg'ulot
-// sanasi bilan belgilanadi (grafik o'qi uchun qisqa yorliq).
 export function volumeByPeriod(workouts, period = "week") {
   const keyFn = period === "month" ? monthKey : isoWeekKey;
   const map = new Map();
@@ -231,11 +198,6 @@ export function volumeByPeriod(workouts, period = "week") {
   }));
 }
 
-// --- Jonli rekord ----------------------------------------------------------
-// Formadagi set shu mashqning TARIXDAGI eng yaxshi natijasidan oshdimi?
-// countPersonalRecords bilan bir xil qoida: mashq birinchi marta bajarilsa
-// rekord emas (taqqoslaydigan narsa yo'q), o'lchov — eng og'ir vazn
-// (soniyalik mashqda eng uzun vaqt). historyStats = exerciseHistoryStats().
 export function isRecordSet(unit, set, historyStats) {
   if (!historyStats?.entries?.length) return false;
   if (normalizeUnit(unit) === "seconds") {
@@ -245,15 +207,10 @@ export function isRecordSet(unit, set, historyStats) {
   const w = toNum(set?.weight);
   const r = toNum(set?.reps);
   return (
-    w !== null &&
-    r !== null &&
-    r > 0 &&
-    historyStats.bestWeight > 0 &&
-    w > historyStats.bestWeight
+    w !== null && r !== null && r > 0 && historyStats.bestWeight > 0 && w > historyStats.bestWeight
   );
 }
 
-// --- Forma xulosasi (saqlash paneli uchun) ---------------------------------
 export function formSummary(form) {
   let sets = 0;
   let doneSets = 0;

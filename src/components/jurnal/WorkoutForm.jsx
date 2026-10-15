@@ -10,10 +10,6 @@ import ExerciseBlock from "./ExerciseBlock.jsx";
 import ExercisePicker from "./ExercisePicker.jsx";
 import WorkoutClock from "./WorkoutClock.jsx";
 
-// Mashg'ulot formasi. Saqlash tugmasi bu yerda EMAS — u pastdagi doim
-// ko'rinadigan panelda (SaveBar).
-//
-// wf — WorkoutFormContext (forma holati va amallari).
 export default function WorkoutForm({
   wf,
   insights,
@@ -106,7 +102,10 @@ export default function WorkoutForm({
         aria-expanded={extrasOpen}
         className="w-full flex items-center gap-1.5 text-[11px] text-brand-muted bg-transparent border-none cursor-pointer p-0 mb-2.5"
       >
-        <ChevronDown size={13} className={cn("transition-transform", !extrasOpen && "-rotate-90")} />
+        <ChevronDown
+          size={13}
+          className={cn("transition-transform", !extrasOpen && "-rotate-90")}
+        />
         Mashq turi va izoh
         {!extrasOpen && hasExtras && (
           <span className="text-brand-text truncate">

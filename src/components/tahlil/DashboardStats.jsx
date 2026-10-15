@@ -14,14 +14,11 @@ function Tile({ icon: Icon, value, label, accent }) {
         <Icon size={14} className={accent ? "" : "text-brand-muted"} />
         {value}
       </div>
-      <div className="text-[10px] text-brand-muted mt-0.5 leading-tight">
-        {label}
-      </div>
+      <div className="text-[10px] text-brand-muted mt-0.5 leading-tight">{label}</div>
     </div>
   );
 }
 
-// Spetsifikatsiya 6-band: Total / Last 7 / Streak / Longest / Volume / PR count
 export default function DashboardStats({ stats, prCount }) {
   return (
     <div className="grid grid-cols-3 gap-2 mb-4">
@@ -34,17 +31,8 @@ export default function DashboardStats({ stats, prCount }) {
         accent={stats.currentStreak > 0}
       />
       <Tile icon={Trophy} value={stats.longestStreak} label="Eng uzun seriya" />
-      <Tile
-        icon={Layers}
-        value={formatCompact(stats.totalVolume)}
-        label="Umumiy hajm (kg)"
-      />
-      <Tile
-        icon={Award}
-        value={prCount}
-        label="Yangilangan rekord"
-        accent={prCount > 0}
-      />
+      <Tile icon={Layers} value={formatCompact(stats.totalVolume)} label="Umumiy hajm (kg)" />
+      <Tile icon={Award} value={prCount} label="Yangilangan rekord" accent={prCount > 0} />
     </div>
   );
 }

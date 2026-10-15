@@ -7,18 +7,11 @@ import {
   suggestProgression,
 } from "../utils/metrics.js";
 
-// Formadagi har bir mashq uchun: oldingi mashg'ulot natijasi, shaxsiy
-// rekordlar va progressive overload taklifi.
-//
-// Tahrirlanayotgan yozuvning O'ZI tarixdan chiqarib tashlanadi — aks holda
-// "oldingi natija" deb o'zini ko'rsatib qo'yardi.
 export function useExerciseInsights(exerciseNames, currentWorkoutId, date) {
   const { items: workouts } = useWorkouts();
   const { profile } = useProfile();
   const step = Number(profile.progressionStep) || 2.5;
 
-  // Massiv identifikatori har render'da o'zgaradi, shuning uchun bog'liqlik
-  // sifatida nomlardan yig'ilgan SATR ishlatiladi.
   const namesKey = exerciseNames.join("|");
 
   return useMemo(() => {

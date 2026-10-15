@@ -1,5 +1,3 @@
-// Mashqlarni mushak guruhiga bog'lash — Tahlil bo'limidagi "Muscle Group
-// Distribution" grafigi va template'lar uchun kerak.
 export const MUSCLE_GROUPS = [
   { key: "chest", label: "Ko'krak" },
   { key: "back", label: "Orqa" },
@@ -16,8 +14,7 @@ export const DEFAULT_MUSCLE_GROUP = "other";
 
 export function muscleGroupLabel(key) {
   return (
-    MUSCLE_GROUPS.find((g) => g.key === key)?.label ??
-    MUSCLE_GROUPS[MUSCLE_GROUPS.length - 1].label
+    MUSCLE_GROUPS.find((g) => g.key === key)?.label ?? MUSCLE_GROUPS[MUSCLE_GROUPS.length - 1].label
   );
 }
 

@@ -3,14 +3,8 @@ import { setVolume } from "./metrics.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
 import { muscleGroupLabel } from "../constants/muscleGroups.js";
 
-// Ma'lumotni eksport qilish: JSON (to'liq zaxira) va CSV (Excel / Google
-// Sheets uchun). Hammasi SOF funksiyalar — fayl yaratish va yuklab olish
-// alohida (utils/download.js), shuning uchun bu yerdagini Node'da sinash mumkin.
-
 const BACKUP_FORMAT = 1;
 
-// Firestore Timestamp (toDate() bor obyekt) JSON'da {seconds, nanoseconds}
-// bo'lib chiqib, o'qib bo'lmas holga keladi — ISO matnga o'giramiz.
 function plain(value) {
   if (value === null || value === undefined) return value ?? null;
   if (typeof value?.toDate === "function") {
@@ -33,9 +27,7 @@ function plain(value) {
 }
 
 const byDate = (list) =>
-  [...(list ?? [])].sort((a, b) =>
-    String(a?.date ?? "").localeCompare(String(b?.date ?? "")),
-  );
+  [...(list ?? [])].sort((a, b) => String(a?.date ?? "").localeCompare(String(b?.date ?? "")));
 
 export function buildBackup(data, exportedAt = new Date()) {
   return {
@@ -45,22 +37,15 @@ export function buildBackup(data, exportedAt = new Date()) {
     profile: plain(data.profile ?? null),
     workouts: plain(byDate(data.workouts)),
     exercises: plain(
-      [...(data.exercises ?? [])].sort((a, b) =>
-        String(a.name).localeCompare(String(b.name)),
-      ),
+      [...(data.exercises ?? [])].sort((a, b) => String(a.name).localeCompare(String(b.name))),
     ),
     measurements: plain(byDate(data.measurements)),
     templates: plain(data.templates ?? []),
     achievements: plain(data.achievements ?? []),
-    // Suratlarning o'zi emas, faqat metama'lumoti (sana, rakurs, havola).
     photos: plain(byDate(data.photos)),
   };
 }
 
-// --- CSV --------------------------------------------------------------------
-// RFC 4180: vergul, qo'shtirnoq yoki yangi qator bo'lsa katak qo'shtirnoqqa
-// olinadi. Matn =, +, -, @ bilan boshlansa Excel uni FORMULA deb bajaradi
-// (CSV injection) — oldiga ' qo'yib zararsizlantiriladi. Raqamlarga tegilmaydi.
 const FORMULA_START = /^[=+\-@\t\r]/;
 
 export function csvCell(value) {
@@ -75,13 +60,24 @@ export function toCsv(rows) {
   return rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
 }
 
-// Har SET bitta qator: jadvalda filtrlash va pivot qilish eng oson shakl.
 export function workoutsCsvRows(workouts) {
-  const rows = [[
-    "Sana", "Mashg'ulot turi", "Tana vazni (kg)", "Davomiylik (daq)",
-    "Mashq", "Mushak guruhi", "Superset", "Set", "Vazn (kg)", "Takror",
-    "Soniya", "Hajm (kg)", "Izoh",
-  ]];
+  const rows = [
+    [
+      "Sana",
+      "Mashg'ulot turi",
+      "Tana vazni (kg)",
+      "Davomiylik (daq)",
+      "Mashq",
+      "Mushak guruhi",
+      "Superset",
+      "Set",
+      "Vazn (kg)",
+      "Takror",
+      "Soniya",
+      "Hajm (kg)",
+      "Izoh",
+    ],
+  ];
   byDate(workouts).forEach((w) => {
     const duration = Number(w.durationSec) > 0 ? Math.round(w.durationSec / 60) : null;
     (w.exercises ?? []).forEach((e) => {
@@ -111,10 +107,7 @@ export function workoutsCsvRows(workouts) {
 export function measurementsCsvRows(measurements) {
   const rows = [["Sana", ...MEASUREMENT_FIELDS.map((f) => `${f.label} (sm)`)]];
   byDate(measurements).forEach((m) => {
-    rows.push([
-      m.date ?? "",
-      ...MEASUREMENT_FIELDS.map((f) => numOrNull(m.values?.[f.key])),
-    ]);
+    rows.push([m.date ?? "", ...MEASUREMENT_FIELDS.map((f) => numOrNull(m.values?.[f.key]))]);
   });
   return rows;
 }

@@ -41,10 +41,7 @@ export default function MeasurementForm({
 
       {error && <div className="text-brand-accent2 text-xs mb-2">{error}</div>}
 
-      <Button
-        onClick={onSubmit}
-        className="w-full font-display uppercase tracking-wide text-sm"
-      >
+      <Button onClick={onSubmit} className="w-full font-display uppercase tracking-wide text-sm">
         <Save size={16} /> Saqlash
       </Button>
     </Card>

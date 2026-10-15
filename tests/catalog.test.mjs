@@ -9,36 +9,35 @@ const catalog = [
   { id: "2", name: "Plank", unit: "seconds", muscleGroup: "abs" },
 ];
 
-// --- nom kaliti ---
 assert.equal(exerciseKey("  Jim  "), "jim");
 assert.equal(exerciseKey(null), "");
 
-// --- katalogdan topish (registr va bo'shliqlar ahamiyatsiz) ---
 assert.deepEqual(findExerciseMeta("  jim ", catalog), {
-  name: "Jim", unit: "reps", muscleGroup: "chest",
+  name: "Jim",
+  unit: "reps",
+  muscleGroup: "chest",
 });
 assert.equal(findExerciseMeta("plank", catalog).unit, "seconds");
 assert.equal(findExerciseMeta("Yo'q", catalog), null, "topilmasa taxmin qilinmaydi");
 assert.equal(findExerciseMeta("", catalog), null);
 assert.equal(findExerciseMeta("Jim", null, undefined), null, "bo'sh manba qulatmaydi");
 
-// --- manbalar tartibi: birinchi topilgan ustun ---
 const form = [
   { name: "Plank", unit: "reps", muscleGroup: "other" },
   { name: "Wall sit", unit: "seconds", muscleGroup: "legs" },
 ];
 assert.equal(findExerciseMeta("Plank", catalog, form).unit, "seconds", "katalog ustun");
-// Katalogda YO'Q soniyalik mashq formadan olinadi (ilgari "reps" bo'lib qolardi)
 assert.deepEqual(findExerciseMeta("wall sit", catalog, form), {
-  name: "Wall sit", unit: "seconds", muscleGroup: "legs",
+  name: "Wall sit",
+  unit: "seconds",
+  muscleGroup: "legs",
 });
-// noto'g'ri qiymatlar normallashadi
-assert.deepEqual(
-  findExerciseMeta("X", [{ name: "X", unit: "kg", muscleGroup: "hacked" }]),
-  { name: "X", unit: "reps", muscleGroup: "other" },
-);
+assert.deepEqual(findExerciseMeta("X", [{ name: "X", unit: "kg", muscleGroup: "hacked" }]), {
+  name: "X",
+  unit: "reps",
+  muscleGroup: "other",
+});
 
-// --- mushak guruhi formadan grafikka yetib boradi ---
 const meta = findExerciseMeta("jim", catalog);
 const ex = makeExercise(meta.name, meta.unit, null, meta.muscleGroup);
 assert.equal(ex.muscleGroup, "chest");
@@ -48,7 +47,6 @@ assert.deepEqual(
   "chip orqali qo'shilgan mashq 'other' ga tushmaydi",
 );
 
-// --- template birlikni saqlaydi ---
 const t = makeTemplate({
   name: "Core",
   exercises: [findExerciseMeta("Wall sit", catalog, form)],

@@ -1,8 +1,3 @@
-// Brauzerda faylni yuklab berish (eksport uchun).
-//
-// CSV boshiga BOM (U+FEFF belgisi) qo'yiladi: busiz Excel faylni noto'g'ri kodlashda
-// ochib, o'zbekcha harflarni (o', g', sh) buzib ko'rsatadi.
-
 const BOM = String.fromCharCode(0xfeff);
 
 const MIME = {
@@ -21,7 +16,5 @@ export function downloadText(filename, text, kind) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  // Ba'zi brauzerlar yuklashni keyingi tikda boshlaydi — havolani darhol
-  // bo'shatsak fayl bo'sh chiqishi mumkin.
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

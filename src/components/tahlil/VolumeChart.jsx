@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Layers } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "../../ui/card.jsx";
 import { SegmentedControl } from "../../ui/segmented.jsx";
@@ -19,8 +11,6 @@ const COLOR_MUTED = "#8C8C90";
 const COLOR_SURFACE2 = "#232325";
 const COLOR_TEXT = "#F3F3EF";
 
-// Volume = Weight x Reps. Ustunli grafik tanlangan: har davr alohida
-// "hajm" bo'lagi, chiziq esa uzluksiz o'zgarishni anglatib qo'yardi.
 const PERIODS = [
   { value: "week", label: "Haftalik" },
   { value: "month", label: "Oylik" },
@@ -46,9 +36,7 @@ export default function VolumeChart({ data, period, onPeriodChange }) {
 
       {data.length > 0 ? (
         <>
-          <div className="text-[11px] text-brand-muted mb-1.5">
-            Jami: {formatCompact(total)} kg
-          </div>
+          <div className="text-[11px] text-brand-muted mb-1.5">Jami: {formatCompact(total)} kg</div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={data}>
               <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" vertical={false} />
@@ -76,9 +64,7 @@ export default function VolumeChart({ data, period, onPeriodChange }) {
           </ResponsiveContainer>
         </>
       ) : (
-        <div className="text-brand-muted text-xs text-center py-5">
-          Ma'lumot yo'q
-        </div>
+        <div className="text-brand-muted text-xs text-center py-5">Ma'lumot yo'q</div>
       )}
     </Card>
   );

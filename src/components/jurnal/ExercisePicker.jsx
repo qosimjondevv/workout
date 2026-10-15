@@ -8,11 +8,6 @@ import { exerciseKey, searchExercises } from "../../utils/catalog.js";
 import { MUSCLE_GROUPS, muscleGroupLabel } from "../../constants/muscleGroups.js";
 import NewExerciseSheet from "./NewExerciseSheet.jsx";
 
-// Formaga mashq qo'shish. Ilgari butun katalog tugmachalar "devori" bo'lib
-// turardi va har yangi mashq bilan o'sib borardi. Endi:
-//   - bo'sh holatda: faqat SO'NGGI bajarilgan mashqlar + "Barcha mashqlar";
-//   - yozilganda: qidiruv natijalari, mos kelmasa "yangi mashq yaratish".
-
 function UnitIcon({ unit }) {
   return unit === "seconds" ? <Timer size={11} /> : <Plus size={11} />;
 }
@@ -28,7 +23,9 @@ function ResultRow({ item, added, onPick }) {
         added ? "opacity-50 cursor-default" : "cursor-pointer hover:bg-brand-surface",
       )}
     >
-      <span className="text-brand-muted"><UnitIcon unit={item.unit} /></span>
+      <span className="text-brand-muted">
+        <UnitIcon unit={item.unit} />
+      </span>
       <span className="flex-1 min-w-0 text-[13px] text-brand-text truncate">{item.name}</span>
       <span className="text-[10px] text-brand-muted shrink-0">
         {added ? "qo'shilgan" : muscleGroupLabel(item.muscleGroup)}
@@ -109,7 +106,7 @@ function AllExercisesSheet({ catalog, addedKeys, onPick, onCreate, onClose }) {
 export default function ExercisePicker({ catalog, recent, alreadyAdded, onAdd, onCreate }) {
   const [query, setQuery] = useState("");
   const [allOpen, setAllOpen] = useState(false);
-  const [createName, setCreateName] = useState(null); // null = yopiq
+  const [createName, setCreateName] = useState(null);
 
   const addedKeys = useMemo(() => new Set(alreadyAdded.map(exerciseKey)), [alreadyAdded]);
   const results = useMemo(() => searchExercises(catalog, query, 6), [catalog, query]);
@@ -126,8 +123,6 @@ export default function ExercisePicker({ catalog, recent, alreadyAdded, onAdd, o
     setCreateName(name ?? "");
   }
 
-  // Enter: aniq mos bo'lsa o'shani, bo'lmasa birinchi natijani qo'shadi;
-  // umuman natija bo'lmasa yangi mashq oynasi ochiladi.
   function onEnter() {
     const q = query.trim();
     if (!q) return;
@@ -141,7 +136,10 @@ export default function ExercisePicker({ catalog, recent, alreadyAdded, onAdd, o
   return (
     <div className="mt-2">
       <div className="relative">
-        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none" />
+        <Search
+          size={15}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none"
+        />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}

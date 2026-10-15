@@ -3,10 +3,6 @@ import { Clock } from "lucide-react";
 import { formatClock, formatDuration } from "../../utils/date.js";
 import { MAX_WORKOUT_SECONDS } from "../../utils/workout.js";
 
-// Mashg'ulot sekundomeri. Har soniyada FAQAT shu kichik komponent qayta
-// render bo'ladi — butun forma emas.
-//   startedAt  -> jonli sanoq (birinchi ✓ dan boshlanadi)
-//   durationSec -> tahrirlanayotgan eski yozuvning saqlangan davomiyligi
 export default function WorkoutClock({ startedAt, durationSec }) {
   const [now, setNow] = useState(() => Date.now());
 
@@ -18,7 +14,6 @@ export default function WorkoutClock({ startedAt, durationSec }) {
 
   if (startedAt) {
     const elapsed = Math.max(0, Math.floor((now - startedAt) / 1000));
-    // 5 soatdan oshsa — qoralama ochiq qolib ketgan; saqlanmaydi ham.
     if (elapsed > MAX_WORKOUT_SECONDS) return null;
     return (
       <span
@@ -32,7 +27,10 @@ export default function WorkoutClock({ startedAt, durationSec }) {
 
   if (durationSec) {
     return (
-      <span className="flex items-center gap-1 text-[11px] text-brand-muted" title="Saqlangan davomiylik">
+      <span
+        className="flex items-center gap-1 text-[11px] text-brand-muted"
+        title="Saqlangan davomiylik"
+      >
         <Clock size={11} /> {formatDuration(durationSec)}
       </span>
     );

@@ -38,10 +38,7 @@ export default function ExerciseChart({
         <CardTitle className="flex items-center gap-1.5 normal-case text-sm">
           <TrendingUp size={15} /> Mashq progressi
         </CardTitle>
-        <Select
-          value={selectedExercise}
-          onChange={(e) => onSelectExercise(e.target.value)}
-        >
+        <Select value={selectedExercise} onChange={(e) => onSelectExercise(e.target.value)}>
           {exerciseNames.map((n) => (
             <option key={n} value={n}>
               {n}
@@ -53,18 +50,13 @@ export default function ExerciseChart({
       {data.length > 0 ? (
         <>
           <div className="flex items-center justify-between mb-1.5">
-            <div className="text-[10px] text-brand-muted">
-              Birlik: {unitLabel}
-            </div>
+            <div className="text-[10px] text-brand-muted">Birlik: {unitLabel}</div>
             <TrendSummary trend={trend} unit={unitLabel} />
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={data}>
               <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-              />
+              <XAxis dataKey="date" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
               <YAxis tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
               <Tooltip
                 contentStyle={{
@@ -86,9 +78,7 @@ export default function ExerciseChart({
           </ResponsiveContainer>
         </>
       ) : (
-        <div className="text-brand-muted text-xs text-center py-5">
-          Ma'lumot yo'q
-        </div>
+        <div className="text-brand-muted text-xs text-center py-5">Ma'lumot yo'q</div>
       )}
     </Card>
   );

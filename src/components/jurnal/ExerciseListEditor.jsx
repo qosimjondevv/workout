@@ -6,14 +6,7 @@ import { Select } from "../../ui/select.jsx";
 import { cn } from "../../utils/cn.js";
 import { MUSCLE_GROUPS, muscleGroupLabel } from "../../constants/muscleGroups.js";
 
-// items: mashqlar katalogi [{ id, name, unit, muscleGroup }]
-export default function ExerciseListEditor({
-  items,
-  draft,
-  onDraftChange,
-  onAdd,
-  onRemove,
-}) {
+export default function ExerciseListEditor({ items, draft, onDraftChange, onAdd, onRemove }) {
   return (
     <div>
       <div className="flex flex-wrap gap-1.5 mb-2">
@@ -22,13 +15,9 @@ export default function ExerciseListEditor({
             key={it.id}
             className="text-xs bg-brand-surface2 rounded-full pl-2.5 pr-1.5 py-1 flex items-center gap-1 text-brand-text"
           >
-            {it.unit === "seconds" && (
-              <Timer size={11} className="text-brand-muted" />
-            )}
+            {it.unit === "seconds" && <Timer size={11} className="text-brand-muted" />}
             {it.name}
-            <span className="text-[10px] text-brand-muted">
-              {muscleGroupLabel(it.muscleGroup)}
-            </span>
+            <span className="text-[10px] text-brand-muted">{muscleGroupLabel(it.muscleGroup)}</span>
             <button
               onClick={() => onRemove(it.id)}
               className="bg-transparent border-none text-brand-muted p-0 flex cursor-pointer"
@@ -76,9 +65,7 @@ export default function ExerciseListEditor({
         />
         <Select
           value={draft.muscleGroup}
-          onChange={(e) =>
-            onDraftChange({ ...draft, muscleGroup: e.target.value })
-          }
+          onChange={(e) => onDraftChange({ ...draft, muscleGroup: e.target.value })}
         >
           {MUSCLE_GROUPS.map((g) => (
             <option key={g.key} value={g.key}>

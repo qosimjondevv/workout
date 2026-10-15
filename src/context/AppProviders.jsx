@@ -14,11 +14,6 @@ import {
   WorkoutsProvider,
 } from "./collections.jsx";
 
-// Provider tartibi MUHIM: pastdagilar yuqoridagilarga tayanadi.
-//   Auth  -> kim kirgan
-//   Sync  -> saqlash holati va xato
-//   qolganlari -> ikkalasini ham ishlatadi
-//   WorkoutForm -> mashg'ulotlar va katalogga tayanadi, shuning uchun OXIRIDA
 const DATA_PROVIDERS = [
   ProfileProvider,
   RestTimerProvider,
@@ -31,12 +26,8 @@ const DATA_PROVIDERS = [
   WorkoutFormProvider,
 ];
 
-// Faqat tizimga kirgandan va migratsiyadan keyin o'ralishi kerak bo'lgan qism.
 export function DataProviders({ children }) {
-  return DATA_PROVIDERS.reduceRight(
-    (acc, Provider) => <Provider>{acc}</Provider>,
-    children,
-  );
+  return DATA_PROVIDERS.reduceRight((acc, Provider) => <Provider>{acc}</Provider>, children);
 }
 
 export function RootProviders({ children }) {

@@ -1,9 +1,5 @@
 import { serverTimestamp } from "firebase/firestore";
-import {
-  removeDocument,
-  saveDocument,
-  subscribeCollection,
-} from "./collectionService.js";
+import { removeDocument, saveDocument, subscribeCollection } from "./collectionService.js";
 import { COLLECTIONS } from "./paths.js";
 import { toStoredWorkout } from "../utils/workout.js";
 import { workoutVolume } from "../utils/metrics.js";
@@ -14,8 +10,6 @@ export function subscribeWorkouts(uid, onData, onError) {
   return subscribeCollection(uid, NAME, onData, onError);
 }
 
-// Forma shaklini saqlash shakliga o'giradi va Volume'ni OLDINDAN hisoblab
-// yozadi — shunda statistika har safar butun tarixni qayta hisoblamaydi.
 export async function saveWorkout(uid, form) {
   const stored = toStoredWorkout(form);
   const payload = {

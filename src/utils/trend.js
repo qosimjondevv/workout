@@ -1,10 +1,5 @@
 import { round } from "./num.js";
 
-// Birinchi va oxirgi qiymat orasidagi o'zgarish.
-//
-// Foiz ham qaytariladi (spetsifikatsiya 5-band, "Progress %"): 60 kg dan
-// 65 kg ga chiqish va 100 kg dan 105 kg ga chiqish absolyut farqda bir xil
-// ko'rinadi, foizda esa emas.
 export function computeTrend(data, key) {
   if (!data || data.length < 2) return null;
 

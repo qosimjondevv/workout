@@ -27,10 +27,7 @@ export default function BodySection({ form, measurements, photos, onPhotoUploade
 
       <PhotoSection photos={photos} onUploaded={onPhotoUploaded} />
 
-      <MeasurementHistory
-        items={measurements.history}
-        onDelete={measurements.deleteMeasurement}
-      />
+      <MeasurementHistory items={measurements.history} onDelete={measurements.deleteMeasurement} />
     </div>
   );
 }

@@ -4,8 +4,6 @@ import { Modal } from "../../ui/dialog.jsx";
 import { REST_PRESETS } from "../../constants/restPresets.js";
 import { cn } from "../../utils/cn.js";
 
-// Dam olish vaqtini tanlash. Profildagi shaxsiy qiymat birinchi va ajratib
-// ko'rsatiladi — ko'p hollarda aynan o'sha bosiladi.
 export default function RestPresetSheet({ open, defaultSeconds, onPick, onClose }) {
   const presets = REST_PRESETS.filter((p) => p.seconds !== defaultSeconds);
 

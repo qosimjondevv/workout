@@ -1,8 +1,4 @@
-import {
-  removeDocument,
-  saveDocument,
-  subscribeCollection,
-} from "./collectionService.js";
+import { removeDocument, saveDocument, subscribeCollection } from "./collectionService.js";
 import { COLLECTIONS } from "./paths.js";
 import { toStoredMeasurement } from "../utils/catalog.js";
 

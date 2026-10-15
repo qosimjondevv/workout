@@ -3,10 +3,6 @@ import { CalendarDays } from "lucide-react";
 import { cn } from "../utils/cn.js";
 import { dateLabel } from "../utils/date.js";
 
-// Sana maydoni. Brauzerning <input type="date"> i tizim tiliga qarab
-// "10/14/2026" ko'rsatadi — ilovaning qolgan qismi esa "14.10.2026".
-// Shuning uchun matnni O'ZIMIZ chizamiz ("Bugun, 14.10.2026"), tanlash
-// oynasi esa brauzerning o'zi (telefonda tizim kalendari) bo'lib qoladi.
 export function DateField({ value, onChange, className, ariaLabel = "Sana" }) {
   const inputRef = useRef(null);
 
@@ -17,9 +13,7 @@ export function DateField({ value, onChange, className, ariaLabel = "Sana" }) {
       try {
         el.showPicker();
         return;
-      } catch {
-        // Ba'zi brauzerlar showPicker'ni cheklaydi — pastdagi usulga o'tamiz.
-      }
+      } catch {}
     }
     el.focus();
     el.click();

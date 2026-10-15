@@ -1,5 +1,3 @@
-// Before/After taqqoslash uchun rakurslar. Bir xil rakursdagi suratlarni
-// yonma-yon qo'yish ma'noli, turli rakursdagilarni esa yo'q.
 export const PHOTO_KINDS = [
   { key: "front", label: "Oldindan" },
   { key: "side", label: "Yonboshdan" },

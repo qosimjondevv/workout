@@ -12,11 +12,7 @@ import StatsSection from "../components/tahlil/StatsSection.jsx";
 import { SegmentedControl } from "../ui/segmented.jsx";
 import { SkeletonList } from "../ui/skeleton.jsx";
 
-// Grafikli bo'limlar LAZY: recharts 105 kB (gzip) va faqat statistikani
-// ko'rmoqchi bo'lgan odam uni yuklab olishi shart emas.
-const ChartsSection = lazy(
-  () => import("../components/tahlil/ChartsSection.jsx"),
-);
+const ChartsSection = lazy(() => import("../components/tahlil/ChartsSection.jsx"));
 const BodySection = lazy(() => import("../components/tahlil/BodySection.jsx"));
 
 const TABS = [
@@ -26,14 +22,9 @@ const TABS = [
 ];
 
 export default function TahlilPage() {
-  // Bo'lim manzilda saqlanadi: sahifani yangilasangiz ham o'sha joyda qolasiz.
-  // replace: true — ichki bo'lim almashtirish brauzer tarixini to'ldirmaydi,
-  // ya'ni "orqaga" tugmasi Tahlil sahifasidan butunlay chiqaradi.
   const [params, setParams] = useSearchParams();
   const requested = params.get("bolim");
-  const tab = TABS.some((t) => t.value === requested)
-    ? requested
-    : TABS[0].value;
+  const tab = TABS.some((t) => t.value === requested) ? requested : TABS[0].value;
 
   const analytics = useAnalytics();
   const dashboard = useDashboard();
@@ -57,17 +48,11 @@ export default function TahlilPage() {
       </div>
 
       {tab === "statistika" && (
-        <StatsSection
-          stats={analytics.stats}
-          prCount={dashboard.prCount}
-          calendar={calendar}
-        />
+        <StatsSection stats={analytics.stats} prCount={dashboard.prCount} calendar={calendar} />
       )}
 
       <Suspense fallback={<SkeletonList count={3} />}>
-        {tab === "grafiklar" && (
-          <ChartsSection analytics={analytics} dashboard={dashboard} />
-        )}
+        {tab === "grafiklar" && <ChartsSection analytics={analytics} dashboard={dashboard} />}
 
         {tab === "tana" && (
           <BodySection

@@ -8,15 +8,6 @@ import { toStoredWorkout } from "../utils/workout.js";
 import { workoutVolume } from "../utils/metrics.js";
 import { toNum } from "../utils/num.js";
 
-// v2 (bitta hujjat) -> v3 (subcollection'lar) ko'chirish.
-//
-// XAVFSIZLIK KAFOLATLARI:
-//   1. Eski hujjat users/{uid}/appData/main O'CHIRILMAYDI — zaxira bo'lib qoladi.
-//   2. schemaVersion faqat HAMMA narsa yozilgandan keyin qo'yiladi, shuning
-//      uchun yarim yo'lda uzilsa keyingi kirishda migratsiya qaytadan boshlanadi.
-//   3. Barcha yozuvlar merge + o'z ID'si bilan ketadi, ya'ni takroran ishlasa
-//      dublikat paydo bo'lmaydi (idempotent).
-
 function legacyWorkoutToStored(w) {
   const stored = toStoredWorkout(w);
   return {
@@ -32,9 +23,7 @@ function legacyExercisesToDocs(savedExercises) {
   const seen = new Set();
   const out = [];
   (savedExercises ?? []).forEach((item) => {
-    // v2 da avval oddiy string massiv, keyin {name, unit} bo'lgan.
-    const name =
-      typeof item === "string" ? item.trim() : String(item?.name ?? "").trim();
+    const name = typeof item === "string" ? item.trim() : String(item?.name ?? "").trim();
     if (!name) return;
     const key = name.toLowerCase();
     if (seen.has(key)) return;
@@ -56,9 +45,7 @@ export async function ensureMigrated(uid, phone) {
   const counts = { workouts: 0, exercises: 0, measurements: 0 };
 
   if (legacy) {
-    const workouts = (legacy.workouts ?? [])
-      .filter((w) => w?.date)
-      .map(legacyWorkoutToStored);
+    const workouts = (legacy.workouts ?? []).filter((w) => w?.date).map(legacyWorkoutToStored);
     const exercises = legacyExercisesToDocs(legacy.savedExercises);
     const measurements = (legacy.measurements ?? [])
       .filter((m) => m?.date)
@@ -73,8 +60,6 @@ export async function ensureMigrated(uid, phone) {
     counts.measurements = measurements.length;
   }
 
-  // Oxirgi qadam: profil hujjati va schemaVersion. Shu yozilgandan keyingina
-  // migratsiya "tugagan" hisoblanadi.
   await setDoc(
     userDoc(uid),
     {

@@ -12,10 +12,6 @@ const UNITS = [
   { value: "seconds", label: "Soniya (plank)" },
 ];
 
-// Katalogda yo'q mashqni yaratish. Birlik va mushak guruhi FAQAT shu yerda
-// so'raladi — ilgari ular formada doim ko'rinib, joy egallab turardi.
-// Komponent har ochilishda qayta yaratiladi (chaqiruvchi shartli render
-// qiladi), shuning uchun holat har safar toza boshlanadi.
 export default function NewExerciseSheet({ initialName = "", onCreate, onClose }) {
   const [name, setName] = useState(initialName);
   const [unit, setUnit] = useState("reps");

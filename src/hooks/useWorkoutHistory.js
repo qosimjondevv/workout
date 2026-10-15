@@ -4,8 +4,6 @@ import { addDays, todayISO } from "../utils/date.js";
 
 export function useWorkoutHistory() {
   const { items, loading } = useWorkouts();
-  // Boshlang'ich holat "Hammasi": foydalanuvchi ilovani ochganda butun
-  // tarixini ko'radi, 7/30 kunlik kesim esa ixtiyoriy filtr bo'lib qoladi.
   const [historyFilter, setHistoryFilter] = useState("all");
 
   const sortedWorkouts = useMemo(

@@ -3,10 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { DataProviders, RootProviders } from "./context/AppProviders.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import { useSync } from "./context/SyncContext.jsx";
-import {
-  useRestTimerActions,
-  useRestTimerState,
-} from "./context/RestTimerContext.jsx";
+import { useRestTimerActions, useRestTimerState } from "./context/RestTimerContext.jsx";
 import { useAchievementTracker } from "./hooks/useAchievementTracker.js";
 import MigrationGate from "./context/MigrationGate.jsx";
 import { todayISO, fmt } from "./utils/date.js";
@@ -18,7 +15,6 @@ import { BottomDockLayout } from "./layouts/BottomDock.jsx";
 import AchievementModal from "./components/achievements/AchievementModal.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 
-// Jurnal asosiy ekran, qolganlari o'sha tab ochilganda yuklanadi.
 const JurnalPage = lazy(() => import("./pages/JurnalPage.jsx"));
 const TarixPage = lazy(() => import("./pages/TarixPage.jsx"));
 const TahlilPage = lazy(() => import("./pages/TahlilPage.jsx"));
@@ -33,16 +29,9 @@ function LoadingScreen({ label = "Yuklanmoqda..." }) {
 }
 
 function PageFallback() {
-  return (
-    <div className="text-brand-muted text-[13px] text-center py-10">
-      Yuklanmoqda...
-    </div>
-  );
+  return <div className="text-brand-muted text-[13px] text-center py-10">Yuklanmoqda...</div>;
 }
 
-// Taymer holati har soniyada o'zgaradi. Unga faqat shu kichik komponent
-// ulanadi — aks holda Shell va u orqali ochiq sahifa (masalan to'ldirilayotgan
-// Jurnal formasi) dam olish davomida har soniyada qayta render bo'lardi.
 function RestTimerDock() {
   const { active, remaining, running } = useRestTimerState();
   const { pause, resume, extend, skip } = useRestTimerActions();
@@ -62,17 +51,12 @@ function RestTimerDock() {
 
 function Shell() {
   const { syncing, error, retry } = useSync();
-  // Yutuqlarni ochadigan YAGONA joy (sahifalar faqat o'qiydi).
   const achievements = useAchievementTracker();
 
   return (
     <div className="bg-brand-bg min-h-screen font-sans text-brand-text max-w-[480px] mx-auto relative">
-      {/* Chiqish tugmasi bu yerda YO'Q: zalda tasodifan bosilib, to'ldirilayotgan
-          forma bilan birga sessiya yopilib ketardi. Chiqish — Profil sahifasida. */}
       <Header dateLabel={fmt(todayISO())} />
 
-      {/* Pastdagi suzuvchi ustun: sinxronizatsiya, dam olish taymeri va
-          sahifa panellari (Jurnal'da "Saqlash") — bir-birining ustiga chiqmaydi. */}
       <BottomDockLayout
         dock={
           <>
@@ -87,7 +71,6 @@ function Shell() {
               <Routes>
                 <Route path="/jurnal" element={<JurnalPage />} />
                 <Route path="/tarix" element={<TarixPage />} />
-                {/* Eski manzil (xatcho'p va tarixdagi havolalar uchun) */}
                 <Route path="/jadval" element={<Navigate to="/tarix" replace />} />
                 <Route path="/tahlil" element={<TahlilPage />} />
                 <Route path="/profil" element={<ProfilPage />} />
@@ -100,10 +83,7 @@ function Shell() {
 
       <BottomNav />
 
-      <AchievementModal
-        pending={achievements.pending}
-        onClose={achievements.dismiss}
-      />
+      <AchievementModal pending={achievements.pending} onClose={achievements.dismiss} />
     </div>
   );
 }

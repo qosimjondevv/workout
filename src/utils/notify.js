@@ -1,21 +1,11 @@
-// Qurilma ichidagi signallar: tovush, tebranish va brauzer bildirishnomasi.
-// Hech qanday server yoki tashqi fayl kerak emas.
-//
-// Hammasi "mumkin bo'lsa" tamoyilida: brauzer qo'llab-quvvatlamasa yoki
-// foydalanuvchi ruxsat bermasa, ilova xatosiz davom etadi.
-
 export function vibrate(pattern = [180, 90, 180]) {
   try {
     navigator.vibrate?.(pattern);
-  } catch {
-    // Tebranish ixtiyoriy — qo'llab-quvvatlanmasa e'tibor bermaymiz.
-  }
+  } catch {}
 }
 
 let audioContext = null;
 
-// Tovush fayli o'rniga Web Audio bilan generatsiya qilinadi: ilovaga
-// qo'shimcha mp3 yuklash shart emas va kechikish nolga yaqin.
 export function beep({ frequency = 880, duration = 0.16, times = 2 } = {}) {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -30,7 +20,6 @@ export function beep({ frequency = 880, duration = 0.16, times = 2 } = {}) {
 
       osc.type = "sine";
       osc.frequency.value = frequency;
-      // Keskin "klik" bo'lmasligi uchun ovoz yumshoq ko'tarilib tushadi.
       gain.gain.setValueAtTime(0.0001, startAt);
       gain.gain.exponentialRampToValueAtTime(0.22, startAt + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
@@ -40,17 +29,13 @@ export function beep({ frequency = 880, duration = 0.16, times = 2 } = {}) {
       osc.start(startAt);
       osc.stop(startAt + duration + 0.02);
     }
-  } catch {
-    // Ovoz chiqmasa ham taymer ishlashda davom etadi.
-  }
+  } catch {}
 }
 
 function notificationsSupported() {
   return typeof window !== "undefined" && "Notification" in window;
 }
 
-// Ruxsat FAQAT foydalanuvchi harakatidan keyin so'raladi (taymer boshlanganda),
-// sahifa ochilishi bilan emas — aks holda brauzer so'rovni bloklaydi.
 export async function requestNotificationPermission() {
   if (!notificationsSupported()) return false;
   if (Notification.permission === "granted") return true;
@@ -62,13 +47,8 @@ export async function requestNotificationPermission() {
   }
 }
 
-// Android Chrome'da `new Notification()` umuman ishlamaydi (xato tashlaydi) —
-// u yerda bildirishnoma faqat service worker orqali chiqadi. Shuning uchun
-// SW ro'yxatdan o'tgan bo'lsa (production / o'rnatilgan ilova) o'sha
-// ishlatiladi, aks holda oddiy Notification.
 export async function showNotification(title, body) {
-  if (!notificationsSupported() || Notification.permission !== "granted")
-    return;
+  if (!notificationsSupported() || Notification.permission !== "granted") return;
   const options = {
     body,
     tag: "temir-jurnal-rest",
@@ -83,13 +63,9 @@ export async function showNotification(title, body) {
       await reg.showNotification(title, options);
       return;
     }
-  } catch {
-    // SW orqali chiqmadi — oddiy usulga o'tamiz.
-  }
+  } catch {}
   try {
     const n = new Notification(title, options);
     setTimeout(() => n.close(), 8000);
-  } catch {
-    // Ba'zi brauzerlar service worker'siz Notification'ni cheklaydi.
-  }
+  } catch {}
 }

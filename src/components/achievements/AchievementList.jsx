@@ -5,8 +5,6 @@ import { ACHIEVEMENTS, TIER_STYLES } from "../../constants/achievements.js";
 import { cn } from "../../utils/cn.js";
 import { formatCompact } from "../../utils/num.js";
 
-// Ochilmagan yutuq ham KO'RINADI (xiralashgan holda) va unga qancha
-// qolgani yoziladi — bu keyingi maqsadni ko'rsatib turadi.
 function progressLabel(achievement, stats) {
   const current = Number(stats?.[achievement.metric]) || 0;
   if (achievement.metric === "volume")
@@ -15,9 +13,7 @@ function progressLabel(achievement, stats) {
 }
 
 export default function AchievementList({ unlockedKeys, stats }) {
-  const unlockedCount = ACHIEVEMENTS.filter((a) =>
-    unlockedKeys.has(a.key),
-  ).length;
+  const unlockedCount = ACHIEVEMENTS.filter((a) => unlockedKeys.has(a.key)).length;
 
   return (
     <Card className="mb-4">

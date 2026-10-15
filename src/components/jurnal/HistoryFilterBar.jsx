@@ -16,7 +16,9 @@ export default function HistoryFilterBar({ value, onChange }) {
           onClick={() => onChange(o.v)}
           className={cn(
             "text-[11px] px-2 py-1 rounded border cursor-pointer",
-            value === o.v ? "border-brand-accent bg-brand-accent/15 text-brand-accent" : "border-brand-line bg-transparent text-brand-muted"
+            value === o.v
+              ? "border-brand-accent bg-brand-accent/15 text-brand-accent"
+              : "border-brand-line bg-transparent text-brand-muted",
           )}
         >
           {o.l}

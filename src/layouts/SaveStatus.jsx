@@ -1,11 +1,6 @@
 import React from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 
-// Saqlash holatini foydalanuvchiga ko'rsatadi (spetsifikatsiya 17-band).
-//
-// Eslatma: offline rejimda yozuv qurilmada saqlanadi, lekin server tasdig'i
-// kechikadi — shuning uchun "Sinxronlanmoqda" uzoq turishi mumkin va bu
-// XATO emas, hech narsani bloklamaydi.
 export default function SaveStatus({ syncing, saveError, onRetry }) {
   if (!saveError && !syncing) return null;
 

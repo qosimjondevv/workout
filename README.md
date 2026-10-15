@@ -24,13 +24,13 @@ cp .env.example .env   # va Firebase qiymatlarini to'ldiring
 npm run dev            # http://localhost:5180
 ```
 
-| Buyruq | Vazifasi |
-|---|---|
-| `npm run dev` | Ishlab chiqish serveri (5180-port) |
-| `npm run build` | Production build (`dist/`) |
+| Buyruq            | Vazifasi                                                        |
+| ----------------- | --------------------------------------------------------------- |
+| `npm run dev`     | Ishlab chiqish serveri (5180-port)                              |
+| `npm run build`   | Production build (`dist/`)                                      |
 | `npm run preview` | Build'ni ko'rish (5181-port, service worker shu yerda ishlaydi) |
-| `npm test` | Mantiq testlari (`tests/`, qo'shimcha kutubxonasiz) |
-| `npm run lint` | ESLint |
+| `npm test`        | Mantiq testlari (`tests/`, qo'shimcha kutubxonasiz)             |
+| `npm run lint`    | ESLint                                                          |
 
 ## Maxfiy sozlamalar
 
@@ -40,7 +40,7 @@ Firebase'ning veb-konfiguratsiyasi build paytida brauzer kodiga yoziladi, ya'ni 
 
 1. **[`firestore.rules`](firestore.rules) va [`storage.rules`](storage.rules).** Har kim faqat o'z `users/{uid}` ma'lumotiga kira oladi, hujjat shakli va hajmi tekshiriladi.
 2. **Firebase Auth → Settings → Authorized domains.** Ro'yxatda faqat o'z domenlaringiz bo'lsin.
-3. **Google Cloud Console → APIs & Services → Credentials → API key.** Kalitga *Application restrictions → Websites* cheklovi qo'yiladi va unga faqat o'z domenlaringiz yoziladi.
+3. **Google Cloud Console → APIs & Services → Credentials → API key.** Kalitga _Application restrictions → Websites_ cheklovi qo'yiladi va unga faqat o'z domenlaringiz yoziladi.
 
 ## Vercel'ga deploy
 

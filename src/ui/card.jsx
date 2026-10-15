@@ -1,7 +1,6 @@
 import React from "react";
 import { cn } from "../utils/cn.js";
 
-// Kimlar ishlatadi: har bir tabdagi asosiy "panel" bloklar (forma, tarix, statistika, grafik)
 export function Card({ className, ...props }) {
   return <div className={cn("bg-brand-surface rounded-lg p-4", className)} {...props} />;
 }

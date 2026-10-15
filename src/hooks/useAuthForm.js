@@ -29,9 +29,7 @@ export function useAuthForm() {
 
     setSubmitting(true);
     const result =
-      mode === "login"
-        ? await login(phone, password)
-        : await register(phone, password);
+      mode === "login" ? await login(phone, password) : await register(phone, password);
     setSubmitting(false);
 
     if (!result.ok) setError(result.error);

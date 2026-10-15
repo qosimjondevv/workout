@@ -21,10 +21,7 @@ export default function ExerciseManager({
         <span className="flex items-center gap-1.5 text-[13px]">
           <Settings2 size={14} /> Mashqlar ro'yxatini boshqarish
         </span>
-        <ChevronRight
-          size={16}
-          className={cn("transition-transform", open && "rotate-90")}
-        />
+        <ChevronRight size={16} className={cn("transition-transform", open && "rotate-90")} />
       </button>
 
       {open && (

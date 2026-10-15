@@ -55,8 +55,6 @@ function TemplateChip({ template, isToday, badge, onStart }) {
   );
 }
 
-// Haftalik jadval: DUSH ... YAK. Bugungi kun ajratilgan; kun bosilsa o'sha
-// kunning mashqi boshlanadi. Mashq biriktirilmagan kun — "dam".
 function WeekStrip({ list, today, onStart }) {
   return (
     <div className="grid grid-cols-7 gap-1 mb-2">
@@ -73,7 +71,9 @@ function WeekStrip({ list, today, onStart }) {
             title={items.map((t) => t.name).join(", ") || "Dam olish kuni"}
             className={cn(
               "flex flex-col items-center justify-center rounded-md py-1.5 px-0.5 border min-w-0 transition-colors",
-              isToday ? "border-brand-accent bg-brand-accent/10" : "border-brand-line bg-brand-surface",
+              isToday
+                ? "border-brand-accent bg-brand-accent/10"
+                : "border-brand-line bg-brand-surface",
               first ? "cursor-pointer hover:border-brand-accent" : "cursor-default",
             )}
           >
@@ -103,24 +103,12 @@ function WeekStrip({ list, today, onStart }) {
   );
 }
 
-// Tayyor kunlik mashqlar paneli. Chipni bosish = shu mashqlar formaga
-// yuklanadi (Start Workout).
-//
-// Foydalanuvchida hali o'z kunlik mashqi bo'lmasa, NAMUNALAR ko'rsatiladi:
-// ular darhol ishlatiladi yoki bir bosishda o'z ro'yxatiga saqlab olinadi.
-export default function TemplateBar({
-  templates,
-  loading,
-  onStart,
-  onManage,
-  onAdoptPresets,
-}) {
+export default function TemplateBar({ templates, loading, onStart, onManage, onAdoptPresets }) {
   const showPresets = !loading && templates.length === 0;
   const list = showPresets ? TEMPLATE_PRESETS : templates;
   const today = weekdayIndex(todayISO());
   const hasSchedule = list.some((t) => normalizeTemplateDays(t.days).length > 0);
 
-  // Bugungi mashq(lar) birinchi turadi.
   const ordered = [...list].sort(
     (a, b) =>
       Number(normalizeTemplateDays(b.days).includes(today)) -

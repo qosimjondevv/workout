@@ -27,9 +27,7 @@ export default function BottomNav() {
           {({ isActive }) => (
             <>
               <Icon size={18} />
-              <span
-                className={cn("text-[10px]", isActive ? "font-bold" : "font-medium")}
-              >
+              <span className={cn("text-[10px]", isActive ? "font-bold" : "font-medium")}>
                 {label}
               </span>
             </>

@@ -44,10 +44,7 @@ export default function MeasurementChart({
         <CardTitle className="flex items-center gap-1.5 normal-case text-sm">
           <TrendingUp size={15} /> O'lcham dinamikasi
         </CardTitle>
-        <Select
-          value={selectedField}
-          onChange={(e) => onSelectField(e.target.value)}
-        >
+        <Select value={selectedField} onChange={(e) => onSelectField(e.target.value)}>
           {fields.map((f) => (
             <option key={f.key} value={f.key}>
               {f.label}
@@ -69,14 +66,8 @@ export default function MeasurementChart({
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={data}>
               <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="period"
-                tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-              />
-              <YAxis
-                tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-                domain={["auto", "auto"]}
-              />
+              <XAxis dataKey="period" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
+              <YAxis tick={{ fill: COLOR_MUTED, fontSize: 10 }} domain={["auto", "auto"]} />
               <Tooltip
                 contentStyle={{
                   background: COLOR_SURFACE2,
@@ -97,9 +88,7 @@ export default function MeasurementChart({
           </ResponsiveContainer>
         </>
       ) : (
-        <div className="text-brand-muted text-xs text-center py-5">
-          Ma'lumot yo'q
-        </div>
+        <div className="text-brand-muted text-xs text-center py-5">Ma'lumot yo'q</div>
       )}
     </Card>
   );

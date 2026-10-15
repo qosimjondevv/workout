@@ -4,11 +4,6 @@ import { Input } from "../../ui/input.jsx";
 import { cn } from "../../utils/cn.js";
 import { toStr } from "../../utils/num.js";
 
-// Bitta set qatori: [№] [kg] × [marta] [🔥] [✓] [×]
-//
-// placeholder — oldingi mashg'ulotdagi SHU tartibdagi set (kulrang matn).
-// ✓ bosilganda bo'sh maydonlar aynan shu qiymat bilan to'ldiriladi, ya'ni
-// "o'tgan safargidek" setni bitta bosish bilan yozish mumkin.
 export default function SetRow({
   index,
   unit,
@@ -93,9 +88,7 @@ export default function SetRow({
       )}
 
       <span className="w-4 shrink-0 flex justify-center" aria-hidden={!isRecord}>
-        {isRecord && (
-          <Flame size={14} className="text-brand-accent" aria-label="Yangi rekord" />
-        )}
+        {isRecord && <Flame size={14} className="text-brand-accent" aria-label="Yangi rekord" />}
       </span>
 
       <button

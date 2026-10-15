@@ -4,40 +4,48 @@ const { countPersonalRecords, volumeByPeriod } = await import(B + "utils/metrics
 const { monthMatrix, monthLabel, addMonths, shortDate } = await import(B + "utils/date.js");
 const { formatCompact } = await import(B + "utils/num.js");
 
-// --- PR soni: birinchi marta bajarish rekord EMAS ---
 const mk = (date, name, weight) => ({
-  date, exercises: [{ name, unit: "reps", sets: [{ weight, reps: 5 }] }],
+  date,
+  exercises: [{ name, unit: "reps", sets: [{ weight, reps: 5 }] }],
 });
-assert.equal(countPersonalRecords([mk("2026-01-01", "Jim", 70)]), 0, "birinchi marta = boshlang'ich");
+assert.equal(
+  countPersonalRecords([mk("2026-01-01", "Jim", 70)]),
+  0,
+  "birinchi marta = boshlang'ich",
+);
 assert.equal(
   countPersonalRecords([mk("2026-01-01", "Jim", 70), mk("2026-01-08", "Jim", 75)]),
-  1, "yaxshilanish = 1 rekord",
+  1,
+  "yaxshilanish = 1 rekord",
 );
 assert.equal(
   countPersonalRecords([
-    mk("2026-01-01", "Jim", 70), mk("2026-01-08", "Jim", 75),
-    mk("2026-01-15", "Jim", 72), mk("2026-01-22", "Jim", 80),
+    mk("2026-01-01", "Jim", 70),
+    mk("2026-01-08", "Jim", 75),
+    mk("2026-01-15", "Jim", 72),
+    mk("2026-01-22", "Jim", 80),
   ]),
-  2, "pasayish sanalmaydi",
+  2,
+  "pasayish sanalmaydi",
 );
-// sana tartibi aralash kelsa ham to'g'ri hisoblaydi
 assert.equal(
   countPersonalRecords([mk("2026-01-22", "Jim", 80), mk("2026-01-01", "Jim", 70)]),
-  1, "xronologiya bo'yicha saralanadi",
+  1,
+  "xronologiya bo'yicha saralanadi",
 );
-// har mashq o'z rekordini yuritadi
 assert.equal(
   countPersonalRecords([
-    mk("2026-01-01", "Jim", 70), mk("2026-01-02", "Squat", 100),
+    mk("2026-01-01", "Jim", 70),
+    mk("2026-01-02", "Squat", 100),
     mk("2026-01-09", "Squat", 110),
   ]),
   1,
 );
 assert.equal(countPersonalRecords([]), 0);
 
-// --- volume davrlar bo'yicha ---
 const w = (date, weight, reps) => ({
-  date, exercises: [{ name: "Jim", unit: "reps", sets: [{ weight, reps }] }],
+  date,
+  exercises: [{ name: "Jim", unit: "reps", sets: [{ weight, reps }] }],
 });
 const weekly = volumeByPeriod([w("2026-09-14", 100, 5), w("2026-09-16", 100, 3)], "week");
 assert.equal(weekly.length, 1, "bir hafta ichidagi ikki mashg'ulot birlashadi");
@@ -48,14 +56,12 @@ assert.equal(weekly[0].label, "14.09", "davr eng erta sana bilan belgilanadi");
 const monthly = volumeByPeriod([w("2026-08-31", 10, 1), w("2026-09-01", 10, 2)], "month");
 assert.equal(monthly.length, 2, "avgust va sentabr ajraladi");
 assert.equal(monthly[0].label, "31.08", "o'sish tartibida");
-// oldindan hisoblangan totalVolume ustun turadi
 assert.equal(
   volumeByPeriod([{ date: "2026-09-14", totalVolume: 1234, exercises: [] }])[0].volume,
   1234,
 );
 assert.deepEqual(volumeByPeriod([]), []);
 
-// --- kalendar katagi ---
 const weeks = monthMatrix("2026-09-18");
 assert.equal(weeks.length, 6, "har doim 6 qator (balandlik sakramaydi)");
 assert.ok(weeks.every((wk) => wk.length === 7));
@@ -67,16 +73,22 @@ const inMonth = flat.filter((d) => d.inMonth).map((d) => d.iso);
 assert.equal(inMonth.length, 30, "sentabrda 30 kun");
 assert.equal(inMonth[0], "2026-09-01");
 assert.equal(inMonth[29], "2026-09-30");
-assert.ok(flat.some((d) => !d.inMonth), "qo'shni oy kunlari ham to'ldiriladi");
-// fevral va kabisa yili
-assert.equal(monthMatrix("2024-02-10").flat().filter((d) => d.inMonth).length, 29);
+assert.ok(
+  flat.some((d) => !d.inMonth),
+  "qo'shni oy kunlari ham to'ldiriladi",
+);
+assert.equal(
+  monthMatrix("2024-02-10")
+    .flat()
+    .filter((d) => d.inMonth).length,
+  29,
+);
 
 assert.equal(monthLabel("2026-09-18"), "Sentabr 2026");
 assert.equal(addMonths("2026-01-31", 1), "2026-02-01", "oy chekkasida sirg'anmaydi");
 assert.equal(addMonths("2026-01-15", -1), "2025-12-01");
 assert.equal(shortDate("2026-09-05"), "05.09");
 
-// --- qisqa raqam ---
 assert.equal(formatCompact(999), "999");
 assert.equal(formatCompact(1000), "1k");
 assert.equal(formatCompact(12345), "12.3k");

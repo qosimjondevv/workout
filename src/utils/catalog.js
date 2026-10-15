@@ -4,11 +4,6 @@ import { normalizeUnit } from "./workout.js";
 import { normalizeMuscleGroup } from "../constants/muscleGroups.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
 
-// Hujjat "fabrikalari" — sof funksiyalar, Firebase'ga bog'liq emas.
-// Ular servis ichida turganda har bir test Firebase'ni ham yuklashga majbur
-// bo'lardi; bu yerda esa alohida sinash mumkin (spetsifikatsiya 15-band).
-
-// --- Mashqlar katalogi ---
 export function makeExerciseDoc({ name, unit, muscleGroup }) {
   return {
     id: uid(),
@@ -18,12 +13,8 @@ export function makeExerciseDoc({ name, unit, muscleGroup }) {
   };
 }
 
-// Telefon klaviaturalari o'zbekcha apostrofni turlicha beradi: o' o‘ o’ oʻ o`.
-// Hammasi bitta belgiga keltiriladi, aks holda "O'tirish" va "O‘tirish"
-// ikki xil mashq bo'lib qolardi.
 const APOSTROPHES = /[ʻʼ‘’`´]/g;
 
-// Mashq nomini taqqoslash kaliti: "  Jim " va "jim" bitta mashq.
 export function exerciseKey(name) {
   return String(name ?? "")
     .replace(APOSTROPHES, "'")
@@ -32,10 +23,6 @@ export function exerciseKey(name) {
     .toLowerCase();
 }
 
-// Nom bo'yicha mashqning birligi va mushak guruhini topadi. Manbalar BERILGAN
-// TARTIBDA ko'riladi va birinchi topilgani olinadi — chaqiruvchi qaysi manba
-// ishonchliroq ekanini o'zi belgilaydi (odatda avval katalog).
-// Topilmasa null: "reps"/"other" ni jimgina taxmin qilib qo'ymaymiz.
 export function findExerciseMeta(name, ...sources) {
   const key = exerciseKey(name);
   if (!key) return null;
@@ -52,8 +39,6 @@ export function findExerciseMeta(name, ...sources) {
   return null;
 }
 
-// Katalogdan qidirish. Tartib: aniq mos -> boshidan mos -> so'z boshidan mos
-// -> o'rtasidan mos; teng bo'lsa alifbo bo'yicha.
 export function searchExercises(catalog, query, limit = 8) {
   const q = exerciseKey(query);
   if (!q) return [];
@@ -62,8 +47,7 @@ export function searchExercises(catalog, query, limit = 8) {
     const key = exerciseKey(e?.name);
     const idx = key.indexOf(q);
     if (!key || idx === -1) return;
-    const rank =
-      key === q ? 0 : idx === 0 ? 1 : /[\s(-]/.test(key[idx - 1]) ? 2 : 3;
+    const rank = key === q ? 0 : idx === 0 ? 1 : /[\s(-]/.test(key[idx - 1]) ? 2 : 3;
     scored.push({ e, rank });
   });
   return scored
@@ -72,8 +56,6 @@ export function searchExercises(catalog, query, limit = 8) {
     .map((s) => s.e);
 }
 
-// Eng so'nggi mashg'ulotlarda bajarilgan mashqlar (eng yangisi birinchi).
-// Birlik va guruh imkon bo'lsa katalogdan, bo'lmasa mashg'ulotning o'zidan.
 export function recentExercises(workouts, catalog, limit = 6) {
   const seen = new Set();
   const out = [];
@@ -98,9 +80,6 @@ export function recentExercises(workouts, catalog, limit = 6) {
   return out;
 }
 
-// --- Template ---
-// sets: nechta set rejalashtirilgan (1..20), reps: maqsad matni ("8-10",
-// "45s"). Ikkalasi ham ixtiyoriy — eski template'larda bo'lmaydi.
 export const TEMPLATE_MAX_SETS = 20;
 const GOAL_REPS_MAX_LEN = 15;
 
@@ -110,14 +89,13 @@ export function normalizeGoalSets(value) {
 }
 
 function normalizeGoalReps(value) {
-  return String(value ?? "").trim().slice(0, GOAL_REPS_MAX_LEN);
+  return String(value ?? "")
+    .trim()
+    .slice(0, GOAL_REPS_MAX_LEN);
 }
 
-// Hafta kunlari: 0 = DUSH ... 6 = YAK. Takrorsiz, tartiblangan butun sonlar;
-// noto'g'ri qiymatlar tashlanadi. Eski template'larda maydon yo'q -> [].
 export function normalizeTemplateDays(days) {
   if (!Array.isArray(days)) return [];
-  // null/"" ni Number() 0 ga (dushanbaga) aylantirib yuborardi — oldin tashlanadi.
   const valid = days
     .filter((d) => typeof d === "number" || (typeof d === "string" && d.trim() !== ""))
     .map((d) => Number(d))
@@ -125,14 +103,12 @@ export function normalizeTemplateDays(days) {
   return Array.from(new Set(valid)).sort((a, b) => a - b);
 }
 
-// Shu hafta kuniga biriktirilgan kunlik mashqlar (nomi bo'yicha tartibda).
 export function templatesForDay(templates, dayIndex) {
   return (templates ?? [])
     .filter((t) => normalizeTemplateDays(t.days).includes(dayIndex))
     .sort((a, b) => String(a.name).localeCompare(String(b.name)));
 }
 
-// id berilsa o'sha template YANGILANADI, berilmasa yangisi yaratiladi.
 export function makeTemplate({ id, name, target, days, exercises }) {
   return {
     id: id || uid(),
@@ -151,9 +127,6 @@ export function makeTemplate({ id, name, target, days, exercises }) {
   };
 }
 
-// --- Tana o'lchamlari ---
-// Forma matn beradi, Firestore'ga raqam yoziladi. To'ldirilmagan maydon
-// umuman yozilmaydi (null bilan to'ldirib chiqmaymiz).
 export function toStoredMeasurement(entry) {
   const values = {};
   MEASUREMENT_FIELDS.forEach((f) => {

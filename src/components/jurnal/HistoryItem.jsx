@@ -17,18 +17,11 @@ export default function HistoryItem({ workout, onEdit, onDelete }) {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
           <TypeBadge label={workout.target} />
-          <span className="text-[13px] font-semibold text-brand-text">
-            {fmt(workout.date)}
-          </span>
-          {/* `bodyWeight && ...` 0 bo'lganda ekranga "0" chiqarib qo'yardi */}
+          <span className="text-[13px] font-semibold text-brand-text">{fmt(workout.date)}</span>
           {bodyWeight !== null && bodyWeight > 0 && (
-            <span className="text-[11px] text-brand-muted">
-              {bodyWeight} kg
-            </span>
+            <span className="text-[11px] text-brand-muted">{bodyWeight} kg</span>
           )}
-          {duration && (
-            <span className="text-[11px] text-brand-muted">{duration}</span>
-          )}
+          {duration && <span className="text-[11px] text-brand-muted">{duration}</span>}
         </div>
 
         <div className="flex gap-2.5">

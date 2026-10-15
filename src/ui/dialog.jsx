@@ -2,9 +2,6 @@ import React, { useEffect } from "react";
 import { X } from "lucide-react";
 import { Button } from "./button.jsx";
 
-// SOF UI, qayta ishlatiladigan modal. Hech qanday hook/context yo'q.
-// Kim beradi: uni chaqirgan component o'zining "open" holatini boshqaradi
-// (masalan HistoryItem.jsx dagi useState(confirmOpen)).
 export function ConfirmDialog({
   open,
   title,
@@ -14,7 +11,6 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
-  // Escape bilan yopish + modal ochiq turganda fon aylanmasin.
   useEffect(() => {
     if (!open) return;
     function onKey(e) {
@@ -64,8 +60,6 @@ export function ConfirmDialog({
   );
 }
 
-// Umumiy modal qobiq: sarlavha + ixtiyoriy mazmun. ConfirmDialog bilan bir xil
-// xulq (Escape, fonga bosish, fon aylanmaydi), lekin ichini chaqiruvchi to'ldiradi.
 export function Modal({ open, title, onClose, children, footer }) {
   useEffect(() => {
     if (!open) return undefined;

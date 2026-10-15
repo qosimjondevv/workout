@@ -2,22 +2,16 @@ import { useCallback, useMemo, useState } from "react";
 import { usePhotos } from "../context/collections.jsx";
 import { compressImage } from "../utils/image.js";
 
-// Progress suratlari: galereya filtri, yuklash (kichraytirib) va o'chirish.
 export function useProgressPhotos() {
   const { items, loading, save, remove } = usePhotos();
   const [kind, setKind] = useState("all");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
-  // Eng yangisi birinchi; bir kunda bir nechta bo'lsa — keyin yuklangani.
   const sorted = useMemo(
     () =>
       [...items].sort((a, b) =>
-        a.date === b.date
-          ? String(b.id).localeCompare(String(a.id))
-          : a.date < b.date
-            ? 1
-            : -1,
+        a.date === b.date ? String(b.id).localeCompare(String(a.id)) : a.date < b.date ? 1 : -1,
       ),
     [items],
   );
@@ -27,7 +21,6 @@ export function useProgressPhotos() {
     [sorted, kind],
   );
 
-  // { file, date, kind, note } -> true (yuklandi) / false
   const upload = useCallback(
     async ({ file, ...meta }) => {
       setUploadError("");

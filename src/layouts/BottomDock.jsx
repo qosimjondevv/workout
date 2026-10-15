@@ -1,14 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-// Pastki navigatsiya ustidagi SUZUVCHI USTUN: sinxronizatsiya holati, dam
-// olish taymeri va sahifaga xos panellar (masalan Jurnal'dagi "Saqlash")
-// shu yerda bitta ustunda turadi — bir-birining ustiga chiqmaydi.
-//
-// Sahifa o'z panelini <DockPortal> orqali ustunning PASTKI qismiga qo'yadi.
-// Ustun balandligi kuzatiladi va asosiy kontentning pastki chekinishi shunga
-// moslanadi: oxirgi kartochka panel ostida qolib ketmaydi.
-
 const DockSlotContext = createContext(null);
 
 export function DockPortal({ children }) {
@@ -16,8 +8,6 @@ export function DockPortal({ children }) {
   return slot ? createPortal(children, slot) : null;
 }
 
-// Element balandligini kuzatadi (ResizeObserver). Element state'da
-// saqlanadi (callback ref), shuning uchun u paydo bo'lganda kuzatuv boshlanadi.
 function useElementHeight(element) {
   const [height, setHeight] = useState(0);
   useEffect(() => {
@@ -34,7 +24,6 @@ function useElementHeight(element) {
 const NAV_HEIGHT = 68;
 const GAP = 16;
 
-// render-prop: children(dockHeight) — asosiy kontent chekinishini hisoblash uchun.
 export function BottomDockLayout({ dock, children }) {
   const [column, setColumn] = useState(null);
   const [slot, setSlot] = useState(null);

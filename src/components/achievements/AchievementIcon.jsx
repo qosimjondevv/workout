@@ -1,8 +1,6 @@
 import React from "react";
 import { Award, Dumbbell, Flame, Footprints, Layers, Trophy } from "lucide-react";
 
-// Yutuqlar ro'yxati constants ichida SOF MA'LUMOT bo'lib turishi uchun u yerda
-// ikonka nomi (satr) saqlanadi, komponentga bog'lash esa shu yerda bo'ladi.
 const ICONS = {
   footprints: Footprints,
   dumbbell: Dumbbell,

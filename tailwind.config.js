@@ -1,12 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {
-        // Ilovaning yagona rang manbai (eski constants.js o'rnida).
-        // Ishlatilishi: bg-brand-bg, text-brand-accent, border-brand-line ...
         brand: {
           bg: "#121212",
           surface: "#1B1B1D",

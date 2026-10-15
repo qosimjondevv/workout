@@ -1,23 +1,13 @@
 import React from "react";
 import { cn } from "../utils/cn.js";
 
-// Bir xil "yonma-yon tugmalar" naqshi ilovada bir necha joyda takrorlanardi
-// (haftalik/oylik, vazn/soniya, bo'lim tanlash). Endi bitta komponent.
-//
-// options: [{ value, label, icon? }]
 const SIZES = {
   sm: "text-[11px] py-1",
   md: "text-xs py-1.5",
   lg: "text-[13px] py-2",
 };
 
-export function SegmentedControl({
-  value,
-  onChange,
-  options,
-  size = "md",
-  className,
-}) {
+export function SegmentedControl({ value, onChange, options, size = "md", className }) {
   return (
     <div
       className={cn(

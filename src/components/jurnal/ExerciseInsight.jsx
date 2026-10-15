@@ -3,18 +3,7 @@ import { Copy, Flame, TrendingUp } from "lucide-react";
 import { fmt } from "../../utils/date.js";
 import { formatSet } from "../../utils/workout.js";
 
-// Mashq ustidagi kichik "xotira" bloki:
-//   - oldingi mashg'ulotda nima qilingan (+ nusxalash tugmasi)
-//   - shu mashq bo'yicha shaxsiy rekord
-//   - keyingi qadam uchun taklif (+ qabul qilish tugmasi)
-//
-// Taklif MAJBURIY emas: foydalanuvchi e'tibor bermasligi ham mumkin.
-export default function ExerciseInsight({
-  insight,
-  unit,
-  onUsePrevious,
-  onApplySuggestion,
-}) {
+export default function ExerciseInsight({ insight, unit, onUsePrevious, onApplySuggestion }) {
   if (!insight?.previous) return null;
 
   const isSeconds = unit === "seconds";
@@ -39,9 +28,7 @@ export default function ExerciseInsight({
     <div className="bg-brand-bg/60 border border-brand-line rounded-md px-2.5 py-2 mb-2">
       <div className="flex items-start gap-2">
         <div className="flex-1 min-w-0">
-          <div className="text-[10px] text-brand-muted">
-            Oxirgi marta · {fmt(previous.date)}
-          </div>
+          <div className="text-[10px] text-brand-muted">Oxirgi marta · {fmt(previous.date)}</div>
           <div className="text-[12px] text-brand-text truncate">
             {prevSets.map((s) => formatSet(unit, s)).join(", ") || "-"}
           </div>
@@ -64,9 +51,7 @@ export default function ExerciseInsight({
           </span>
         )}
         {!isSeconds && stats.best1RM > 0 && (
-          <span className="text-[11px] text-brand-muted">
-            1RM ~{stats.best1RM}kg
-          </span>
+          <span className="text-[11px] text-brand-muted">1RM ~{stats.best1RM}kg</span>
         )}
       </div>
 
@@ -75,9 +60,7 @@ export default function ExerciseInsight({
           <TrendingUp size={12} className="text-brand-accent shrink-0" />
           <span className="text-[11px] text-brand-muted flex-1">
             Keyingi qadam:{" "}
-            <span className="text-brand-accent font-semibold">
-              {suggestionLabel}
-            </span>
+            <span className="text-brand-accent font-semibold">{suggestionLabel}</span>
           </span>
           <button
             type="button"

@@ -7,14 +7,9 @@ import { formatCompact } from "../../utils/num.js";
 import { muscleGroupLabel } from "../../constants/muscleGroups.js";
 import { workoutVolume } from "../../utils/metrics.js";
 
-// Kalendarda kun bosilganda ochiladi: o'sha kundagi mashg'ulot(lar) tafsiloti.
 export default function WorkoutDayModal({ date, workouts, onClose }) {
   return (
-    <Modal
-      open={Boolean(date)}
-      title={date ? fmt(date) : ""}
-      onClose={onClose}
-    >
+    <Modal open={Boolean(date)} title={date ? fmt(date) : ""} onClose={onClose}>
       {workouts.map((w) => {
         const volume = Number(w.totalVolume) || workoutVolume(w);
         const duration = formatDuration(w.durationSec);
@@ -24,25 +19,18 @@ export default function WorkoutDayModal({ date, workouts, onClose }) {
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <TypeBadge label={w.target} />
               {w.bodyWeight != null && (
-                <span className="text-[11px] text-brand-muted">
-                  {w.bodyWeight} kg
-                </span>
+                <span className="text-[11px] text-brand-muted">{w.bodyWeight} kg</span>
               )}
               {volume > 0 && (
                 <span className="text-[11px] text-brand-muted">
                   Hajm: {formatCompact(volume)} kg
                 </span>
               )}
-              {duration && (
-                <span className="text-[11px] text-brand-muted">{duration}</span>
-              )}
+              {duration && <span className="text-[11px] text-brand-muted">{duration}</span>}
             </div>
 
             {(w.exercises ?? []).map((e, i) => (
-              <div
-                key={e.id}
-                className="bg-brand-surface2 rounded-md px-3 py-2 mb-1.5"
-              >
+              <div key={e.id} className="bg-brand-surface2 rounded-md px-3 py-2 mb-1.5">
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="text-[13px] font-semibold text-brand-text">
                     {groups[i] && (
@@ -62,11 +50,7 @@ export default function WorkoutDayModal({ date, workouts, onClose }) {
               </div>
             ))}
 
-            {w.notes && (
-              <div className="text-[12px] text-brand-muted italic mt-2">
-                {w.notes}
-              </div>
-            )}
+            {w.notes && <div className="text-[12px] text-brand-muted italic mt-2">{w.notes}</div>}
           </div>
         );
       })}

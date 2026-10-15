@@ -1,14 +1,8 @@
 import { useMemo, useState } from "react";
 import { useWorkouts } from "../context/collections.jsx";
-import {
-  countPersonalRecords,
-  muscleGroupDistribution,
-  volumeByPeriod,
-} from "../utils/metrics.js";
+import { countPersonalRecords, muscleGroupDistribution, volumeByPeriod } from "../utils/metrics.js";
 import { muscleGroupLabel } from "../constants/muscleGroups.js";
 
-// Tahlil sahifasining "dashboard" qismi: volume grafigi, mushak taqsimoti
-// va rekordlar soni.
 export function useDashboard() {
   const { items: workouts, loading } = useWorkouts();
   const [volumePeriod, setVolumePeriod] = useState("week");
@@ -20,7 +14,6 @@ export function useDashboard() {
 
   const prCount = useMemo(() => countPersonalRecords(workouts), [workouts]);
 
-  // Taqsimot foizga o'giriladi: "12 set" dan ko'ra "34%" ko'proq narsa aytadi.
   const distribution = useMemo(() => {
     const raw = muscleGroupDistribution(workouts);
     const total = raw.reduce((sum, d) => sum + d.value, 0);

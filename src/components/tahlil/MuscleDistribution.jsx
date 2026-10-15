@@ -2,9 +2,6 @@ import React from "react";
 import { PieChart as PieIcon } from "lucide-react";
 import { Card, CardTitle } from "../../ui/card.jsx";
 
-// Gorizontal ustunlar tanlandi, doira (pie) emas: 480px ekranda 9 ta bo'lakli
-// doiraning yorliqlari o'qib bo'lmas holga keladi, ustunlarni esa yonma-yon
-// solishtirish oson.
 export default function MuscleDistribution({ data }) {
   const max = data.length ? data[0].percent : 0;
 
@@ -15,9 +12,7 @@ export default function MuscleDistribution({ data }) {
       </CardTitle>
 
       {data.length === 0 ? (
-        <div className="text-brand-muted text-xs text-center py-5">
-          Ma'lumot yo'q
-        </div>
+        <div className="text-brand-muted text-xs text-center py-5">Ma'lumot yo'q</div>
       ) : (
         <div className="flex flex-col gap-2">
           {data.map((d) => (

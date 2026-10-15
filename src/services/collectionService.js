@@ -1,19 +1,7 @@
-import {
-  deleteDoc,
-  onSnapshot,
-  serverTimestamp,
-  setDoc,
-  writeBatch,
-} from "firebase/firestore";
+import { deleteDoc, onSnapshot, serverTimestamp, setDoc, writeBatch } from "firebase/firestore";
 import { userCollection, userCollectionDoc } from "./paths.js";
 import { db } from "./firebase.js";
 
-// Har kolleksiya bir xil ishlagani uchun CRUD bir marta yoziladi.
-// Domen servislari (workoutService va h.k.) shu ustiga quriladi.
-
-// Real vaqt obunasi. Offline kesh bilan birga ishlaganda birinchi javob
-// darhol keshdan keladi, keyin server versiyasi ustiga tushadi.
-// hasPendingWrites -> hali serverga yetmagan yozuvlar bor (sinxronlanmoqda).
 export function subscribeCollection(uid, name, onData, onError) {
   return onSnapshot(
     userCollection(uid, name),
@@ -41,7 +29,6 @@ export async function removeDocument(uid, name, id) {
   await deleteDoc(userCollectionDoc(uid, name, id));
 }
 
-// Firestore bitta batch'da 500 tagacha amalni qabul qiladi.
 const BATCH_LIMIT = 450;
 
 export async function saveManyDocuments(uid, name, items) {

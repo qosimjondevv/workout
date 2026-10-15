@@ -8,12 +8,8 @@ export function useMeasurementAnalytics() {
   const [period, setPeriod] = useState("week");
   const [selectedField, setSelectedField] = useState(MEASUREMENT_FIELDS[0].key);
 
-  const history = useMemo(
-    () => [...items].sort((a, b) => (a.date < b.date ? 1 : -1)),
-    [items],
-  );
+  const history = useMemo(() => [...items].sort((a, b) => (a.date < b.date ? 1 : -1)), [items]);
 
-  // Har hafta/oy uchun o'sha davrdagi ENG OXIRGI o'lchov olinadi.
   const chartData = useMemo(() => {
     const keyFn = period === "week" ? isoWeekKey : monthKey;
     const byPeriod = new Map();

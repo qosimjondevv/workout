@@ -1,8 +1,6 @@
 import React from "react";
 import { Pause, Play, Plus, SkipForward, Timer } from "lucide-react";
 
-// Dam olish taymeri pastda, navigatsiya ustida turadi: sahifani aylantirsangiz
-// ham ko'rinib turadi va mashq yozishga xalaqit bermaydi.
 export default function RestTimerBar({
   active,
   remaining,

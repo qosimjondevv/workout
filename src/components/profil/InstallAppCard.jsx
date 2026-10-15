@@ -4,8 +4,6 @@ import { Card } from "../../ui/card.jsx";
 import { Button } from "../../ui/button.jsx";
 import { getInstallState, promptInstall, subscribeInstall } from "../../utils/pwa.js";
 
-// "Ilovani o'rnatish". O'rnatilgan bo'lsa yoki brauzer qo'llamasa — umuman
-// ko'rinmaydi. iPhone'da tizim oynasi yo'q, shuning uchun qo'lda qadamlar.
 export default function InstallAppCard() {
   const state = useSyncExternalStore(subscribeInstall, getInstallState);
   if (state === "installed" || state === "unavailable") return null;

@@ -38,10 +38,7 @@ export default function BodyWeightChart({ data }) {
           <LineChart data={data}>
             <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" />
             <XAxis dataKey="date" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
-            <YAxis
-              tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-              domain={["auto", "auto"]}
-            />
+            <YAxis tick={{ fill: COLOR_MUTED, fontSize: 10 }} domain={["auto", "auto"]} />
             <Tooltip
               contentStyle={{
                 background: COLOR_SURFACE2,
@@ -60,9 +57,7 @@ export default function BodyWeightChart({ data }) {
           </LineChart>
         </ResponsiveContainer>
       ) : (
-        <div className="text-brand-muted text-xs text-center py-5">
-          Ma'lumot yo'q
-        </div>
+        <div className="text-brand-muted text-xs text-center py-5">Ma'lumot yo'q</div>
       )}
     </Card>
   );

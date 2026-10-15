@@ -4,8 +4,6 @@ import ExerciseChart from "./ExerciseChart.jsx";
 import BodyWeightChart from "./BodyWeightChart.jsx";
 import MuscleDistribution from "./MuscleDistribution.jsx";
 
-// Bu bo'lim LAZY yuklanadi: recharts og'ir (105 kB gzip) va faqat statistika
-// ko'rmoqchi bo'lgan odam uni umuman yuklab olmasligi kerak.
 export default function ChartsSection({ analytics, dashboard }) {
   return (
     <div>

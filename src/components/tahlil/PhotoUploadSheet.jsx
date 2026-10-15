@@ -10,9 +10,6 @@ import { todayISO } from "../../utils/date.js";
 
 const KIND_OPTIONS = PHOTO_KINDS.map((k) => ({ value: k.key, label: k.label }));
 
-// Tanlangan suratni ko'rib, sana va rakursni belgilab yuklash.
-// Komponent har fayl uchun qayta yaratiladi (chaqiruvchi shartli render qiladi).
-// previewUrl'ni chaqiruvchi fayl tanlanganda yaratadi va yopilganda bo'shatadi.
 export default function PhotoUploadSheet({
   file,
   previewUrl,
@@ -53,7 +50,12 @@ export default function PhotoUploadSheet({
       <DateField value={date} onChange={setDate} className="mt-1 mb-3" />
 
       <label className="text-[11px] text-brand-muted">Rakurs</label>
-      <SegmentedControl value={kind} onChange={setKind} options={KIND_OPTIONS} className="mt-1 mb-3" />
+      <SegmentedControl
+        value={kind}
+        onChange={setKind}
+        options={KIND_OPTIONS}
+        className="mt-1 mb-3"
+      />
 
       <Input
         value={note}

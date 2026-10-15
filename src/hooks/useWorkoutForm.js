@@ -2,11 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { todayISO } from "../utils/date.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useWorkouts, useExercises } from "../context/collections.jsx";
-import {
-  exerciseKey,
-  findExerciseMeta,
-  makeExerciseDoc,
-} from "../utils/catalog.js";
+import { exerciseKey, findExerciseMeta, makeExerciseDoc } from "../utils/catalog.js";
 import {
   blankSet,
   emptyWorkoutForm,
@@ -27,14 +23,6 @@ import {
 } from "../utils/workout.js";
 import { readStorage, removeStorage, writeStorage } from "../utils/storage.js";
 
-// Joriy mashg'ulot formasi. ILOVA darajasida yashaydi (WorkoutFormContext):
-// boshqa tabga o'tib qaytsangiz ham forma joyida turadi.
-//
-// QORALAMA: forma har o'zgarishda qurilmaga (localStorage) yoziladi. Zalda
-// telefon ekrani o'chadi, brauzer sahifani "uxlatib" qayta yuklaydi —
-// yarim yozilgan mashg'ulot shunda ham yo'qolmaydi. Kalit foydalanuvchiga
-// bog'langan: bitta qurilmada ikki akkaunt bo'lsa qoralamalar aralashmaydi.
-
 const DRAFT_DEBOUNCE_MS = 400;
 const draftKey = (uid) => `temir-jurnal:draft:${uid}`;
 
@@ -49,7 +37,6 @@ function initialState(uid) {
   return { form: emptyWorkoutForm(todayISO()), restored: false };
 }
 
-// Exercises massivining bitta elementini o'zgartirish uchun yordamchi.
 function mapExercise(form, exIdx, fn) {
   return {
     ...form,
@@ -68,7 +55,6 @@ export function useWorkoutForm() {
   const [restored, setRestored] = useState(initial.restored);
   const [error, setError] = useState("");
 
-  // --- Qoralamani yozish ---------------------------------------------------
   const formRef = useRef(form);
   const writeDraft = useCallback(() => {
     if (!uid) return;
@@ -83,8 +69,6 @@ export function useWorkoutForm() {
     return () => clearTimeout(id);
   }, [form, writeDraft]);
 
-  // Ilova fonga o'tganda (ekran o'chdi, boshqa ilovaga o'tildi) debounce'ni
-  // kutmasdan darhol yozamiz — keyin brauzer sahifani o'ldirishi mumkin.
   useEffect(() => {
     function flush() {
       if (document.visibilityState === "hidden") writeDraft();
@@ -97,10 +81,6 @@ export function useWorkoutForm() {
     };
   }, [writeDraft]);
 
-  // --- Tana vazni: oxirgi ma'lum qiymat oldindan qo'yiladi ----------------
-  // Bu HOSILAVIY qiymat (effect bilan formaga yozilmaydi): mashg'ulotlar
-  // keyinroq yuklansa ham to'g'ri chiqadi. Foydalanuvchi maydonga tegsa,
-  // uning qiymati (hatto bo'sh) ustun turadi.
   const lastBodyWeight = useMemo(() => {
     const latest = [...workouts]
       .filter((w) => w.bodyWeight != null && Number(w.bodyWeight) > 0)
@@ -111,7 +91,6 @@ export function useWorkoutForm() {
   const bodyWeightAuto = !form.id && !form.bodyWeightTouched && lastBodyWeight !== "";
   const bodyWeight = bodyWeightAuto ? lastBodyWeight : form.bodyWeight;
 
-  // --- Oddiy maydonlar ----------------------------------------------------
   const onDateChange = useCallback((date) => setForm((f) => ({ ...f, date })), []);
   const setTarget = useCallback((target) => setForm((f) => ({ ...f, target })), []);
   const setNotes = useCallback((notes) => setForm((f) => ({ ...f, notes })), []);
@@ -120,11 +99,6 @@ export function useWorkoutForm() {
     [],
   );
 
-  // --- Mashqlar -----------------------------------------------------------
-  // Mushak guruhi berilmagan bo'lsa katalogdan olinadi: aks holda mashq
-  // "other" bo'lib saqlanib, mushak taqsimoti grafigi buzilardi. Nom ham
-  // katalogdagi yozilishiga keltiriladi — "jim" va "Jim" tarixda ikki xil
-  // mashq bo'lib qolmasligi uchun (statistika nomni aynan solishtiradi).
   const addExerciseToForm = useCallback(
     (name, unit = "reps", seconds, muscleGroup) => {
       const raw = String(name ?? "").trim();
@@ -146,8 +120,6 @@ export function useWorkoutForm() {
     [catalog],
   );
 
-  // Template'dan bir nechta mashqni birdan yuklash. Template'dagi reja
-  // (set soni va takror maqsadi) ham olinadi.
   const addExercises = useCallback(
     (list) => {
       setError("");
@@ -196,7 +168,6 @@ export function useWorkoutForm() {
     setForm((f) => ({ ...f, exercises: unlinkSuperset(f.exercises, exIdx) }));
   }, []);
 
-  // --- Setlar -------------------------------------------------------------
   const updateSet = useCallback((exIdx, setIdx, field, value) => {
     setForm((f) =>
       mapExercise(f, exIdx, (e) => ({
@@ -220,10 +191,6 @@ export function useWorkoutForm() {
     );
   }, []);
 
-  // ✓ belgisi. Bo'sh set belgilansa, `fallback` (oldingi mashg'ulotdagi shu
-  // tartibdagi set) bilan to'ldiriladi. Birinchi ✓ mashg'ulot sekundomerini
-  // ishga tushiradi — lekin eski yozuvni tahrirlashda emas (u allaqachon
-  // bo'lib o'tgan, davomiyligi saqlangan).
   const toggleSetDone = useCallback((exIdx, setIdx, fallback) => {
     setForm((f) => {
       const ex = f.exercises[exIdx];
@@ -242,8 +209,6 @@ export function useWorkoutForm() {
     });
   }, []);
 
-  // "Use Previous": oldingi mashg'ulotdagi set'larni formaga ko'chiradi.
-  // Har set YANGI id oladi, aks holda ikki yozuvda bir xil id'lar bo'lardi.
   const usePreviousSets = useCallback((exIdx, previousSets) => {
     setForm((f) =>
       syncStartedAt(
@@ -252,8 +217,6 @@ export function useWorkoutForm() {
     );
   }, []);
 
-  // Progressive overload taklifini qabul qilish: birinchi BO'SH set'ga
-  // yoziladi, bo'sh set qolmagan bo'lsa yangisi qo'shiladi.
   const applySuggestion = useCallback((exIdx, suggestion) => {
     if (!suggestion) return;
     setForm((f) =>
@@ -263,8 +226,7 @@ export function useWorkoutForm() {
             ? { seconds: String(suggestion.seconds) }
             : { weight: String(suggestion.weight), reps: String(suggestion.reps) };
         const emptyIdx = e.sets.findIndex((s) => !isFilledSet(e.unit, s));
-        if (emptyIdx === -1)
-          return { ...e, sets: [...e.sets, { ...blankSet(e.unit), ...value }] };
+        if (emptyIdx === -1) return { ...e, sets: [...e.sets, { ...blankSet(e.unit), ...value }] };
         return {
           ...e,
           sets: e.sets.map((s, si) => (si === emptyIdx ? { ...s, ...value } : s)),
@@ -273,15 +235,12 @@ export function useWorkoutForm() {
     );
   }, []);
 
-  // --- Butun forma --------------------------------------------------------
   const resetForm = useCallback(() => {
     setForm(emptyWorkoutForm(todayISO()));
     setRestored(false);
     setError("");
   }, []);
 
-  // toFormWorkout chuqur nusxa qaytaradi — tahrirlash ro'yxatdagi yozuvga
-  // tegib ketmaydi, "Bekor qilish" haqiqatan ham bekor qiladi.
   const loadIntoForm = useCallback((workout) => {
     setForm(toFormWorkout(workout));
     setRestored(false);
@@ -290,8 +249,6 @@ export function useWorkoutForm() {
 
   const dismissRestored = useCallback(() => setRestored(false), []);
 
-  // Katalogda yo'q mashqlarni avtomatik qo'shadi, shunda ular keyingi safar
-  // qidiruvda va "so'nggi" ro'yxatida chiqadi.
   function syncCatalog(exercises) {
     const known = new Set(catalog.map((e) => exerciseKey(e.name)));
     exercises.forEach((e) => {
@@ -320,8 +277,6 @@ export function useWorkoutForm() {
     });
     syncCatalog(form.exercises);
     resetForm();
-    // Qoralama darhol o'chiriladi: debounce kutilsa, shu orada sahifa
-    // yopilsa saqlangan mashg'ulot "tiklanadigan qoralama" bo'lib qolardi.
     if (uid) removeStorage(draftKey(uid));
     return true;
   }

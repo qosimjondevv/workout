@@ -19,17 +19,14 @@ export default [
     rules: {
       ...react.configs.flat.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      // Vite + React 18 avtomatik JSX transform ishlatadi
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
-      // O'zbek matnida apostrof normal belgi ("mashg'ulot", "o'chirish").
-      // Har birini &apos; qilib yozish kodni o'qib bo'lmas holga keltiradi.
       "react/no-unescaped-entities": "off",
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "no-empty": ["error", { allowEmptyCatch: true }],
     },
   },
   {
-    // Testlar Node'da ishlaydi, brauzerda emas — o'z globallariga ega.
     files: ["tests/**/*.mjs"],
     languageOptions: { globals: { ...globals.node } },
   },

@@ -2,7 +2,6 @@ import { getDoc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore"
 import { userDoc } from "./paths.js";
 import { SCHEMA_VERSION } from "../constants/schema.js";
 
-// Profil users/{uid} hujjatining O'ZIDA yotadi (subcollection emas).
 export function emptyProfile() {
   return {
     schemaVersion: SCHEMA_VERSION,
@@ -31,9 +30,5 @@ export async function readProfile(uid) {
 }
 
 export async function saveProfile(uid, patch) {
-  await setDoc(
-    userDoc(uid),
-    { ...patch, updatedAt: serverTimestamp() },
-    { merge: true },
-  );
+  await setDoc(userDoc(uid), { ...patch, updatedAt: serverTimestamp() }, { merge: true });
 }

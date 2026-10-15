@@ -1,26 +1,25 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Flame, Info, AlertTriangle } from "lucide-react";
 import { cn } from "../utils/cn.js";
-
-// Qisqa, o'z-o'zidan yo'qoladigan xabarlar (rekord, surat yuklandi va h.k.).
-// Ekranning TEPASIDA chiqadi: pastki qismni taymer va saqlash paneli egallagan.
-//
-//   const toast = useToast();
-//   toast.show({ title: "Yangi rekord!", description: "Jim — 85 kg", tone: "record" });
 
 const ToastContext = createContext(null);
 
 const TONES = {
-  success: { icon: CheckCircle2, className: "border-brand-accent/50", iconClass: "text-brand-accent" },
-  record: { icon: Flame, className: "border-brand-accent bg-brand-accent/10", iconClass: "text-brand-accent" },
-  error: { icon: AlertTriangle, className: "border-brand-accent2/60", iconClass: "text-brand-accent2" },
+  success: {
+    icon: CheckCircle2,
+    className: "border-brand-accent/50",
+    iconClass: "text-brand-accent",
+  },
+  record: {
+    icon: Flame,
+    className: "border-brand-accent bg-brand-accent/10",
+    iconClass: "text-brand-accent",
+  },
+  error: {
+    icon: AlertTriangle,
+    className: "border-brand-accent2/60",
+    iconClass: "text-brand-accent2",
+  },
   info: { icon: Info, className: "border-brand-line", iconClass: "text-brand-muted" },
 };
 

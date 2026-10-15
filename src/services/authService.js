@@ -7,10 +7,6 @@ import {
 import { auth } from "./firebase.js";
 import { phoneToPseudoEmail } from "../utils/phone.js";
 
-// SMS OTP pullik bo'lgani uchun telefon raqam soxta pochtaga aylantiriladi:
-//   "90 770 10 73" -> "998907701073@temirjurnal.local"
-// Foydalanuvchi buni sezmaydi, Firebase esa oddiy email/parol auth ishlatadi.
-
 export function watchAuth(callback) {
   return onAuthStateChanged(auth, callback);
 }

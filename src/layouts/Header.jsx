@@ -1,7 +1,5 @@
 import React from "react";
 
-// Chiqish tugmasi ATAYLAB yo'q: u Profil sahifasida. Sarlavhada turganda
-// zalda tasodifan bosilib ketishi oson edi.
 export default function Header({ dateLabel }) {
   return (
     <div className="px-4 pt-5 pb-3 border-b border-brand-line">

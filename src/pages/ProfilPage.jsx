@@ -65,7 +65,6 @@ export default function ProfilPage() {
   const { items: measurements } = useMeasurements();
   const { items: templates } = useTemplates();
   const { items: photos } = usePhotos();
-  // Faqat o'qish: yutuqni ochish (yozish) Shell'dagi yagona kuzatuvchida.
   const { unlockedKeys, unlocked, stats: achievementStats } = useAchievementProgress();
   const toast = useToast();
   const [draft, setDraft] = useState(null);
@@ -73,9 +72,6 @@ export default function ProfilPage() {
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [exerciseDraft, setExerciseDraft] = useState(EMPTY_EXERCISE_DRAFT);
 
-  // Forma qiymati HOSILAVIY: foydalanuvchi hali hech narsa o'zgartirmagan
-  // bo'lsa profildan olinadi, o'zgartirgan bo'lsa draft ustun turadi.
-  // useEffect bilan nusxalash ortiqcha render bosqichini keltirardi.
   const form = draft ?? profileToForm(profile);
 
   if (loading) {
@@ -112,7 +108,6 @@ export default function ProfilPage() {
     setExerciseDraft(EMPTY_EXERCISE_DRAFT);
   }
 
-  // --- Eksport ---
   function exportJson() {
     const backup = buildBackup({
       profile,
@@ -170,15 +165,11 @@ export default function ProfilPage() {
 
         <div className="flex gap-2.5 mt-4">
           <div className="flex-1 bg-brand-surface2 rounded-md p-2.5 text-center">
-            <div className="text-lg font-display font-bold">
-              {workouts.length}
-            </div>
+            <div className="text-lg font-display font-bold">{workouts.length}</div>
             <div className="text-[10px] text-brand-muted">Mashg'ulot</div>
           </div>
           <div className="flex-1 bg-brand-surface2 rounded-md p-2.5 text-center">
-            <div className="text-lg font-display font-bold">
-              {lastWeight ?? "-"}
-            </div>
+            <div className="text-lg font-display font-bold">{lastWeight ?? "-"}</div>
             <div className="text-[10px] text-brand-muted">Joriy vazn (kg)</div>
           </div>
           <div className="flex-1 bg-brand-surface2 rounded-md p-2.5 text-center">
@@ -218,9 +209,7 @@ export default function ProfilPage() {
             />
           </div>
           <div>
-            <label className="text-[11px] text-brand-muted">
-              Maqsad vazn (kg)
-            </label>
+            <label className="text-[11px] text-brand-muted">Maqsad vazn (kg)</label>
             <Input
               type="number"
               inputMode="decimal"
@@ -249,9 +238,7 @@ export default function ProfilPage() {
 
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div>
-            <label className="text-[11px] text-brand-muted">
-              Dam olish (soniya)
-            </label>
+            <label className="text-[11px] text-brand-muted">Dam olish (soniya)</label>
             <Input
               type="number"
               inputMode="numeric"
@@ -261,9 +248,7 @@ export default function ProfilPage() {
             />
           </div>
           <div>
-            <label className="text-[11px] text-brand-muted">
-              Vazn qadami (kg)
-            </label>
+            <label className="text-[11px] text-brand-muted">Vazn qadami (kg)</label>
             <Input
               type="number"
               inputMode="decimal"
@@ -305,8 +290,6 @@ export default function ProfilPage() {
         onExportMeasurementsCsv={exportMeasurementsCsv}
       />
 
-      {/* Tugallanmagan mashg'ulot qoralamasi akkauntga bog'langan holda
-          qurilmada qoladi — qayta kirilganda tiklanadi. */}
       <Button variant="secondary" onClick={logout} className="w-full mb-2">
         <LogOut size={15} /> Akkauntdan chiqish
       </Button>

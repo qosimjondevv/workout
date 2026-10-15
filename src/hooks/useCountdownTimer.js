@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// Sanoq `Date.now()` ga bog'langan, setInterval'ga emas: brauzer tab'i fonga
-// o'tganda (telefonda ekran o'chganda) interval sekinlashadi yoki to'xtaydi,
-// lekin haqiqiy vaqt to'xtamaydi. Shuning uchun har tikda qolgan vaqt
-// tugash momentidan qayta hisoblanadi.
-//
-// Boshqaruv funksiyalari (start, pause ...) BARQAROR: ular holatni emas,
-// ref'larni o'qiydi va useCallback bilan o'ralgan. Shu sabab ularni kontekst
-// orqali uzatsa bo'ladi — iste'molchilar har tikda qayta render bo'lmaydi.
 export function useCountdownTimer(onFinish) {
   const [duration, setDuration] = useState(null);
   const [remaining, setRemaining] = useState(0);
@@ -20,14 +12,12 @@ export function useCountdownTimer(onFinish) {
   const finishedRef = useRef(false);
   const onFinishRef = useRef(onFinish);
 
-  // Ref render paytida emas, effect ichida yangilanadi — React qoidasi shu.
   useEffect(() => {
     onFinishRef.current = onFinish;
   });
 
   const secondsLeft = useCallback(
-    () =>
-      Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000)),
+    () => Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000)),
     [],
   );
 
@@ -42,13 +32,9 @@ export function useCountdownTimer(onFinish) {
     function tick() {
       const left = secondsLeft();
       remainingRef.current = left;
-      // Qiymat o'zgarmasa React render qilmaydi: 250ms tik sekundiga
-      // faqat bitta render beradi.
       setRemaining(left);
       if (left === 0) {
         setRunningBoth(false);
-        // finishedRef: StrictMode'dagi ikki karra render ham, kech kelgan tik
-        // ham natijani ikki marta yozib yubormasligi uchun.
         if (!finishedRef.current) {
           finishedRef.current = true;
           onFinishRef.current?.(durationRef.current);
@@ -88,8 +74,6 @@ export function useCountdownTimer(onFinish) {
     setRunningBoth(true);
   }, [setRunningBoth]);
 
-  // Dam olish taymerini uzaytirish ("+30s"). Tugagan yoki pauzadagi taymer
-  // ham qayta ishga tushadi — bu tugmadan kutilgan xulq.
   const extend = useCallback(
     (seconds) => {
       if (durationRef.current === null) return;
