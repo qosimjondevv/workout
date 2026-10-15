@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useExercises, useTemplates, useWorkouts } from "../context/collections.jsx";
 import { useWorkoutFormContext } from "../context/WorkoutFormContext.jsx";
 import { useRestTimerActions } from "../context/RestTimerContext.jsx";
@@ -25,7 +26,6 @@ import WorkoutForm from "../components/jurnal/WorkoutForm.jsx";
 import TemplateBar from "../components/jurnal/TemplateBar.jsx";
 import TemplateManager from "../components/jurnal/TemplateManager.jsx";
 import SaveBar from "../components/jurnal/SaveBar.jsx";
-import LastWorkoutCard from "../components/jurnal/LastWorkoutCard.jsx";
 import { DockPortal } from "../layouts/BottomDock.jsx";
 
 const RECENT_LIMIT = 8;
@@ -43,6 +43,7 @@ export default function JurnalPage() {
   } = useTemplates();
   const rest = useRestTimerActions();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const announcedRef = useRef(new Map());
@@ -67,13 +68,6 @@ export default function JurnalPage() {
   );
 
   const summary = useMemo(() => formSummary(form), [form]);
-
-  const lastWorkout = useMemo(
-    () =>
-      [...workouts].filter((w) => w.id !== form.id).sort((a, b) => (a.date < b.date ? 1 : -1))[0] ??
-      null,
-    [workouts, form.id],
-  );
 
   function handleToggleDone(exIdx, setIdx) {
     const ex = form.exercises[exIdx];
@@ -152,7 +146,8 @@ export default function JurnalPage() {
       tone: "success",
       title: wasEditing ? "Yozuv yangilandi" : "Mashg'ulot saqlandi",
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/tarix");
+    window.scrollTo({ top: 0 });
   }
 
   const showSaveBar = form.exercises.length > 0 || wf.isEditing;
@@ -180,8 +175,6 @@ export default function JurnalPage() {
         onAddExercise={handleAddExercise}
         onCreateExercise={handleCreateExercise}
       />
-
-      <LastWorkoutCard workout={lastWorkout} />
 
       <TemplateManager
         open={templatesOpen}
