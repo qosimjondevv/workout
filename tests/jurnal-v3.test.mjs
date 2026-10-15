@@ -11,8 +11,12 @@ const {
   supersetInfo,
   linkWithNext,
   unlinkSuperset,
-  workoutDurationSec,
   MAX_WORKOUT_SECONDS,
+  isClockRunning,
+  elapsedWorkoutSec,
+  startWorkoutClock,
+  stopWorkoutClock,
+  finalWorkoutDuration,
   serializeDraft,
   parseDraft,
   sanitizeFormWorkout,
@@ -154,15 +158,28 @@ assert.deepEqual(ids(toStoredWorkout(form).exercises), ["s1", "s1"]);
 assert.ok(!("done" in toStoredWorkout(form).exercises[0].sets[0]), "done Firestore'ga yozilmaydi");
 
 const now = 1_000_000_000;
-assert.equal(workoutDurationSec(now - 45 * 60 * 1000, now), 2700);
-assert.equal(workoutDurationSec(null, now), null);
-assert.equal(workoutDurationSec(null, now, 1800), 1800, "boshlanmagan -> eski qiymat");
+const idle = emptyWorkoutForm("2026-10-15");
+assert.equal(isClockRunning(idle), false);
+assert.equal(finalWorkoutDuration(idle, now), null, "boshlanmagan -> davomiylik yo'q");
+const running = startWorkoutClock(idle, now);
+assert.equal(isClockRunning(running), true);
+assert.equal(startWorkoutClock(running, now + 9999), running, "qayta boshlash vaqtni buzmaydi");
+assert.equal(elapsedWorkoutSec(running, now + 600_000), 600);
+const stopped = stopWorkoutClock(running, now + 600_000);
+assert.equal(isClockRunning(stopped), false);
+assert.equal(stopped.durationSec, 600, "tugatilganda vaqt qotadi");
+assert.equal(elapsedWorkoutSec(stopped, now + 9_999_999), 600, "to'xtagan vaqt o'smaydi");
+assert.equal(stopWorkoutClock(stopped, now), stopped, "qayta tugatish hech narsa qilmaydi");
+const resumed = startWorkoutClock(stopped, now + 1_000_000);
+assert.equal(elapsedWorkoutSec(resumed, now + 1_300_000), 900, "davom: 600 + 300");
+assert.equal(finalWorkoutDuration(resumed, now + 1_300_000), 900, "tugatmasdan saqlash");
 assert.equal(
-  workoutDurationSec(now - (MAX_WORKOUT_SECONDS + 60) * 1000, now),
+  finalWorkoutDuration(startWorkoutClock(idle, now), now + (MAX_WORKOUT_SECONDS + 60) * 1000),
   null,
   "5 soatdan uzun -> saqlanmaydi",
 );
-assert.equal(workoutDurationSec(now + 5000, now), null, "kelajak -> yo'q");
+assert.equal(elapsedWorkoutSec(startWorkoutClock(idle, now), now - 5000), 0, "manfiy bo'lmaydi");
+assert.equal(isFormDirty(running), true, "ishlayotgan sekundomer qoralamada saqlanadi");
 form.durationSec = 2700.4;
 assert.equal(toStoredWorkout(form).durationSec, 2700);
 assert.equal(toFormWorkout({ durationSec: 1800, exercises: [] }).durationSec, 1800);
@@ -272,19 +289,3 @@ assert.equal(dateLabel("2026-10-13", "2026-10-20"), "Seshanba, 13.10.2026");
 assert.equal(dateLabel(""), "Sanani tanlang");
 
 console.log("Jurnal v3 mantig'i: tekshiruvlar o'tdi ✓");
-
-{
-  const { syncStartedAt } = await import(B + "utils/workout.js");
-
-  const f = { startedAt: 123, exercises: [{ sets: [{ done: false }] }] };
-  assert.equal(syncStartedAt(f).startedAt, null);
-  const g = { startedAt: 123, exercises: [{ sets: [{ done: true }] }] };
-  assert.equal(syncStartedAt(g), g, "✓ bor — o'zgarmaydi");
-  assert.equal(syncStartedAt({ startedAt: 123, exercises: [] }).startedAt, null, "mashq yo'q");
-  assert.equal(
-    sanitizeFormWorkout({ startedAt: 999, exercises: [{ name: "Jim", sets: [{ weight: "1" }] }] })
-      .startedAt,
-    null,
-  );
-}
-console.log("Sekundomer: tekshiruvlar o'tdi ✓");

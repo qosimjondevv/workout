@@ -154,7 +154,9 @@ export function isFormDirty(form) {
     (form.exercises ?? []).length > 0 ||
     String(form.target ?? "").trim() !== "" ||
     String(form.notes ?? "").trim() !== "" ||
-    (Boolean(form.bodyWeightTouched) && String(form.bodyWeight ?? "") !== "")
+    (Boolean(form.bodyWeightTouched) && String(form.bodyWeight ?? "") !== "") ||
+    isClockRunning(form) ||
+    (!form.id && Boolean(positiveInt(form.durationSec)))
   );
 }
 
@@ -264,18 +266,28 @@ export function unlinkSuperset(exercises, idx) {
 
 export const MAX_WORKOUT_SECONDS = 5 * 60 * 60;
 
-export function workoutDurationSec(startedAt, now, fallback = null) {
-  const start = Number(startedAt);
-  if (!startedAt || !Number.isFinite(start)) return fallback ?? null;
-  const sec = Math.round((now - start) / 1000);
-  if (sec <= 0 || sec > MAX_WORKOUT_SECONDS) return fallback ?? null;
-  return sec;
+export function isClockRunning(form) {
+  return Boolean(form?.startedAt) && Number.isFinite(Number(form.startedAt));
 }
 
-export function syncStartedAt(form) {
-  if (!form?.startedAt) return form;
-  const anyDone = (form.exercises ?? []).some((e) => (e.sets ?? []).some((s) => s.done));
-  return anyDone ? form : { ...form, startedAt: null };
+export function elapsedWorkoutSec(form, now) {
+  const base = positiveInt(form?.durationSec) ?? 0;
+  if (!isClockRunning(form)) return base;
+  return base + Math.max(0, Math.floor((now - Number(form.startedAt)) / 1000));
+}
+
+export function startWorkoutClock(form, now) {
+  return isClockRunning(form) ? form : { ...form, startedAt: now };
+}
+
+export function stopWorkoutClock(form, now) {
+  if (!isClockRunning(form)) return form;
+  return { ...form, startedAt: null, durationSec: elapsedWorkoutSec(form, now) || null };
+}
+
+export function finalWorkoutDuration(form, now) {
+  const sec = elapsedWorkoutSec(form, now);
+  return sec > 0 && sec <= MAX_WORKOUT_SECONDS ? sec : null;
 }
 
 const DRAFT_VERSION = 1;
@@ -331,7 +343,7 @@ export function sanitizeFormWorkout(raw) {
     });
 
   const started = Number(raw.startedAt);
-  return syncStartedAt({
+  return {
     id: typeof raw.id === "string" && raw.id ? raw.id : null,
     date: /^\d{4}-\d{2}-\d{2}$/.test(text(raw.date)) ? raw.date : "",
     target: text(raw.target),
@@ -341,5 +353,5 @@ export function sanitizeFormWorkout(raw) {
     startedAt: raw.startedAt && Number.isFinite(started) && started > 0 ? started : null,
     durationSec: positiveInt(raw.durationSec),
     exercises: normalizeSupersets(exercises),
-  });
+  };
 }

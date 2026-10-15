@@ -34,12 +34,9 @@ export default function WorkoutForm({
   return (
     <Card className="mb-4">
       <CardHeader>
-        <div className="flex items-center gap-2.5 min-w-0">
-          <CardTitle className="truncate">
-            {wf.isEditing ? "Yozuvni tahrirlash" : "Yangi mashg'ulot"}
-          </CardTitle>
-          <WorkoutClock startedAt={form.startedAt} durationSec={form.durationSec} />
-        </div>
+        <CardTitle className="truncate">
+          {wf.isEditing ? "Yozuvni tahrirlash" : "Yangi mashg'ulot"}
+        </CardTitle>
         {wf.isEditing ? (
           <button
             type="button"
@@ -60,6 +57,13 @@ export default function WorkoutForm({
           )
         )}
       </CardHeader>
+
+      <WorkoutClock
+        form={form}
+        readOnly={wf.isEditing}
+        onStart={wf.startClock}
+        onStop={wf.stopClock}
+      />
 
       {wf.restored && (
         <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/40 rounded-md px-3 py-2 mb-3">

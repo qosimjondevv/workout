@@ -6,6 +6,7 @@ import { exerciseKey, findExerciseMeta, makeExerciseDoc } from "../utils/catalog
 import {
   blankSet,
   emptyWorkoutForm,
+  finalWorkoutDuration,
   fillSetFrom,
   isFilledSet,
   isFormDirty,
@@ -14,11 +15,11 @@ import {
   normalizeSupersets,
   parseDraft,
   serializeDraft,
-  syncStartedAt,
+  startWorkoutClock,
+  stopWorkoutClock,
   toFormSets,
   toFormWorkout,
   unlinkSuperset,
-  workoutDurationSec,
   workoutHasContent,
 } from "../utils/workout.js";
 import { readStorage, removeStorage, writeStorage } from "../utils/storage.js";
@@ -148,12 +149,10 @@ export function useWorkoutForm() {
   );
 
   const removeExerciseFromForm = useCallback((idx) => {
-    setForm((f) =>
-      syncStartedAt({
-        ...f,
-        exercises: normalizeSupersets(f.exercises.filter((_, i) => i !== idx)),
-      }),
-    );
+    setForm((f) => ({
+      ...f,
+      exercises: normalizeSupersets(f.exercises.filter((_, i) => i !== idx)),
+    }));
   }, []);
 
   const updateExercise = useCallback((exIdx, field, value) => {
@@ -185,9 +184,7 @@ export function useWorkoutForm() {
 
   const removeSet = useCallback((exIdx, setIdx) => {
     setForm((f) =>
-      syncStartedAt(
-        mapExercise(f, exIdx, (e) => ({ ...e, sets: e.sets.filter((_, si) => si !== setIdx) })),
-      ),
+      mapExercise(f, exIdx, (e) => ({ ...e, sets: e.sets.filter((_, si) => si !== setIdx) })),
     );
   }, []);
 
@@ -200,20 +197,16 @@ export function useWorkoutForm() {
       const filled = nextDone ? fillSetFrom(ex.unit, set, fallback) : set;
       if (nextDone && !isFilledSet(ex.unit, filled)) return f;
 
-      const next = mapExercise(f, exIdx, (e) => ({
+      return mapExercise(f, exIdx, (e) => ({
         ...e,
         sets: e.sets.map((s, si) => (si === setIdx ? { ...filled, done: nextDone } : s)),
       }));
-      if (nextDone && !f.id && !f.startedAt) next.startedAt = Date.now();
-      return syncStartedAt(next);
     });
   }, []);
 
   const usePreviousSets = useCallback((exIdx, previousSets) => {
     setForm((f) =>
-      syncStartedAt(
-        mapExercise(f, exIdx, (e) => ({ ...e, sets: toFormSets(e.unit, previousSets) })),
-      ),
+      mapExercise(f, exIdx, (e) => ({ ...e, sets: toFormSets(e.unit, previousSets) })),
     );
   }, []);
 
@@ -249,6 +242,9 @@ export function useWorkoutForm() {
 
   const dismissRestored = useCallback(() => setRestored(false), []);
 
+  const startClock = useCallback(() => setForm((f) => startWorkoutClock(f, Date.now())), []);
+  const stopClock = useCallback(() => setForm((f) => stopWorkoutClock(f, Date.now())), []);
+
   function syncCatalog(exercises) {
     const known = new Set(catalog.map((e) => exerciseKey(e.name)));
     exercises.forEach((e) => {
@@ -273,7 +269,7 @@ export function useWorkoutForm() {
     saveWorkout({
       ...form,
       bodyWeight,
-      durationSec: workoutDurationSec(form.startedAt, Date.now(), form.durationSec),
+      durationSec: finalWorkoutDuration(form, Date.now()),
     });
     syncCatalog(form.exercises);
     resetForm();
@@ -288,6 +284,8 @@ export function useWorkoutForm() {
     isDirty: isFormDirty(form),
     restored,
     dismissRestored,
+    startClock,
+    stopClock,
     bodyWeight,
     bodyWeightAuto,
     onDateChange,
