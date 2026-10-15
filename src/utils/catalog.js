@@ -1,6 +1,7 @@
 import { uid } from "./id.js";
 import { toNum } from "./num.js";
-import { normalizeUnit } from "./workout.js";
+import { normalizeGoalSets, normalizeUnit } from "./workout.js";
+import { WEEKDAY_SHORT } from "./date.js";
 import { normalizeMuscleGroup } from "../constants/muscleGroups.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
 
@@ -80,13 +81,7 @@ export function recentExercises(workouts, catalog, limit = 6) {
   return out;
 }
 
-export const TEMPLATE_MAX_SETS = 20;
 const GOAL_REPS_MAX_LEN = 15;
-
-export function normalizeGoalSets(value) {
-  const n = Math.round(Number(value));
-  return Number.isFinite(n) && n >= 1 && n <= TEMPLATE_MAX_SETS ? n : null;
-}
 
 function normalizeGoalReps(value) {
   return String(value ?? "")
@@ -101,6 +96,12 @@ export function normalizeTemplateDays(days) {
     .map((d) => Number(d))
     .filter((d) => Number.isInteger(d) && d >= 0 && d <= 6);
   return Array.from(new Set(valid)).sort((a, b) => a - b);
+}
+
+export function formatTemplateDays(days) {
+  const list = normalizeTemplateDays(days);
+  if (list.length === 7) return "har kuni";
+  return list.map((d) => WEEKDAY_SHORT[d]).join(" · ");
 }
 
 export function templatesForDay(templates, dayIndex) {

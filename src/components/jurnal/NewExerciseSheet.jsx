@@ -24,10 +24,6 @@ export default function NewExerciseSheet({ initialName = "", onCreate, onClose }
       setError("Mashq nomini yozing");
       return;
     }
-    if (n.length > 80) {
-      setError("Nom juda uzun (80 belgigacha)");
-      return;
-    }
     onCreate({ name: n, unit, muscleGroup });
   }
 

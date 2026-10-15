@@ -1,20 +1,15 @@
 import React from "react";
 import { Download, LayoutList, Play, Plus } from "lucide-react";
 import { TEMPLATE_PRESETS } from "../../constants/templatePresets.js";
-import { normalizeTemplateDays, templatesForDay } from "../../utils/catalog.js";
+import { formatTemplateDays, normalizeTemplateDays, templatesForDay } from "../../utils/catalog.js";
 import { WEEKDAY_SHORT, todayISO, weekdayIndex } from "../../utils/date.js";
 import { cn } from "../../utils/cn.js";
 
-function daysLabel(days) {
-  const list = normalizeTemplateDays(days);
-  if (list.length === 7) return "har kuni";
-  return list.map((d) => WEEKDAY_SHORT[d]).join(" · ");
-}
-
 function TemplateChip({ template, isToday, badge, onStart }) {
-  const days = daysLabel(template.days);
+  const days = formatTemplateDays(template.days);
   return (
     <button
+      type="button"
       onClick={() => onStart(template)}
       title={(template.exercises ?? []).map((e) => e.name).join(", ")}
       className={cn(
@@ -122,6 +117,7 @@ export default function TemplateBar({ templates, loading, onStart, onManage, onA
           <LayoutList size={14} /> Tayyor kunlik mashq yaratish
         </div>
         <button
+          type="button"
           onClick={onManage}
           className="flex items-center gap-1 text-[11px] text-brand-muted bg-transparent border-none cursor-pointer"
         >
@@ -159,6 +155,7 @@ export default function TemplateBar({ templates, loading, onStart, onManage, onA
 
       {showPresets && (
         <button
+          type="button"
           onClick={onAdoptPresets}
           className="w-full flex items-center justify-center gap-1.5 mt-1.5 text-[11px] text-brand-muted bg-transparent border border-dashed border-brand-line rounded-md py-2 cursor-pointer hover:text-brand-text"
         >

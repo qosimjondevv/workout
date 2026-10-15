@@ -57,26 +57,16 @@ export function useAnalytics() {
       return d >= 0 && d < 7;
     }).length;
 
-    let pr = { name: "-", weight: 0 };
-    let totalVolume = 0;
-
-    workouts.forEach((w) => {
-      totalVolume += Number(w.totalVolume) || workoutVolume(w);
-      (w.exercises ?? []).forEach((e) => {
-        if (e.unit === "seconds") return;
-        (e.sets ?? []).forEach((s) => {
-          const wt = Number(s.weight);
-          if (Number.isFinite(wt) && wt > pr.weight) pr = { name: e.name, weight: wt };
-        });
-      });
-    });
+    const totalVolume = workouts.reduce(
+      (sum, w) => sum + (Number(w.totalVolume) || workoutVolume(w)),
+      0,
+    );
 
     const { current, longest } = computeStreaks(workouts.map((w) => w.date));
 
     return {
       total: workouts.length,
       last7,
-      pr,
       totalVolume: Math.round(totalVolume),
       currentStreak: current,
       longestStreak: longest,

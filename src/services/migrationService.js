@@ -2,7 +2,7 @@ import { getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { COLLECTIONS, legacyDoc, userDoc } from "./paths.js";
 import { saveManyDocuments } from "./collectionService.js";
 import { emptyProfile, readProfile } from "./profileService.js";
-import { makeExerciseDoc, toStoredMeasurement } from "../utils/catalog.js";
+import { exerciseKey, makeExerciseDoc, toStoredMeasurement } from "../utils/catalog.js";
 import { SCHEMA_VERSION } from "../constants/schema.js";
 import { toStoredWorkout } from "../utils/workout.js";
 import { workoutVolume } from "../utils/metrics.js";
@@ -25,7 +25,7 @@ function legacyExercisesToDocs(savedExercises) {
   (savedExercises ?? []).forEach((item) => {
     const name = typeof item === "string" ? item.trim() : String(item?.name ?? "").trim();
     if (!name) return;
-    const key = name.toLowerCase();
+    const key = exerciseKey(name);
     if (seen.has(key)) return;
     seen.add(key);
     out.push(makeExerciseDoc({ name, unit: item?.unit, muscleGroup: null }));
@@ -36,13 +36,11 @@ function legacyExercisesToDocs(savedExercises) {
 export async function ensureMigrated(uid, phone) {
   const profile = await readProfile(uid);
   if (toNum(profile?.schemaVersion) >= SCHEMA_VERSION) {
-    return { migrated: false, counts: null };
+    return;
   }
 
   const legacySnap = await getDoc(legacyDoc(uid));
   const legacy = legacySnap.exists() ? legacySnap.data() : null;
-
-  const counts = { workouts: 0, exercises: 0, measurements: 0 };
 
   if (legacy) {
     const workouts = (legacy.workouts ?? []).filter((w) => w?.date).map(legacyWorkoutToStored);
@@ -54,10 +52,6 @@ export async function ensureMigrated(uid, phone) {
     await saveManyDocuments(uid, COLLECTIONS.workouts, workouts);
     await saveManyDocuments(uid, COLLECTIONS.exercises, exercises);
     await saveManyDocuments(uid, COLLECTIONS.measurements, measurements);
-
-    counts.workouts = workouts.length;
-    counts.exercises = exercises.length;
-    counts.measurements = measurements.length;
   }
 
   await setDoc(
@@ -72,6 +66,4 @@ export async function ensureMigrated(uid, phone) {
     },
     { merge: true },
   );
-
-  return { migrated: Boolean(legacy), counts };
 }

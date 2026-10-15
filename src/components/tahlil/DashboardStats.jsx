@@ -1,17 +1,18 @@
 import React from "react";
 import { Dumbbell, CalendarDays, Flame, Trophy, Layers, Award } from "lucide-react";
 import { formatCompact } from "../../utils/num.js";
+import { cn } from "../../utils/cn.js";
 
 function Tile({ icon: Icon, value, label, accent }) {
   return (
     <div className="bg-brand-surface rounded-md p-3 text-center">
       <div
-        className={
-          "flex items-center justify-center gap-1 text-xl font-display font-bold " +
-          (accent ? "text-brand-accent" : "text-brand-text")
-        }
+        className={cn(
+          "flex items-center justify-center gap-1 text-xl font-display font-bold",
+          accent ? "text-brand-accent" : "text-brand-text",
+        )}
       >
-        <Icon size={14} className={accent ? "" : "text-brand-muted"} />
+        <Icon size={14} className={cn(!accent && "text-brand-muted")} />
         {value}
       </div>
       <div className="text-[10px] text-brand-muted mt-0.5 leading-tight">{label}</div>

@@ -3,7 +3,7 @@ import { useWorkouts } from "../context/collections.jsx";
 import { addMonths, monthMatrix, monthLabel, todayISO } from "../utils/date.js";
 
 export function useWorkoutCalendar() {
-  const { items: workouts, loading } = useWorkouts();
+  const { items: workouts } = useWorkouts();
   const [anchor, setAnchor] = useState(() => todayISO());
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -30,7 +30,6 @@ export function useWorkoutCalendar() {
   const selectedWorkouts = selectedDate ? (byDate.get(selectedDate) ?? []) : [];
 
   return {
-    loading,
     label: monthLabel(anchor),
     weeks,
     byDate,

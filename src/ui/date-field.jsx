@@ -3,7 +3,7 @@ import { CalendarDays } from "lucide-react";
 import { cn } from "../utils/cn.js";
 import { dateLabel } from "../utils/date.js";
 
-export function DateField({ value, onChange, className, ariaLabel = "Sana" }) {
+export function DateField({ value, onChange, className }) {
   const inputRef = useRef(null);
 
   function openPicker() {
@@ -24,7 +24,7 @@ export function DateField({ value, onChange, className, ariaLabel = "Sana" }) {
       <button
         type="button"
         onClick={openPicker}
-        aria-label={`${ariaLabel}: ${dateLabel(value)}`}
+        aria-label={`Sana: ${dateLabel(value)}`}
         className={cn(
           "w-full h-10 rounded-md border border-brand-line bg-brand-surface2 px-3",
           "flex items-center gap-2 text-sm text-left cursor-pointer transition-colors",

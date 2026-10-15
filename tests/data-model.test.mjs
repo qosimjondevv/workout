@@ -95,7 +95,15 @@ const prev = findPreviousExercise(history, "Jim", "2026-09-18");
 assert.equal(prev.date, "2026-09-15", "eng oxirgisi olinadi");
 const sug = suggestProgression(prev.exercise, 2.5);
 assert.deepEqual(sug, { unit: "reps", weight: 77.5, reps: 6 });
-assert.equal(findPreviousExercise(history, "Jim", "2026-09-18", "b").date, "2026-09-10");
+assert.equal(
+  findPreviousExercise(
+    history.filter((w) => w.id !== "b"),
+    "Jim",
+    "2026-09-18",
+  ).date,
+  "2026-09-10",
+  "tahrirlanayotgan yozuv tarixdan chiqariladi",
+);
 assert.equal(findPreviousExercise(history, "Yo'q mashq", "2026-09-18"), null);
 
 const dist = muscleGroupDistribution([

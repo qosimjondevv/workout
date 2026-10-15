@@ -10,7 +10,6 @@ const buttonVariants = cva(
         primary: "bg-brand-accent text-neutral-950 hover:brightness-95",
         secondary:
           "bg-brand-surface2 text-brand-text border border-brand-line hover:border-brand-muted",
-        ghost: "bg-transparent text-brand-muted hover:text-brand-text",
         destructive: "bg-transparent text-brand-accent2 hover:brightness-110",
         outline:
           "bg-transparent border border-dashed border-brand-line text-brand-muted hover:text-brand-text",

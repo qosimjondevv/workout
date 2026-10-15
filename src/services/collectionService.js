@@ -8,10 +8,7 @@ export function subscribeCollection(uid, name, onData, onError) {
     { includeMetadataChanges: true },
     (snap) => {
       const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      onData(items, {
-        pending: snap.metadata.hasPendingWrites,
-        fromCache: snap.metadata.fromCache,
-      });
+      onData(items, { pending: snap.metadata.hasPendingWrites });
     },
     onError,
   );

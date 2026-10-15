@@ -4,7 +4,7 @@ import { isoWeekKey, monthKey, dotDate } from "../utils/date.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
 
 export function useMeasurementAnalytics() {
-  const { items, loading, remove } = useMeasurements();
+  const { items, remove } = useMeasurements();
   const [period, setPeriod] = useState("week");
   const [selectedField, setSelectedField] = useState(MEASUREMENT_FIELDS[0].key);
 
@@ -27,7 +27,6 @@ export function useMeasurementAnalytics() {
   }, [items, period, selectedField]);
 
   return {
-    loading,
     period,
     setPeriod,
     selectedField,

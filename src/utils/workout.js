@@ -23,14 +23,16 @@ export function isFilledSet(unit, set) {
   return toNum(set.weight) !== null || toNum(set.reps) !== null;
 }
 
-function goalSetsOf(value) {
+export const MAX_GOAL_SETS = 20;
+
+export function normalizeGoalSets(value) {
   const n = Math.round(Number(value));
-  return Number.isFinite(n) && n >= 1 && n <= 20 ? n : null;
+  return Number.isFinite(n) && n >= 1 && n <= MAX_GOAL_SETS ? n : null;
 }
 
 export function makeExercise(name, unit, seconds, muscleGroup, goal) {
   const u = normalizeUnit(unit);
-  const goalSets = goalSetsOf(goal?.sets);
+  const goalSets = normalizeGoalSets(goal?.sets);
   const count = seconds != null ? 1 : (goalSets ?? 1);
   return {
     id: uid(),
@@ -232,15 +234,7 @@ export function supersetInfo(exercises) {
     if (id && size >= 2) {
       const letter = String.fromCharCode(65 + (group % 26));
       for (let k = i; k < j; k += 1) {
-        const position = k - i + 1;
-        info[k] = {
-          label: `${letter}${position}`,
-          letter,
-          position,
-          size,
-          isFirst: k === i,
-          isLast: k === j - 1,
-        };
+        info[k] = { label: `${letter}${k - i + 1}`, isLast: k === j - 1 };
       }
       group += 1;
     }
@@ -286,8 +280,8 @@ export function syncStartedAt(form) {
 
 const DRAFT_VERSION = 1;
 
-export function serializeDraft(form, savedAt = Date.now()) {
-  return JSON.stringify({ v: DRAFT_VERSION, savedAt, form });
+export function serializeDraft(form) {
+  return JSON.stringify({ v: DRAFT_VERSION, form });
 }
 
 export function parseDraft(text) {
@@ -330,7 +324,7 @@ export function sanitizeFormWorkout(raw) {
         muscleGroup: normalizeMuscleGroup(e.muscleGroup),
         note: text(e.note),
         supersetId: typeof e.supersetId === "string" && e.supersetId ? e.supersetId : null,
-        goalSets: goalSetsOf(e.goalSets),
+        goalSets: normalizeGoalSets(e.goalSets),
         goalReps: text(e.goalReps),
         sets,
       };

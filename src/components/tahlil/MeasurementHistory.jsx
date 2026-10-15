@@ -36,8 +36,6 @@ function MeasurementRow({ entry, onDelete }) {
         open={confirmOpen}
         title="O'lchamni o'chirish"
         message={`${fmt(entry.date)} sanasidagi o'lchamlarni o'chiraymi?`}
-        confirmLabel="O'chirish"
-        cancelLabel="Bekor qilish"
         onConfirm={() => {
           onDelete(entry.id);
           setConfirmOpen(false);

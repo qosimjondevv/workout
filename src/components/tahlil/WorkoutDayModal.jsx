@@ -18,7 +18,7 @@ export default function WorkoutDayModal({ date, workouts, onClose }) {
           <div key={w.id} className="mb-4 last:mb-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <TypeBadge label={w.target} />
-              {w.bodyWeight != null && (
+              {Number(w.bodyWeight) > 0 && (
                 <span className="text-[11px] text-brand-muted">{w.bodyWeight} kg</span>
               )}
               {volume > 0 && (
@@ -30,7 +30,7 @@ export default function WorkoutDayModal({ date, workouts, onClose }) {
             </div>
 
             {(w.exercises ?? []).map((e, i) => (
-              <div key={e.id} className="bg-brand-surface2 rounded-md px-3 py-2 mb-1.5">
+              <div key={e.id ?? i} className="bg-brand-surface2 rounded-md px-3 py-2 mb-1.5">
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="text-[13px] font-semibold text-brand-text">
                     {groups[i] && (

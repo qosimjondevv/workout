@@ -19,13 +19,13 @@ import { Button } from "../../ui/button.jsx";
 import { cn } from "../../utils/cn.js";
 import { muscleGroupLabel } from "../../constants/muscleGroups.js";
 import {
-  TEMPLATE_MAX_SETS,
   exerciseKey,
   findExerciseMeta,
-  normalizeGoalSets,
+  formatTemplateDays,
   normalizeTemplateDays,
   searchExercises,
 } from "../../utils/catalog.js";
+import { MAX_GOAL_SETS, normalizeGoalSets, normalizeUnit } from "../../utils/workout.js";
 import { WEEKDAY_SHORT } from "../../utils/date.js";
 
 const CATALOG_SEARCH_FROM = 12;
@@ -34,7 +34,7 @@ function toItem(e) {
   return {
     key: exerciseKey(e.name),
     name: String(e.name).trim(),
-    unit: e.unit === "seconds" ? "seconds" : "reps",
+    unit: normalizeUnit(e.unit),
     muscleGroup: e.muscleGroup,
     sets: normalizeGoalSets(e.sets) ?? 3,
     reps: String(e.reps ?? ""),
@@ -98,7 +98,7 @@ function ItemRow({ item, index, count, onChange, onMove, onRemove }) {
         </span>
         <button
           type="button"
-          onClick={() => onChange({ sets: Math.min(TEMPLATE_MAX_SETS, item.sets + 1) })}
+          onClick={() => onChange({ sets: Math.min(MAX_GOAL_SETS, item.sets + 1) })}
           aria-label="Set ko'paytirish"
           className="bg-transparent border-none text-brand-muted px-1.5 py-1 cursor-pointer"
         >
@@ -413,11 +413,9 @@ export default function TemplateManager({
                   <span className="text-[13px] font-semibold text-brand-text truncate">
                     {t.name}
                   </span>
-                  {normalizeTemplateDays(t.days).length > 0 && (
+                  {formatTemplateDays(t.days) && (
                     <span className="text-[9px] font-bold tracking-wide text-brand-accent shrink-0">
-                      {normalizeTemplateDays(t.days)
-                        .map((d) => WEEKDAY_SHORT[d])
-                        .join(" · ")}
+                      {formatTemplateDays(t.days)}
                     </span>
                   )}
                 </div>

@@ -4,17 +4,7 @@ import { Layers } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "../../ui/card.jsx";
 import { SegmentedControl } from "../../ui/segmented.jsx";
 import { formatCompact } from "../../utils/num.js";
-
-const COLOR_ACCENT = "#D4FF3D";
-const COLOR_LINE = "#2E2E31";
-const COLOR_MUTED = "#8C8C90";
-const COLOR_SURFACE2 = "#232325";
-const COLOR_TEXT = "#F3F3EF";
-
-const PERIODS = [
-  { value: "week", label: "Haftalik" },
-  { value: "month", label: "Oylik" },
-];
+import { AXIS_TICK, CHART_COLORS, PERIODS, TOOLTIP_PROPS } from "../../constants/chartTheme.js";
 
 export default function VolumeChart({ data, period, onPeriodChange }) {
   const total = data.reduce((sum, d) => sum + d.volume, 0);
@@ -39,27 +29,18 @@ export default function VolumeChart({ data, period, onPeriodChange }) {
           <div className="text-[11px] text-brand-muted mb-1.5">Jami: {formatCompact(total)} kg</div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={data}>
-              <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="label" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
-              <YAxis
-                tick={{ fill: COLOR_MUTED, fontSize: 10 }}
-                tickFormatter={formatCompact}
-                width={38}
-              />
+              <CartesianGrid stroke={CHART_COLORS.line} strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="label" tick={AXIS_TICK} />
+              <YAxis tick={AXIS_TICK} tickFormatter={formatCompact} width={38} />
               <Tooltip
-                cursor={{ fill: COLOR_LINE, opacity: 0.4 }}
-                contentStyle={{
-                  background: COLOR_SURFACE2,
-                  border: `1px solid ${COLOR_LINE}`,
-                  fontSize: 12,
-                }}
-                labelStyle={{ color: COLOR_TEXT }}
+                cursor={{ fill: CHART_COLORS.line, opacity: 0.4 }}
+                {...TOOLTIP_PROPS}
                 formatter={(v, _n, item) => [
                   `${formatCompact(v)} kg · ${item.payload.count} mashg'ulot`,
                   "Hajm",
                 ]}
               />
-              <Bar dataKey="volume" fill={COLOR_ACCENT} radius={[3, 3, 0, 0]} />
+              <Bar dataKey="volume" fill={CHART_COLORS.accent} radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </>

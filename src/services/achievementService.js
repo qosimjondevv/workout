@@ -7,10 +7,9 @@ export function subscribeAchievements(uid, onData, onError) {
   return subscribeCollection(uid, NAME, onData, onError);
 }
 
-export function unlockAchievement(uid, { key, value = null, silent = false }) {
+export function unlockAchievement(uid, { key, silent = false }) {
   return saveDocument(uid, NAME, key, {
     key,
-    value,
     silent,
     unlockedAt: new Date().toISOString(),
   });

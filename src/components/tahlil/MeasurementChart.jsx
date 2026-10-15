@@ -13,19 +13,8 @@ import { Card, CardHeader, CardTitle } from "../../ui/card.jsx";
 import { Select } from "../../ui/select.jsx";
 import TrendSummary from "./TrendSummary.jsx";
 import { computeTrend } from "../../utils/trend.js";
+import { AXIS_TICK, CHART_COLORS, PERIODS, TOOLTIP_PROPS } from "../../constants/chartTheme.js";
 import { SegmentedControl } from "../../ui/segmented.jsx";
-
-const COLOR_ACCENT = "#D4FF3D";
-const COLOR_ACCENT2 = "#FF5A4E";
-const COLOR_LINE = "#2E2E31";
-const COLOR_MUTED = "#8C8C90";
-const COLOR_SURFACE2 = "#232325";
-const COLOR_TEXT = "#F3F3EF";
-
-const PERIODS = [
-  { value: "week", label: "Haftalik" },
-  { value: "month", label: "Oylik" },
-];
 
 export default function MeasurementChart({
   fields,
@@ -36,7 +25,7 @@ export default function MeasurementChart({
   data,
 }) {
   const trend = computeTrend(data, "value");
-  const lineColor = trend?.direction === "down" ? COLOR_ACCENT2 : COLOR_ACCENT;
+  const lineColor = trend?.direction === "down" ? CHART_COLORS.accent2 : CHART_COLORS.accent;
 
   return (
     <Card className="mb-4">
@@ -65,18 +54,10 @@ export default function MeasurementChart({
           <TrendSummary trend={trend} unit="sm" />
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={data}>
-              <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" />
-              <XAxis dataKey="period" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
-              <YAxis tick={{ fill: COLOR_MUTED, fontSize: 10 }} domain={["auto", "auto"]} />
-              <Tooltip
-                contentStyle={{
-                  background: COLOR_SURFACE2,
-                  border: `1px solid ${COLOR_LINE}`,
-                  fontSize: 12,
-                }}
-                labelStyle={{ color: COLOR_TEXT }}
-                formatter={(v) => [`${v} sm`, "O'lcham"]}
-              />
+              <CartesianGrid stroke={CHART_COLORS.line} strokeDasharray="3 3" />
+              <XAxis dataKey="period" tick={AXIS_TICK} />
+              <YAxis tick={AXIS_TICK} domain={["auto", "auto"]} />
+              <Tooltip {...TOOLTIP_PROPS} formatter={(v) => [`${v} sm`, "O'lcham"]} />
               <Line
                 type="monotone"
                 dataKey="value"

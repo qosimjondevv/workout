@@ -40,15 +40,12 @@ export function exerciseStats(exercise) {
   const nums = (key) => sets.map((s) => Number(s[key])).filter((n) => Number.isFinite(n));
 
   const weights = nums("weight");
-  const reps = nums("reps");
   const seconds = nums("seconds");
 
   return {
     unit,
     bestWeight: weights.length ? Math.max(...weights) : 0,
-    bestReps: reps.length ? Math.max(...reps) : 0,
     bestTime: seconds.length ? Math.max(...seconds) : 0,
-    volume: exerciseVolume(exercise),
     best1RM: exerciseBest1RM(exercise),
   };
 }
@@ -57,28 +54,22 @@ export function exerciseHistoryStats(workouts, exerciseName) {
   const entries = [];
   workouts.forEach((w) => {
     (w.exercises ?? []).forEach((e) => {
-      if (e.name !== exerciseName) return;
-      entries.push({ date: w.date, ...exerciseStats(e) });
+      if (e.name === exerciseName) entries.push(exerciseStats(e));
     });
   });
-  entries.sort((a, b) => (a.date > b.date ? 1 : -1));
 
   const max = (key) => (entries.length ? Math.max(...entries.map((e) => e[key])) : 0);
 
   return {
     entries,
-    last: entries.length ? entries[entries.length - 1] : null,
     bestWeight: max("bestWeight"),
-    bestReps: max("bestReps"),
     bestTime: max("bestTime"),
-    bestVolume: max("volume"),
     best1RM: max("best1RM"),
   };
 }
 
-export function findPreviousExercise(workouts, exerciseName, beforeDate, excludeWorkoutId) {
+export function findPreviousExercise(workouts, exerciseName, beforeDate) {
   const candidates = workouts
-    .filter((w) => w.id !== excludeWorkoutId)
     .filter((w) => !beforeDate || w.date <= beforeDate)
     .filter((w) => (w.exercises ?? []).some((e) => e.name === exerciseName))
     .sort((a, b) => (a.date < b.date ? 1 : -1));

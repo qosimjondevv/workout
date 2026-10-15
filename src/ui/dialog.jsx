@@ -93,7 +93,9 @@ export function Modal({ open, title, onClose, children, footer }) {
             {title}
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Yopish"
             className="bg-transparent border-none text-brand-muted cursor-pointer p-1"
           >
             <X size={16} />

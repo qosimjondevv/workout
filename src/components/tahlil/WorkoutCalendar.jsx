@@ -18,7 +18,9 @@ export default function WorkoutCalendar({
     <Card className="mb-4">
       <div className="flex items-center justify-between mb-3">
         <button
+          type="button"
           onClick={onPrev}
+          aria-label="Oldingi oy"
           className="bg-transparent border-none text-brand-muted cursor-pointer p-1"
         >
           <ChevronLeft size={18} />
@@ -32,7 +34,9 @@ export default function WorkoutCalendar({
           </div>
         </div>
         <button
+          type="button"
           onClick={onNext}
+          aria-label="Keyingi oy"
           className="bg-transparent border-none text-brand-muted cursor-pointer p-1"
         >
           <ChevronRight size={18} />

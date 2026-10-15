@@ -3,8 +3,13 @@ import { X, Plus, Timer } from "lucide-react";
 import { Input } from "../../ui/input.jsx";
 import { Button } from "../../ui/button.jsx";
 import { Select } from "../../ui/select.jsx";
-import { cn } from "../../utils/cn.js";
+import { SegmentedControl } from "../../ui/segmented.jsx";
 import { MUSCLE_GROUPS, muscleGroupLabel } from "../../constants/muscleGroups.js";
+
+const UNITS = [
+  { value: "reps", label: "Vazn × Marta" },
+  { value: "seconds", label: "Soniya" },
+];
 
 export default function ExerciseListEditor({ items, draft, onDraftChange, onAdd, onRemove }) {
   return (
@@ -19,7 +24,9 @@ export default function ExerciseListEditor({ items, draft, onDraftChange, onAdd,
             {it.name}
             <span className="text-[10px] text-brand-muted">{muscleGroupLabel(it.muscleGroup)}</span>
             <button
+              type="button"
               onClick={() => onRemove(it.id)}
+              aria-label={`${it.name}ni o'chirish`}
               className="bg-transparent border-none text-brand-muted p-0 flex cursor-pointer"
             >
               <X size={12} />
@@ -28,32 +35,13 @@ export default function ExerciseListEditor({ items, draft, onDraftChange, onAdd,
         ))}
       </div>
 
-      <div className="flex gap-1.5 mb-1.5">
-        <button
-          type="button"
-          onClick={() => onDraftChange({ ...draft, unit: "reps" })}
-          className={cn(
-            "flex-1 py-1 rounded-md text-[11px] font-semibold cursor-pointer border",
-            draft.unit === "reps"
-              ? "border-brand-accent text-brand-accent bg-brand-accent/10"
-              : "border-brand-line text-brand-muted bg-brand-surface2",
-          )}
-        >
-          Vazn × Marta
-        </button>
-        <button
-          type="button"
-          onClick={() => onDraftChange({ ...draft, unit: "seconds" })}
-          className={cn(
-            "flex-1 py-1 rounded-md text-[11px] font-semibold cursor-pointer border",
-            draft.unit === "seconds"
-              ? "border-brand-accent text-brand-accent bg-brand-accent/10"
-              : "border-brand-line text-brand-muted bg-brand-surface2",
-          )}
-        >
-          Soniya
-        </button>
-      </div>
+      <SegmentedControl
+        value={draft.unit}
+        onChange={(unit) => onDraftChange({ ...draft, unit })}
+        options={UNITS}
+        size="sm"
+        className="mb-1.5"
+      />
 
       <div className="flex gap-1.5">
         <Input

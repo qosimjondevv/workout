@@ -13,7 +13,7 @@ function emptyValues() {
 
 export function useMeasurementForm() {
   const { save } = useMeasurements();
-  const [date, setDate] = useState(todayISO());
+  const [date, setDate] = useState(todayISO);
   const [values, setValues] = useState(emptyValues);
   const [error, setError] = useState("");
 

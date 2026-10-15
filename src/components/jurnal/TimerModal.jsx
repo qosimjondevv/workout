@@ -26,7 +26,9 @@ export default function TimerModal({ onCancel, onComplete }) {
     >
       <div className="relative bg-brand-surface border border-brand-line rounded-lg p-5 w-full max-w-[320px] text-center">
         <button
+          type="button"
           onClick={onCancel}
+          aria-label="Yopish"
           className="absolute top-3 right-3 bg-transparent border-none text-brand-muted cursor-pointer"
         >
           <X size={18} />

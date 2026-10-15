@@ -8,7 +8,6 @@ export function emptyProfile() {
     displayName: "",
     phone: "",
     height: null,
-    startWeight: null,
     goalWeight: null,
     goalType: "maintain",
     restDefaultSeconds: 90,

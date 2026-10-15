@@ -4,7 +4,7 @@ import { countPersonalRecords, muscleGroupDistribution, volumeByPeriod } from ".
 import { muscleGroupLabel } from "../constants/muscleGroups.js";
 
 export function useDashboard() {
-  const { items: workouts, loading } = useWorkouts();
+  const { items: workouts } = useWorkouts();
   const [volumePeriod, setVolumePeriod] = useState("week");
 
   const volumeData = useMemo(
@@ -27,7 +27,6 @@ export function useDashboard() {
   }, [workouts]);
 
   return {
-    loading,
     volumePeriod,
     setVolumePeriod,
     volumeData,

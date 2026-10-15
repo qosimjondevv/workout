@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { CheckCircle2, Flame, Info, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Flame } from "lucide-react";
 import { cn } from "../utils/cn.js";
 
 const ToastContext = createContext(null);
@@ -15,19 +15,13 @@ const TONES = {
     className: "border-brand-accent bg-brand-accent/10",
     iconClass: "text-brand-accent",
   },
-  error: {
-    icon: AlertTriangle,
-    className: "border-brand-accent2/60",
-    iconClass: "text-brand-accent2",
-  },
-  info: { icon: Info, className: "border-brand-line", iconClass: "text-brand-muted" },
 };
 
 const MAX_VISIBLE = 3;
 let nextId = 1;
 
 function ToastItem({ toast, onDismiss }) {
-  const tone = TONES[toast.tone] ?? TONES.info;
+  const tone = TONES[toast.tone] ?? TONES.success;
   const Icon = tone.icon;
 
   useEffect(() => {
@@ -62,13 +56,12 @@ export function ToastProvider({ children }) {
     setToasts((list) => list.filter((t) => t.id !== id));
   }, []);
 
-  const show = useCallback(({ title, description = "", tone = "info", duration = 3500 }) => {
+  const show = useCallback(({ title, description = "", tone = "success", duration = 3500 }) => {
     const id = nextId++;
     setToasts((list) => [...list, { id, title, description, tone, duration }].slice(-MAX_VISIBLE));
-    return id;
   }, []);
 
-  const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
+  const value = useMemo(() => ({ show }), [show]);
 
   return (
     <ToastContext.Provider value={value}>

@@ -13,13 +13,7 @@ import { Card, CardHeader, CardTitle } from "../../ui/card.jsx";
 import { Select } from "../../ui/select.jsx";
 import TrendSummary from "./TrendSummary.jsx";
 import { computeTrend } from "../../utils/trend.js";
-
-const COLOR_ACCENT = "#D4FF3D";
-const COLOR_ACCENT2 = "#FF5A4E";
-const COLOR_LINE = "#2E2E31";
-const COLOR_MUTED = "#8C8C90";
-const COLOR_SURFACE2 = "#232325";
-const COLOR_TEXT = "#F3F3EF";
+import { AXIS_TICK, CHART_COLORS, TOOLTIP_PROPS } from "../../constants/chartTheme.js";
 
 export default function ExerciseChart({
   exerciseNames,
@@ -30,7 +24,7 @@ export default function ExerciseChart({
 }) {
   const unitLabel = unit === "seconds" ? "soniya" : "kg";
   const trend = computeTrend(data, "value");
-  const lineColor = trend?.direction === "down" ? COLOR_ACCENT2 : COLOR_ACCENT;
+  const lineColor = trend?.direction === "down" ? CHART_COLORS.accent2 : CHART_COLORS.accent;
 
   return (
     <Card className="mb-4">
@@ -55,18 +49,10 @@ export default function ExerciseChart({
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={data}>
-              <CartesianGrid stroke={COLOR_LINE} strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
-              <YAxis tick={{ fill: COLOR_MUTED, fontSize: 10 }} />
-              <Tooltip
-                contentStyle={{
-                  background: COLOR_SURFACE2,
-                  border: `1px solid ${COLOR_LINE}`,
-                  fontSize: 12,
-                }}
-                labelStyle={{ color: COLOR_TEXT }}
-                formatter={(v) => [`${v} ${unitLabel}`, "Natija"]}
-              />
+              <CartesianGrid stroke={CHART_COLORS.line} strokeDasharray="3 3" />
+              <XAxis dataKey="date" tick={AXIS_TICK} />
+              <YAxis tick={AXIS_TICK} />
+              <Tooltip {...TOOLTIP_PROPS} formatter={(v) => [`${v} ${unitLabel}`, "Natija"]} />
               <Line
                 type="monotone"
                 dataKey="value"

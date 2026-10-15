@@ -17,7 +17,7 @@ export async function saveWorkout(uid, form) {
     totalVolume: workoutVolume(stored),
     exerciseCount: stored.exercises.length,
     setCount: stored.exercises.reduce((n, e) => n + e.sets.length, 0),
-    createdAt: form.createdAt ?? serverTimestamp(),
+    ...(form.id ? {} : { createdAt: serverTimestamp() }),
   };
   await saveDocument(uid, NAME, payload.id, payload);
   return payload;

@@ -59,8 +59,6 @@ export default function HistoryItem({ workout, onEdit, onDelete }) {
         open={confirmOpen}
         title="Mashg'ulotni o'chirish"
         message={`${fmt(workout.date)} sanasidagi mashqlarni o'chiraymi? Bu amalni orqaga qaytarib bo'lmaydi.`}
-        confirmLabel="O'chirish"
-        cancelLabel="Bekor qilish"
         onConfirm={() => {
           onDelete();
           setConfirmOpen(false);
