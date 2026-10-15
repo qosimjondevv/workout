@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 const B = "../src/";
-const { bodyWeightSeries, latestBodyWeight } = await import(B + "utils/metrics.js");
+const { bodyWeightSeries, latestBodyWeight, measurementSeries } = await import(
+  B + "utils/metrics.js"
+);
 const { validateMeasurement, toStoredMeasurement } = await import(B + "utils/catalog.js");
 const { MEASUREMENT_FIELDS, CIRCUMFERENCE_FIELDS, BODY_WEIGHT_KEY, measurementField } =
   await import(B + "constants/measurementFields.js");
@@ -44,5 +46,32 @@ const stored = toStoredMeasurement({
   values: { vazn: "78,4", bel: "", oyoq: "55" },
 });
 assert.deepEqual(stored.values, { vazn: 78.4, oyoq: 55 });
+
+const sameWeek = [
+  { date: "2026-10-12", values: { bel: 82 } },
+  { date: "2026-10-14", values: { vazn: 78 } },
+];
+assert.deepEqual(
+  measurementSeries({ measurements: sameWeek, workouts: [], field: "bel", period: "week" }),
+  [{ date: "2026-10-12", value: 82 }],
+  "haftaning oxirgi o'lchovida bel yo'q bo'lsa ham oldingisi qoladi",
+);
+assert.deepEqual(
+  measurementSeries({
+    measurements: sameWeek,
+    workouts: [{ date: "2026-10-20", bodyWeight: 77 }],
+    field: "vazn",
+    period: "week",
+  }),
+  [
+    { date: "2026-10-14", value: 78 },
+    { date: "2026-10-20", value: 77 },
+  ],
+  "vazn grafigi mashg'ulotdagi vaznni ham oladi",
+);
+assert.equal(
+  measurementSeries({ measurements: sameWeek, workouts: [], field: "bel", period: "month" }).length,
+  1,
+);
 
 console.log("Tana vazni: tekshiruvlar o'tdi ✓");

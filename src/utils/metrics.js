@@ -240,3 +240,18 @@ export function latestBodyWeight(workouts, measurements) {
   const series = bodyWeightSeries(workouts, measurements);
   return series.length ? series[series.length - 1].weight : null;
 }
+
+export function measurementSeries({ measurements, workouts, field, period }) {
+  const points =
+    field === BODY_WEIGHT_KEY
+      ? bodyWeightSeries(workouts, measurements).map((p) => ({ date: p.date, value: p.weight }))
+      : (measurements ?? [])
+          .map((m) => ({ date: m.date, value: toNum(m.values?.[field]) }))
+          .filter((p) => p.date && p.value !== null)
+          .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+
+  const keyFn = period === "month" ? monthKey : isoWeekKey;
+  const byPeriod = new Map();
+  points.forEach((p) => byPeriod.set(keyFn(p.date), p));
+  return Array.from(byPeriod.values());
+}

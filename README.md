@@ -5,11 +5,11 @@ Zal uchun mashg'ulotlar jurnali: setlarni yozish, rekordlarni kuzatish, progress
 ## Imkoniyatlar
 
 - **Jurnal:** setlarni ✓ bilan belgilash. Bo'sh set o'tgan safargi natija bilan to'ldiriladi, shundan keyin dam olish taymeri o'zi boshlanadi.
-- **Tayyor kunlik mashqlar:** har biriga hafta kunlari (DUSH ... YAK), set rejasi va maqsad (masalan 4 × 8-10) biriktiriladi.
-- **Superset** (A1/A2), mashg'ulot davomiyligi, avtomatik saqlanadigan qoralama.
+- **Tayyor kunlik mashqlar:** mashqlar to'plami, har mashq uchun reja (masalan 3 set × 8-10); yangi mashqni shu yerning o'zida yaratish mumkin.
+- **Superset** (A1/A2), mashg'ulot vaqti (Boshlash / Tugatish / Davom), avtomatik saqlanadigan qoralama.
 - **Jonli rekordlar:** natija tarixdagi eng yaxshisidan oshsa 🔥 belgisi chiqadi va telefon titraydi.
 - **Tahlil:** hajm grafiklari, mashq progressi, mushak guruhlari bo'yicha taqsimot, kalendar, yutuqlar.
-- **Tana:** o'lchamlar va progress suratlari ("Oldin / Keyin" taqqoslash).
+- **Tana:** vazn (kg) va aylana o'lchamlari (sm), progress suratlari ("Oldin / Keyin" taqqoslash). Mashg'ulot va o'lchovdagi vazn bitta grafikda.
 - **Eksport:** JSON zaxira, CSV (Excel).
 
 ## Texnologiyalar
