@@ -60,9 +60,7 @@ service cloud.firestore {
           && request.resource.data.name.size() > 0
           && request.resource.data.name.size() <= 60
           && request.resource.data.exercises is list
-          && request.resource.data.exercises.size() <= 60
-          && request.resource.data.get('days', []) is list
-          && request.resource.data.get('days', []).size() <= 7;
+          && request.resource.data.exercises.size() <= 60;
       }
 
       match /achievements/{achievementId} {

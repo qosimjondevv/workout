@@ -6,7 +6,7 @@ const { makeTemplate, exerciseKey } = await import(B + "utils/catalog.js");
 
 const groups = new Set(MUSCLE_GROUPS.map((g) => g.key));
 
-assert.ok(TEMPLATE_PRESETS.length >= 2, "kamida ikkita namuna");
+assert.equal(TEMPLATE_PRESETS.length, 2, "ikkita namuna");
 
 const keys = TEMPLATE_PRESETS.map((p) => p.key);
 assert.equal(new Set(keys).size, keys.length, "namuna kalitlari noyob");
@@ -30,8 +30,6 @@ TEMPLATE_PRESETS.forEach((p) => {
     p.exercises.map((e) => [e.name, e.unit, e.muscleGroup, e.sets, e.reps]),
     p.key + ": saqlash shakli",
   );
-  assert.ok(Array.isArray(p.days) && p.days.length > 0, p.key + ": kunlar belgilangan");
-  assert.deepEqual(t.days, p.days, p.key + ": kunlar saqlanadi");
   p.exercises.forEach((e) => {
     assert.ok(
       Number.isInteger(e.sets) && e.sets >= 1 && e.sets <= 20,
@@ -48,8 +46,5 @@ TEMPLATE_PRESETS.flatMap((p) => p.exercises).forEach((e) => {
   if (prev) assert.equal(prev, sig, e.name + ": namunalar orasida bir xil");
   seen.set(exerciseKey(e.name), sig);
 });
-
-const allDays = TEMPLATE_PRESETS.flatMap((p) => p.days);
-assert.equal(new Set(allDays).size, allDays.length, "har kun — bitta namuna");
 
 console.log("Namuna dasturlar: tekshiruvlar o'tdi ✓");

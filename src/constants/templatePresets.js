@@ -1,18 +1,11 @@
 export const TEMPLATE_PRESETS = [
   {
-    key: "push",
-    days: [0, 3],
-    name: "Push Day",
-    target: "Ko'krak, Yelka, Triceps",
+    key: "upper",
+    name: "Tepa tana",
+    target: "Ko'krak, Orqa, Yelka, Qo'llar",
     exercises: [
       { name: "Shtanga bilan jim", unit: "reps", muscleGroup: "chest", sets: 4, reps: "6-8" },
-      {
-        name: "Qiya skameykada gantel jim",
-        unit: "reps",
-        muscleGroup: "chest",
-        sets: 3,
-        reps: "8-10",
-      },
+      { name: "Turnikda tortilish", unit: "reps", muscleGroup: "back", sets: 4, reps: "6-10" },
       {
         name: "O'tirib yelka pressi",
         unit: "reps",
@@ -20,39 +13,14 @@ export const TEMPLATE_PRESETS = [
         sets: 3,
         reps: "8-10",
       },
-      {
-        name: "Yonga gantel ko'tarish",
-        unit: "reps",
-        muscleGroup: "shoulders",
-        sets: 3,
-        reps: "12-15",
-      },
+      { name: "Egilib shtanga tortish", unit: "reps", muscleGroup: "back", sets: 3, reps: "8-10" },
+      { name: "Shtanga bilan biceps", unit: "reps", muscleGroup: "biceps", sets: 3, reps: "10-12" },
       { name: "Triceps blokda", unit: "reps", muscleGroup: "triceps", sets: 3, reps: "10-12" },
     ],
   },
   {
-    key: "pull",
-    days: [1, 4],
-    name: "Pull Day",
-    target: "Orqa, Biceps",
-    exercises: [
-      { name: "Turnikda tortilish", unit: "reps", muscleGroup: "back", sets: 4, reps: "6-10" },
-      { name: "Egilib shtanga tortish", unit: "reps", muscleGroup: "back", sets: 4, reps: "8-10" },
-      { name: "Yuqori blok tortish", unit: "reps", muscleGroup: "back", sets: 3, reps: "10-12" },
-      { name: "Shtanga bilan biceps", unit: "reps", muscleGroup: "biceps", sets: 3, reps: "8-10" },
-      {
-        name: "Bolg'a (hammer) biceps",
-        unit: "reps",
-        muscleGroup: "biceps",
-        sets: 3,
-        reps: "10-12",
-      },
-    ],
-  },
-  {
-    key: "legs",
-    days: [2, 5],
-    name: "Leg Day",
+    key: "lower",
+    name: "Oyoq va press",
     target: "Oyoq, Press",
     exercises: [
       { name: "Shtanga bilan o'tirish", unit: "reps", muscleGroup: "legs", sets: 4, reps: "6-8" },

@@ -274,39 +274,7 @@ assert.equal(dateLabel(""), "Sanani tanlang");
 console.log("Jurnal v3 mantig'i: tekshiruvlar o'tdi ✓");
 
 {
-  const {
-    normalizeTemplateDays,
-    templatesForDay,
-    makeTemplate: mt,
-  } = await import(B + "utils/catalog.js");
-  const { weekdayIndex, WEEKDAY_SHORT } = await import(B + "utils/date.js");
   const { syncStartedAt } = await import(B + "utils/workout.js");
-
-  assert.deepEqual(WEEKDAY_SHORT, ["DUSH", "SESH", "CHOR", "PAY", "JU", "SHAN", "YAK"]);
-  assert.equal(weekdayIndex("2026-10-12"), 0, "dushanba = 0");
-  assert.equal(weekdayIndex("2026-10-18"), 6, "yakshanba = 6");
-
-  assert.deepEqual(
-    normalizeTemplateDays([4, "1", 1, 9, -1, 2.5, null]),
-    [1, 4],
-    "takrorsiz, tartibli, faqat 0..6",
-  );
-  assert.deepEqual(normalizeTemplateDays(undefined), [], "eski template");
-  assert.deepEqual(mt({ name: "X", days: [3, 0] }).days, [0, 3]);
-  assert.deepEqual(mt({ name: "X" }).days, []);
-
-  const list = [
-    { name: "Pull", days: [1, 4] },
-    { name: "Push", days: [0, 3] },
-    { name: "Arms", days: [0] },
-    { name: "Eski" },
-  ];
-  assert.deepEqual(
-    templatesForDay(list, 0).map((t) => t.name),
-    ["Arms", "Push"],
-    "nomi bo'yicha",
-  );
-  assert.deepEqual(templatesForDay(list, 6), [], "yakshanba — dam");
 
   const f = { startedAt: 123, exercises: [{ sets: [{ done: false }] }] };
   assert.equal(syncStartedAt(f).startedAt, null);
@@ -319,4 +287,4 @@ console.log("Jurnal v3 mantig'i: tekshiruvlar o'tdi ✓");
     null,
   );
 }
-console.log("Kunlik mashq jadvali: tekshiruvlar o'tdi ✓");
+console.log("Sekundomer: tekshiruvlar o'tdi ✓");

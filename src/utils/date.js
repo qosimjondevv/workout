@@ -136,9 +136,3 @@ export function formatDuration(totalSec) {
   if (!h) return `${m} daq`;
   return m ? `${h} soat ${m} daq` : `${h} soat`;
 }
-
-export const WEEKDAY_SHORT = ["DUSH", "SESH", "CHOR", "PAY", "JU", "SHAN", "YAK"];
-
-export function weekdayIndex(dateISO) {
-  return (new Date(dateISO + "T00:00:00").getDay() + 6) % 7;
-}

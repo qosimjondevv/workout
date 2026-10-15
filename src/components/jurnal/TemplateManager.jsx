@@ -18,17 +18,11 @@ import { Input } from "../../ui/input.jsx";
 import { Button } from "../../ui/button.jsx";
 import { cn } from "../../utils/cn.js";
 import { muscleGroupLabel } from "../../constants/muscleGroups.js";
-import {
-  exerciseKey,
-  findExerciseMeta,
-  formatTemplateDays,
-  normalizeTemplateDays,
-  searchExercises,
-} from "../../utils/catalog.js";
+import { exerciseKey, findExerciseMeta, searchExercises } from "../../utils/catalog.js";
 import { MAX_GOAL_SETS, normalizeGoalSets, normalizeUnit } from "../../utils/workout.js";
-import { WEEKDAY_SHORT } from "../../utils/date.js";
 
 const CATALOG_SEARCH_FROM = 12;
+const DEFAULT_SETS = 3;
 
 function toItem(e) {
   return {
@@ -36,7 +30,7 @@ function toItem(e) {
     name: String(e.name).trim(),
     unit: normalizeUnit(e.unit),
     muscleGroup: e.muscleGroup,
-    sets: normalizeGoalSets(e.sets) ?? 3,
+    sets: normalizeGoalSets(e.sets) ?? DEFAULT_SETS,
     reps: String(e.reps ?? ""),
   };
 }
@@ -46,83 +40,106 @@ function editorFromTemplate(t) {
     id: t?.id ?? null,
     name: t?.name ?? "",
     target: t?.target ?? "",
-    days: normalizeTemplateDays(t?.days),
     items: (t?.exercises ?? []).map(toItem),
   };
+}
+
+function Step({ number, title, hint, children }) {
+  return (
+    <section className="mb-4">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="w-5 h-5 shrink-0 rounded-full bg-brand-accent text-neutral-950 text-[11px] font-bold flex items-center justify-center">
+          {number}
+        </span>
+        <h3 className="text-[13px] font-semibold text-brand-text m-0">{title}</h3>
+      </div>
+      {hint && <p className="text-[11px] text-brand-muted mb-2 mt-0 pl-7">{hint}</p>}
+      {children}
+    </section>
+  );
+}
+
+function IconButton({ label, disabled, onClick, children }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className="h-7 w-7 flex items-center justify-center rounded bg-transparent border-none text-brand-muted cursor-pointer hover:text-brand-text disabled:opacity-25 disabled:cursor-default"
+    >
+      {children}
+    </button>
+  );
 }
 
 function ItemRow({ item, index, count, onChange, onMove, onRemove }) {
   const isSeconds = item.unit === "seconds";
   return (
-    <div className="flex items-center gap-1.5 bg-brand-surface2 rounded-md px-2 py-1.5 mb-1">
-      <div className="flex flex-col shrink-0">
-        <button
-          type="button"
-          onClick={() => onMove(-1)}
-          disabled={index === 0}
-          aria-label="Yuqoriga"
-          className="bg-transparent border-none text-brand-muted p-0 cursor-pointer disabled:opacity-25 disabled:cursor-default"
-        >
-          <ArrowUp size={13} />
-        </button>
-        <button
-          type="button"
-          onClick={() => onMove(1)}
-          disabled={index === count - 1}
-          aria-label="Pastga"
-          className="bg-transparent border-none text-brand-muted p-0 cursor-pointer disabled:opacity-25 disabled:cursor-default"
-        >
-          <ArrowDown size={13} />
-        </button>
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="text-[12px] font-semibold text-brand-text truncate flex items-center gap-1">
-          {isSeconds && <Timer size={11} className="text-brand-muted shrink-0" />}
-          {item.name}
-        </div>
-        <div className="text-[10px] text-brand-muted">{muscleGroupLabel(item.muscleGroup)}</div>
-      </div>
-
-      <div className="flex items-center shrink-0 border border-brand-line rounded-md">
-        <button
-          type="button"
-          onClick={() => onChange({ sets: Math.max(1, item.sets - 1) })}
-          aria-label="Set kamaytirish"
-          className="bg-transparent border-none text-brand-muted px-1.5 py-1 cursor-pointer"
-        >
-          <Minus size={11} />
-        </button>
-        <span className="text-[12px] text-brand-text tabular-nums w-9 text-center">
-          {item.sets} set
+    <div className="bg-brand-surface2 rounded-md px-2.5 py-2 mb-1.5">
+      <div className="flex items-center gap-2">
+        <span className="w-5 text-[11px] font-bold text-brand-accent tabular-nums shrink-0">
+          {index + 1}.
         </span>
-        <button
-          type="button"
-          onClick={() => onChange({ sets: Math.min(MAX_GOAL_SETS, item.sets + 1) })}
-          aria-label="Set ko'paytirish"
-          className="bg-transparent border-none text-brand-muted px-1.5 py-1 cursor-pointer"
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-semibold text-brand-text truncate flex items-center gap-1">
+            {isSeconds && <Timer size={11} className="text-brand-muted shrink-0" />}
+            {item.name}
+          </div>
+          <div className="text-[10px] text-brand-muted">{muscleGroupLabel(item.muscleGroup)}</div>
+        </div>
+        <IconButton label="Yuqoriga ko'chirish" disabled={index === 0} onClick={() => onMove(-1)}>
+          <ArrowUp size={14} />
+        </IconButton>
+        <IconButton
+          label="Pastga ko'chirish"
+          disabled={index === count - 1}
+          onClick={() => onMove(1)}
         >
-          <Plus size={11} />
-        </button>
+          <ArrowDown size={14} />
+        </IconButton>
+        <IconButton label={`${item.name}ni olib tashlash`} onClick={onRemove}>
+          <X size={14} />
+        </IconButton>
       </div>
 
-      <Input
-        value={item.reps}
-        onChange={(e) => onChange({ reps: e.target.value })}
-        placeholder={isSeconds ? "60s" : "8-10"}
-        maxLength={15}
-        aria-label={`${item.name}: maqsad`}
-        className="h-8 w-[58px] shrink-0 text-[12px] text-center px-1"
-      />
+      <div className="flex items-center gap-3 mt-1.5 pl-7">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[11px] text-brand-muted">Setlar:</span>
+          <div className="flex items-center border border-brand-line rounded-md bg-brand-bg">
+            <IconButton
+              label="Setni kamaytirish"
+              disabled={item.sets <= 1}
+              onClick={() => onChange({ sets: Math.max(1, item.sets - 1) })}
+            >
+              <Minus size={12} />
+            </IconButton>
+            <span className="text-[13px] font-semibold text-brand-text tabular-nums w-5 text-center">
+              {item.sets}
+            </span>
+            <IconButton
+              label="Setni ko'paytirish"
+              disabled={item.sets >= MAX_GOAL_SETS}
+              onClick={() => onChange({ sets: Math.min(MAX_GOAL_SETS, item.sets + 1) })}
+            >
+              <Plus size={12} />
+            </IconButton>
+          </div>
+        </div>
 
-      <button
-        type="button"
-        onClick={onRemove}
-        aria-label={`${item.name}ni olib tashlash`}
-        className="bg-transparent border-none text-brand-muted cursor-pointer p-0.5 shrink-0"
-      >
-        <X size={14} />
-      </button>
+        <label className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[11px] text-brand-muted">{isSeconds ? "Vaqt:" : "Takror:"}</span>
+          <Input
+            value={item.reps}
+            onChange={(e) => onChange({ reps: e.target.value })}
+            placeholder={isSeconds ? "60s" : "8-10"}
+            maxLength={15}
+            className="h-7 w-[64px] text-[12px] text-center px-1 bg-brand-bg"
+          />
+          {!isSeconds && <span className="text-[11px] text-brand-muted">marta</span>}
+        </label>
+      </div>
     </div>
   );
 }
@@ -154,15 +171,6 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
     setError("");
   }
 
-  function toggleDay(day) {
-    setDraft((d) => ({
-      ...d,
-      days: d.days.includes(day)
-        ? d.days.filter((x) => x !== day)
-        : [...d.days, day].sort((a, b) => a - b),
-    }));
-  }
-
   function changeItem(idx, update) {
     setDraft((d) => ({
       ...d,
@@ -183,21 +191,20 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
   function fillFromCurrent() {
     const list = (currentExercises ?? []).filter((e) => String(e.name ?? "").trim());
     if (!list.length) {
-      setError("Formada hali mashq yo'q");
+      setError("Jurnalda hali mashq yo'q");
       return;
     }
     setDraft((d) => {
       const known = new Set(d.items.map((i) => i.key));
       const added = list
         .filter((e) => !known.has(exerciseKey(e.name)))
-        .map((e) => {
-          const meta = findExerciseMeta(e.name, catalog, [e]);
-          return toItem({
-            ...meta,
+        .map((e) =>
+          toItem({
+            ...findExerciseMeta(e.name, catalog, [e]),
             sets: Math.max(1, e.sets?.length ?? 1),
             reps: e.goalReps ?? "",
-          });
-        });
+          }),
+        );
       return { ...d, items: [...d.items, ...added] };
     });
     setError("");
@@ -205,18 +212,17 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
 
   function save() {
     if (!draft.name.trim()) {
-      setError("Nomini yozing");
+      setError("1-qadam: nomini yozing");
       return;
     }
     if (!draft.items.length) {
-      setError("Kamida bitta mashq tanlang");
+      setError("2-qadam: kamida bitta mashq tanlang");
       return;
     }
     onSave({
       id: draft.id,
       name: draft.name,
       target: draft.target,
-      days: draft.days,
       exercises: draft.items.map(({ name, unit, muscleGroup, sets, reps }) => ({
         name,
         unit,
@@ -232,57 +238,86 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
       <button
         type="button"
         onClick={onCancel}
-        className="flex items-center gap-1 text-[11px] text-brand-muted bg-transparent border-none cursor-pointer p-0 mb-3"
+        className="flex items-center gap-1 text-[11px] text-brand-muted bg-transparent border-none cursor-pointer p-0 mb-3 hover:text-brand-text"
       >
-        <ChevronLeft size={13} /> Kunlik mashqlar ro'yxati
+        <ChevronLeft size={13} /> Ro'yxatga qaytish
       </button>
 
-      <div className="flex gap-2 mb-2">
+      <Step number={1} title="Nomi">
+        <label className="block text-[11px] text-brand-muted mb-1">Nomi</label>
         <Input
           value={draft.name}
           onChange={(e) => patch({ name: e.target.value })}
-          placeholder="Nomi: Push Day"
+          placeholder="Masalan: Push Day"
           maxLength={60}
-          className="h-9 text-[13px]"
+          className="mb-2"
         />
+        <label className="block text-[11px] text-brand-muted mb-1">
+          Mashg'ulot turi <span className="opacity-70">(ixtiyoriy)</span>
+        </label>
         <Input
           value={draft.target}
           onChange={(e) => patch({ target: e.target.value })}
-          placeholder="Ko'krak, Triceps"
+          placeholder="Masalan: Ko'krak, Triceps"
           maxLength={100}
-          className="h-9 text-[13px]"
         />
-      </div>
+      </Step>
 
-      <div className="text-[10px] text-brand-muted mb-1 px-0.5">Qaysi kunlari</div>
-      <div className="grid grid-cols-7 gap-1 mb-3" role="group" aria-label="Hafta kunlari">
-        {WEEKDAY_SHORT.map((label, day) => {
-          const active = draft.days.includes(day);
-          return (
-            <button
-              key={label}
-              type="button"
-              onClick={() => toggleDay(day)}
-              aria-pressed={active}
-              className={cn(
-                "py-1.5 rounded-md text-[10px] font-bold tracking-wide cursor-pointer border transition-colors",
-                active
-                  ? "border-brand-accent text-neutral-950 bg-brand-accent"
-                  : "border-brand-line text-brand-muted bg-brand-surface2 hover:text-brand-text",
-              )}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+      <Step
+        number={2}
+        title={`Mashqlarni tanlang${draft.items.length ? ` · ${draft.items.length} ta` : ""}`}
+        hint="Bosib qo'shing, qayta bossangiz olib tashlanadi."
+      >
+        <Button variant="secondary" size="sm" onClick={fillFromCurrent} className="mb-2">
+          <Wand2 size={13} /> Jurnaldagi mashqlarni olish
+        </Button>
+
+        {catalog.length > CATALOG_SEARCH_FROM && (
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Qidirish..."
+            className="h-8 text-xs mb-2"
+          />
+        )}
+
+        {catalog.length === 0 ? (
+          <div className="text-[12px] text-brand-muted py-2">
+            Katalog bo'sh — mashqlar Jurnal'da qo'shilganda shu yerda chiqadi.
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-1.5">
+            {visibleCatalog.map((c) => {
+              const active = selectedKeys.has(exerciseKey(c.name));
+              return (
+                <button
+                  key={c.id ?? c.name}
+                  type="button"
+                  onClick={() => toggle(c)}
+                  title={muscleGroupLabel(c.muscleGroup)}
+                  aria-pressed={active}
+                  className={cn(
+                    "flex items-center gap-1 text-xs rounded-full px-2.5 py-1 cursor-pointer border",
+                    active
+                      ? "border-brand-accent text-brand-accent bg-brand-accent/10"
+                      : "border-brand-line text-brand-muted bg-brand-surface2 hover:text-brand-text",
+                  )}
+                >
+                  {active ? <Check size={11} /> : <Plus size={11} />}
+                  {c.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </Step>
 
       {draft.items.length > 0 && (
-        <div className="mb-3">
-          <div className="flex justify-between text-[10px] text-brand-muted mb-1 px-1">
-            <span>Mashqlar tartibi · {draft.items.length}</span>
-            <span>reja · maqsad</span>
-          </div>
+        <Step
+          number={3}
+          title="Har bir mashq uchun reja"
+          hint="Mashg'ulot boshlanganda har mashqqa shuncha bo'sh set tayyorlanadi. Tartibni ↑↓ bilan o'zgartiring."
+        >
           {draft.items.map((item, idx) => (
             <ItemRow
               key={item.key}
@@ -294,54 +329,7 @@ function TemplateEditor({ initial, catalog, currentExercises, onSave, onCancel }
               onRemove={() => toggle(item)}
             />
           ))}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={fillFromCurrent}
-        className="flex items-center gap-1.5 text-[11px] text-brand-muted bg-transparent border-none cursor-pointer mb-2 p-0 hover:text-brand-text"
-      >
-        <Wand2 size={12} /> Joriy mashg'ulotdagi mashqlarni olish
-      </button>
-
-      {catalog.length > CATALOG_SEARCH_FROM && (
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Katalogdan qidirish..."
-          className="h-8 text-xs mb-2"
-        />
-      )}
-
-      {catalog.length === 0 ? (
-        <div className="text-[12px] text-brand-muted py-3 text-center">
-          Katalog bo'sh — mashqlar Jurnal'da qo'shilganda shu yerda chiqadi.
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {visibleCatalog.map((c) => {
-            const active = selectedKeys.has(exerciseKey(c.name));
-            return (
-              <button
-                key={c.id ?? c.name}
-                type="button"
-                onClick={() => toggle(c)}
-                title={muscleGroupLabel(c.muscleGroup)}
-                aria-pressed={active}
-                className={cn(
-                  "flex items-center gap-1 text-xs rounded-full px-2.5 py-1 cursor-pointer border",
-                  active
-                    ? "border-brand-accent text-brand-accent bg-brand-accent/10"
-                    : "border-brand-line text-brand-muted bg-brand-surface2",
-                )}
-              >
-                {active ? <Check size={11} /> : c.unit === "seconds" && <Timer size={11} />}
-                {c.name}
-              </button>
-            );
-          })}
-        </div>
+        </Step>
       )}
 
       {error && <div className="text-brand-accent2 text-xs mb-2">{error}</div>}
@@ -371,19 +359,14 @@ export default function TemplateManager({
   }
 
   const pending = templates.find((t) => t.id === confirmId);
+  const title = editing
+    ? editing.id
+      ? "Kunlik mashqni tahrirlash"
+      : "Tayyor kunlik mashq yaratish"
+    : "Tayyor kunlik mashqlar";
 
   return (
-    <Modal
-      open={open}
-      title={
-        editing
-          ? editing.id
-            ? "Kunlik mashqni tahrirlash"
-            : "Tayyor kunlik mashq yaratish"
-          : "Tayyor kunlik mashqlar"
-      }
-      onClose={close}
-    >
+    <Modal open={open} title={title} onClose={close}>
       {editing ? (
         <TemplateEditor
           key={editing.id ?? "new"}
@@ -409,35 +392,25 @@ export default function TemplateManager({
               className="flex items-center gap-2 bg-brand-surface2 rounded-md px-3 py-2 mb-1.5"
             >
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[13px] font-semibold text-brand-text truncate">
-                    {t.name}
-                  </span>
-                  {formatTemplateDays(t.days) && (
-                    <span className="text-[9px] font-bold tracking-wide text-brand-accent shrink-0">
-                      {formatTemplateDays(t.days)}
-                    </span>
-                  )}
-                </div>
+                <div className="text-[13px] font-semibold text-brand-text truncate">{t.name}</div>
                 <div className="text-[11px] text-brand-muted truncate">
                   {(t.exercises ?? [])
                     .map((e) => (e.sets ? `${e.name} ${e.sets}×${e.reps || "?"}` : e.name))
                     .join(", ") || "-"}
                 </div>
               </div>
-              <button
-                type="button"
+              <IconButton
+                label={`${t.name}ni tahrirlash`}
                 onClick={() => setEditing(editorFromTemplate(t))}
-                aria-label={`${t.name}ni tahrirlash`}
-                className="bg-transparent border-none text-brand-muted cursor-pointer shrink-0 p-1"
               >
                 <Pencil size={14} />
-              </button>
+              </IconButton>
               <button
                 type="button"
                 onClick={() => setConfirmId(t.id)}
                 aria-label={`${t.name}ni o'chirish`}
-                className="bg-transparent border-none text-brand-accent2 cursor-pointer shrink-0 p-1"
+                title="O'chirish"
+                className="h-7 w-7 flex items-center justify-center bg-transparent border-none text-brand-accent2 cursor-pointer shrink-0"
               >
                 <Trash2 size={14} />
               </button>

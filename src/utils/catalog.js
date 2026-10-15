@@ -1,7 +1,6 @@
 import { uid } from "./id.js";
 import { toNum } from "./num.js";
 import { normalizeGoalSets, normalizeUnit } from "./workout.js";
-import { WEEKDAY_SHORT } from "./date.js";
 import { normalizeMuscleGroup } from "../constants/muscleGroups.js";
 import { MEASUREMENT_FIELDS } from "../constants/measurementFields.js";
 
@@ -89,33 +88,11 @@ function normalizeGoalReps(value) {
     .slice(0, GOAL_REPS_MAX_LEN);
 }
 
-export function normalizeTemplateDays(days) {
-  if (!Array.isArray(days)) return [];
-  const valid = days
-    .filter((d) => typeof d === "number" || (typeof d === "string" && d.trim() !== ""))
-    .map((d) => Number(d))
-    .filter((d) => Number.isInteger(d) && d >= 0 && d <= 6);
-  return Array.from(new Set(valid)).sort((a, b) => a - b);
-}
-
-export function formatTemplateDays(days) {
-  const list = normalizeTemplateDays(days);
-  if (list.length === 7) return "har kuni";
-  return list.map((d) => WEEKDAY_SHORT[d]).join(" · ");
-}
-
-export function templatesForDay(templates, dayIndex) {
-  return (templates ?? [])
-    .filter((t) => normalizeTemplateDays(t.days).includes(dayIndex))
-    .sort((a, b) => String(a.name).localeCompare(String(b.name)));
-}
-
-export function makeTemplate({ id, name, target, days, exercises }) {
+export function makeTemplate({ id, name, target, exercises }) {
   return {
     id: id || uid(),
     name: String(name ?? "").trim(),
     target: String(target ?? "").trim(),
-    days: normalizeTemplateDays(days),
     exercises: (exercises ?? [])
       .filter((e) => String(e?.name ?? "").trim())
       .map((e) => ({
