@@ -31,7 +31,6 @@ export function useCollectionStore({
     uid: null,
     items: EMPTY,
     loading: true,
-    failed: false,
   });
 
   useEffect(() => {
@@ -40,12 +39,12 @@ export function useCollectionStore({
     const unsubscribe = subscribe(
       uid,
       (docs, meta) => {
-        setState({ uid, items: docs, loading: false, failed: false });
+        setState({ uid, items: docs, loading: false });
         setSourcePending(name, Boolean(meta?.pending));
       },
       (e) => {
         console.error(`"${name}" kolleksiyasini o'qishda xato:`, e);
-        setState({ uid, items: EMPTY, loading: false, failed: true });
+        setState({ uid, items: EMPTY, loading: false });
       },
     );
 
@@ -77,7 +76,6 @@ export function useCollectionStore({
     () => ({
       items: matches ? state.items : EMPTY,
       loading: uid ? !matches || state.loading : false,
-      failed: matches ? state.failed : false,
       save: saveItem,
       remove: removeItem,
     }),

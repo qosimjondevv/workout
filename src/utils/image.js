@@ -8,7 +8,7 @@
 // Telefonda olingan rasmning EXIF burilishi hisobga olinadi
 // (imageOrientation: "from-image"), aks holda surat yonboshlab qolardi.
 
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // storage.rules bilan bir xil
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // storage.rules bilan bir xil
 
 async function decode(file) {
   if (typeof createImageBitmap === "function") {

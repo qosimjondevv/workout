@@ -4,10 +4,9 @@ import { useAuth } from "./AuthContext.jsx";
 
 // Ma'lumot bilan ishlaydigan hech narsa migratsiya tugamaguncha ko'rsatilmaydi:
 // aks holda foydalanuvchi bir zumda BO'SH tarixni ko'rib qo'rqib ketardi.
-export default function MigrationGate({ children, fallback, onError }) {
+export default function MigrationGate({ children, fallback }) {
   const { user, phone } = useAuth();
   const [ready, setReady] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) return undefined;
@@ -20,7 +19,6 @@ export default function MigrationGate({ children, fallback, onError }) {
       } catch (e) {
         console.error("Migratsiya xatosi:", e);
         if (cancelled) return;
-        setError(e);
         // Migratsiya o'tmasa ham ilovani bloklamaymiz: eski hujjat joyida
         // turibdi, keyingi kirishda qayta urinib ko'riladi.
         setReady(true);
@@ -31,10 +29,6 @@ export default function MigrationGate({ children, fallback, onError }) {
       cancelled = true;
     };
   }, [user, phone]);
-
-  useEffect(() => {
-    if (error && onError) onError(error);
-  }, [error, onError]);
 
   if (!ready) return fallback ?? null;
   return children;

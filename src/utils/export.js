@@ -7,7 +7,7 @@ import { muscleGroupLabel } from "../constants/muscleGroups.js";
 // Sheets uchun). Hammasi SOF funksiyalar — fayl yaratish va yuklab olish
 // alohida (utils/download.js), shuning uchun bu yerdagini Node'da sinash mumkin.
 
-export const BACKUP_FORMAT = 1;
+const BACKUP_FORMAT = 1;
 
 // Firestore Timestamp (toDate() bor obyekt) JSON'da {seconds, nanoseconds}
 // bo'lib chiqib, o'qib bo'lmas holga keladi — ISO matnga o'giramiz.

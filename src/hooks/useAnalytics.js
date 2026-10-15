@@ -47,8 +47,6 @@ export function useAnalytics() {
         return {
           date: fmt(w.date),
           value: s.unit === "seconds" ? s.bestTime : s.bestWeight,
-          volume: s.volume,
-          oneRM: s.best1RM,
         };
       });
   }, [workouts, selectedExercise]);

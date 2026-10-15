@@ -28,7 +28,7 @@ export function subscribePhotos(uid, onData, onError) {
   return subscribeCollection(uid, NAME, onData, onError);
 }
 
-export const MAX_PHOTO_NOTE = 300; // firestore.rules bilan bir xil
+const MAX_PHOTO_NOTE = 300; // firestore.rules bilan bir xil
 
 function photoPath(uid, id) {
   return `users/${uid}/photos/${id}`;

@@ -109,7 +109,7 @@ export function normalizeGoalSets(value) {
   return Number.isFinite(n) && n >= 1 && n <= TEMPLATE_MAX_SETS ? n : null;
 }
 
-export function normalizeGoalReps(value) {
+function normalizeGoalReps(value) {
   return String(value ?? "").trim().slice(0, GOAL_REPS_MAX_LEN);
 }
 

@@ -45,6 +45,5 @@ export function useWorkoutCalendar() {
     clearSelection: () => setSelectedDate(null),
     prevMonth: () => setAnchor((a) => addMonths(a, -1)),
     nextMonth: () => setAnchor((a) => addMonths(a, 1)),
-    goToday: () => setAnchor(todayISO()),
   };
 }

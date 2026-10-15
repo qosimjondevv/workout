@@ -45,7 +45,7 @@ export function beep({ frequency = 880, duration = 0.16, times = 2 } = {}) {
   }
 }
 
-export function notificationsSupported() {
+function notificationsSupported() {
   return typeof window !== "undefined" && "Notification" in window;
 }
 

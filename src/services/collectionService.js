@@ -1,6 +1,5 @@
 import {
   deleteDoc,
-  getDocs,
   onSnapshot,
   serverTimestamp,
   setDoc,
@@ -28,11 +27,6 @@ export function subscribeCollection(uid, name, onData, onError) {
     },
     onError,
   );
-}
-
-export async function fetchCollection(uid, name) {
-  const snap = await getDocs(userCollection(uid, name));
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
 export async function saveDocument(uid, name, id, data) {

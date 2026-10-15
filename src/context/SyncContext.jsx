@@ -25,11 +25,6 @@ export function SyncProvider({ children }) {
     );
   }, []);
 
-  const clearError = useCallback(() => {
-    lastFailedRef.current = null;
-    setError(null);
-  }, []);
-
   // Har yozuv shu orqali o'tadi: xato bo'lsa xabar ko'rsatiladi va amalning
   // o'zi "Qayta urinish" uchun eslab qolinadi.
   const run = useCallback(
@@ -59,8 +54,8 @@ export function SyncProvider({ children }) {
   const syncing = Object.values(pendingSources).some(Boolean);
 
   const value = useMemo(
-    () => ({ syncing, error, run, retry, clearError, setSourcePending }),
-    [syncing, error, run, retry, clearError, setSourcePending],
+    () => ({ syncing, error, run, retry, setSourcePending }),
+    [syncing, error, run, retry, setSourcePending],
   );
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

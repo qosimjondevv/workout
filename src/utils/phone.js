@@ -1,4 +1,4 @@
-export function normalizePhone(raw) {
+function normalizePhone(raw) {
   return raw.replace(/\D/g, "");
 }
 

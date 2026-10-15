@@ -13,7 +13,7 @@ function emit() {
   listeners.forEach((fn) => fn());
 }
 
-export function isStandalone() {
+function isStandalone() {
   return (
     window.matchMedia?.("(display-mode: standalone)").matches ||
     window.navigator.standalone === true
@@ -22,7 +22,7 @@ export function isStandalone() {
 
 // iPhone/iPad'da o'rnatish tizim oynasi yo'q — "Ulashish -> Bosh ekranga"
 // yo'riqnomasini ko'rsatish kerak. iPadOS o'zini Mac deb tanishtiradi.
-export function isIos() {
+function isIos() {
   const ua = window.navigator.userAgent;
   return (
     /iphone|ipad|ipod/i.test(ua) ||

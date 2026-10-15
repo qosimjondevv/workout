@@ -17,10 +17,6 @@ export function toStr(value) {
   return value === null || value === undefined ? "" : String(value);
 }
 
-export function isFilledNum(value) {
-  return toNum(value) !== null;
-}
-
 // Grafik va statistikada ko'rsatish uchun ortiqcha nollarni kesadi: 72.50 -> 72.5
 export function round(value, digits = 1) {
   const n = toNum(value);

@@ -15,7 +15,7 @@ export function setVolume(set) {
   return w * r;
 }
 
-export function exerciseVolume(exercise) {
+function exerciseVolume(exercise) {
   if (normalizeUnit(exercise?.unit) === "seconds") return 0;
   return (exercise?.sets ?? []).reduce((sum, s) => sum + setVolume(s), 0);
 }
@@ -37,7 +37,7 @@ export function estimated1RM(weight, reps) {
   return round(w * (1 + r / 30), 1);
 }
 
-export function exerciseBest1RM(exercise) {
+function exerciseBest1RM(exercise) {
   if (normalizeUnit(exercise?.unit) === "seconds") return 0;
   return (exercise?.sets ?? []).reduce(
     (best, s) => Math.max(best, estimated1RM(s.weight, s.reps)),
@@ -64,7 +64,6 @@ export function exerciseStats(exercise) {
     bestTime: seconds.length ? Math.max(...seconds) : 0,
     volume: exerciseVolume(exercise),
     best1RM: exerciseBest1RM(exercise),
-    setCount: sets.length,
   };
 }
 

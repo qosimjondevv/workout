@@ -347,7 +347,7 @@ export function syncStartedAt(form) {
 // Saqlangan matn ESKI versiyadan, boshqa qurilmadan yoki qo'lda buzilgan
 // bo'lishi mumkin — shuning uchun har maydon qayta tekshiriladi va forma
 // hech qachon "yarim" holatda tiklanmaydi.
-export const DRAFT_VERSION = 1;
+const DRAFT_VERSION = 1;
 
 export function serializeDraft(form, savedAt = Date.now()) {
   return JSON.stringify({ v: DRAFT_VERSION, savedAt, form });
